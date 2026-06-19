@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "laborator-emanuela",
     "public": "dist",
     "ignore": [
       "firebase.json",

@@ -4,13 +4,13 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyC20_jrtEb3xK12HHmgrhXuNvt8bNNjc-c",
-  authDomain: "chessecakehouse.firebaseapp.com",
-  projectId: "chessecakehouse",
-  storageBucket: "chessecakehouse.firebasestorage.app",
-  messagingSenderId: "334625101985",
-  appId: "1:334625101985:web:358e1f74f6f2b6b7e38e0",
-  measurementId: "G-F3CQCDWQVZ"
+  apiKey: "AIzaSyCbYU70q82YMscOJB6f_QfjoQZEe3uHn_Q",
+  authDomain: "emanuela-da572.firebaseapp.com",
+  projectId: "emanuela-da572",
+  storageBucket: "emanuela-da572.firebasestorage.app",
+  messagingSenderId: "810957794446",
+  appId: "1:810957794446:web:f2a14a1d3be5f65d77edf",
+  measurementId: "G-QLCQLW7JK1"
 };
 
 // Initialize Firebase

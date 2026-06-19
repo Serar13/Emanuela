@@ -1,12 +1,12 @@
 {
   "projects": {
-    "default": "chessecakehouse"
+    "default": "emanuela-da572"
   },
   "targets": {
-    "chessecakehouse": {
+    "emanuela-da572": {
       "hosting": {
         "admin": [
-          "chessecakehouse-admin"
+          "laborator-emanuela-admin"
         ]
       }
     }

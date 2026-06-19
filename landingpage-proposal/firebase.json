@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "propunere-cheesecakehouse",
+    "site": "propunere-emanuela",
     "public": "dist",
     "ignore": [
       "firebase.json",

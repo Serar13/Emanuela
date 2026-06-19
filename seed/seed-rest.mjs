@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const projectId = process.env.FIREBASE_PROJECT_ID || "chessecakehouse";
+const projectId = process.env.FIREBASE_PROJECT_ID || "emanuela-da572";
 const data = JSON.parse(readFileSync(join(__dirname, "seedData.json"), "utf8"));
 const token = execFileSync("gcloud", ["auth", "print-access-token"], { encoding: "utf8" }).trim();
 const baseUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents`;

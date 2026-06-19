@@ -10,28 +10,28 @@ tables, locations, event requests, reviews and loyalty are managed from the
 ## Projects
 
 - `mobile` — Expo / React Native customer app.
-- `site` — Public customer website → Firebase Hosting (`chessecakehouse`).
-- `webadmin` — Admin dashboard → Firebase Hosting (`chessecakehouse-admin`).
+- `site` — Public customer website → Firebase Hosting (`laborator-emanuela`).
+- `webadmin` — Admin dashboard → Firebase Hosting (`laborator-emanuela-admin`).
 - `seed` — One-off Firestore seeding script + canonical seed data.
 - `landingpage-proposal` — Standalone React/Vite landing-page concept for
   design iteration and review.
 
 ## Live URLs
 
-- Public site: https://chessecakehouse.web.app
-- Web admin: https://chessecakehouse-admin.web.app
+- Public site: https://laborator-emanuela.web.app
+- Web admin: https://laborator-emanuela-admin.web.app
 
 ## Firebase
 
-Project ID: `chessecakehouse`. The Firebase web config is shipped in the client
+Project ID: `emanuela-da572`. The Firebase web config is shipped in the client
 apps (it is not a secret); access is protected by Firebase Auth + Firestore /
 Storage security rules. **Never** commit service account keys, tokens or
 `.env` files.
 
 Hosting targets:
 
-- `chessecakehouse` — public website (deployed from `site/`)
-- `chessecakehouse-admin` — admin dashboard (deployed from `webadmin/`)
+- `laborator-emanuela` — public website (deployed from `site/`)
+- `laborator-emanuela-admin` — admin dashboard (deployed from `webadmin/`)
 
 ---
 
@@ -305,4 +305,3 @@ toggles, search and sort, with loading/error/empty states.
   or local `.env` files.
 - Keep Hosting deploys separated: public site from `site/`, admin from
   `webadmin/`.
-
