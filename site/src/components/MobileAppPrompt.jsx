@@ -3,8 +3,8 @@ import { useLocation } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import './MobileAppPrompt.css';
 
-const APP_STORE_URL = 'https://apps.apple.com/ro/app/the-cheesecake-house';
-const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=ro.cheesecakehouse.app';
+const APP_STORE_URL = 'https://apps.apple.com/ro/app/laborator-emanuela';
+const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=ro.laboratoremanuela.app';
 const DISMISS_COOLDOWN_MS = 1000 * 60 * 60 * 24 * 3;
 const DOWNLOAD_COOLDOWN_MS = 1000 * 60 * 60 * 24 * 14;
 

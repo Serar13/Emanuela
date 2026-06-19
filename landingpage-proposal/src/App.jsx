@@ -38,7 +38,7 @@ export default function App() {
   const customPlan = getCustomPlan(customBudget);
 
   // URL-ul site-ului demo creat deja pentru client (inlocuieste cu link-ul tau real)
-  const demoSiteUrl = "https://chessecakehouse.web.app/";
+  const demoSiteUrl = "https://laboratoremanuela.ro/";
 
   // Simulatorul de Notificări Push & Aplicație Mobilă
   const [phoneState, setPhoneState] = useState('lock'); // 'lock' | 'splash'
@@ -98,11 +98,11 @@ export default function App() {
     setTappedNotifId(null);
     setIsPlayingScenario(true);
 
-    // Secunda 1: The Cheesecake House (Cuptor Cald)
+    // Secunda 1: Laborator Emanuela (Cuptor Cald)
     const t1 = setTimeout(() => {
       sendPushNotification(
-        "The Cheesecake House 🍰", 
-        "Alina tocmai a scos din cuptor o tavă caldă de Cheesecake cu fistic. Treci pe la noi în următoarea oră și ai 20% reducere!"
+        "Laborator Emanuela 🍰",
+        "Tocmai am scos din cuptor o tavă caldă de Tort Red Velvet. Treci pe la noi în următoarea oră și ai 20% reducere!"
       );
     }, 1000);
 
@@ -117,8 +117,8 @@ export default function App() {
     // Secunda 5: Masa ta e gata
     const t3 = setTimeout(() => {
       sendPushNotification(
-        "Masa ta e gata! ✅", 
-        "Rezervarea ta pentru 4 persoane în locația din Cluj-Napoca este confirmată pentru ora 19:30."
+        "Masa ta e gata! ✅",
+        "Rezervarea ta pentru 4 persoane în locația din Târgu Mureș este confirmată pentru ora 19:30."
       );
     }, 5000);
 
@@ -214,9 +214,9 @@ export default function App() {
       {/* HEADER NAVIGATION */}
       <nav className="proposal-nav">
         <div className="proposal-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <img 
-            src="https://assets.boosteat.com/images/c165/2023-03-21/20230321093311212641979d71009f/logo.png" 
-            alt="The Cheesecake House Logo" 
+          <img
+            src="/logo-emanuela.webp"
+            alt="Laborator Emanuela"
             className="nav-logo"
             style={{ height: '44px' }}
           />
@@ -228,7 +228,7 @@ export default function App() {
         <div className="proposal-container">
           <div className="client-badge">
             <Sparkles size={14} fill="currentColor" />
-            <span>Propus exclusiv pentru: The Cheesecake House</span>
+            <span>Propus exclusiv pentru: Laborator Emanuela</span>
           </div>
           
           <h1>Propunere de <span>Parteneriat Digital</span></h1>
@@ -236,8 +236,8 @@ export default function App() {
             Soluție digitală completă și integrată: Web Development, Mobile Application & Social Media Management
           </p>
           <p style={{ maxWidth: '720px', margin: '0 auto', fontSize: '15px', color: '#64748b' }}>
-            Această propunere B2B reprezintă strategia noastră de a unifica prezența digitală a magazinelor 
-            <strong> The Cheesecake House</strong> (Târgu Mureș, Cluj-Napoca, Bistrița) sub o singură umbrelă 
+            Această propunere B2B reprezintă strategia noastră de a unifica prezența digitală a
+            <strong> Laborator Emanuela</strong> (Târgu Mureș, Câmpia Turzii) sub o singură umbrelă
             tehnologică modernă. Înlocuim serviciile fragmentate cu un ecosistem optimizat pentru fidelizarea clienților și creșterea vânzărilor directe.
           </p>
 
@@ -462,12 +462,12 @@ export default function App() {
                             >
                               <div className="ios-notification-header">
                                 <div className="ios-app-brand">
-                                  <img 
-                                    src="https://assets.boosteat.com/images/c165/2023-03-21/20230321093311212641979d71009f/logo.png" 
-                                    className="ios-app-icon" 
-                                    alt="Logo" 
+                                  <img
+                                    src="/logo-emanuela.webp"
+                                    className="ios-app-icon"
+                                    alt="Logo"
                                   />
-                                  <span className="ios-app-title">CHEESECAKE HOUSE</span>
+                                  <span className="ios-app-title">LABORATOR EMANUELA</span>
                                 </div>
                                 <span className="ios-time-lbl">{notif.time}</span>
                               </div>
@@ -517,12 +517,12 @@ export default function App() {
                       {splashStep !== 'surprise' && (
                         <div className={`splash-logo-container ${splashStep === 'fadeOutLogo' ? 'animate-fade-out' : ''}`}>
                           <img
-                            src="https://assets.boosteat.com/images/c165/2023-03-21/20230321093311212641979d71009f/logo.png"
-                            alt="Cheesecake House Logo"
+                            src="/logo-emanuela.webp"
+                            alt="Laborator Emanuela"
                             className="splash-brand-logo"
                           />
-                          <h4 className="splash-brand-name">The Cheesecake House</h4>
-                          <p className="splash-brand-tagline">Premium Craft Cakes</p>
+                          <h4 className="splash-brand-name">Laborator Emanuela</h4>
+                          <p className="splash-brand-tagline">Lingurițe de bunătate</p>
                         </div>
                       )}
 
@@ -588,7 +588,7 @@ export default function App() {
                   <div>
                     <h4>Notificări la Cuptor Cald (Geo-fenced / Programate)</h4>
                     <p style={{ fontSize: '14px' }}>
-                      Clienții din apropierea magazinului primesc o alertă push când un nou lot de cheesecake-uri (fistic, San Sebastian) este proaspăt scos din cuptor. Atrage instant trafic pietonal în locație.
+                      Clienții din apropierea magazinului primesc o alertă push când un nou lot de torturi și prăjituri (Red Velvet, Fructe de Pădure) este proaspăt scos din cuptor. Atrage instant trafic pietonal în locație.
                     </p>
                   </div>
                 </div>
@@ -623,7 +623,7 @@ export default function App() {
         <div className="proposal-container">
           <div className="social-header">
             <h2>Management Profesional Social Media</h2>
-            <p>Construim o comunitate activă și promovăm produsele Cheesecake House prin conținut video și imagini de înaltă calitate.</p>
+            <p>Construim o comunitate activă și promovăm produsele Laborator Emanuela prin conținut video și imagini de înaltă calitate.</p>
           </div>
 
           <div className="social-grid">
@@ -817,13 +817,13 @@ export default function App() {
           
           <h2>{activePackage === 'lite' ? "Pachetul Complet: Lite Accelerator" : "Pachetul Complet: Launch Accelerator"}</h2>
           <p className="intro-text">
-            O strategie în 3 etape concepută pentru a lansa rapid produsele The Cheesecake House în mediul digital, 
+            O strategie în 3 etape concepută pentru a lansa rapid produsele Laborator Emanuela în mediul digital,
             asigurând asistență tehnică completă și bugete controlate de promovare directă.
           </p>
 
           <div className="ownership-note">
             <CheckCircle2 size={18} />
-            <span>Codul site-ului și aplicației, baza de date, GitHub și accesul Firebase rămân în proprietatea The Cheesecake House.</span>
+            <span>Codul site-ului și aplicației, baza de date, GitHub și accesul Firebase rămân în proprietatea Laborator Emanuela.</span>
           </div>
 
           <div className="steps-list">
@@ -860,7 +860,7 @@ export default function App() {
               <div className="step-details">
                 <h4>Etapa 2: Oferta de Lansare (Primele 6 luni)</h4>
                 <p>
-                  Pornim motoarele de marketing pentru toate cele trei locații: Mureș, Cluj și Bistrița. În primele 6 luni păstrăm prețul promoțional, investim 400€ lunar direct în Ads și includem gratuit mentenanța tehnică. Conturile de promovare și rezultatele campaniilor rămân complet vizibile clientului.
+                  Pornim motoarele de marketing pentru ambele locații: Târgu Mureș și Câmpia Turzii. În primele 6 luni păstrăm prețul promoțional, investim 400€ lunar direct în Ads și includem gratuit mentenanța tehnică. Conturile de promovare și rezultatele campaniilor rămân complet vizibile clientului.
                 </p>
                 {activePackage === 'lite' && (
                   <span className="step-pricing" style={{ color: 'var(--color-primary)' }}>
@@ -919,7 +919,7 @@ export default function App() {
           </p>
           
           <div className="cta-buttons-group">
-            <a href="/cheesecake-house-propunere.pdf" className="btn btn-primary" download="propunere-cheesecake-house.pdf">
+            <a href="/emanuela-propunere.pdf" className="btn btn-primary" download="propunere-laborator-emanuela.pdf">
               <Download size={16} />
               <span>Descarcă Propunerea în format PDF</span>
             </a>
@@ -936,7 +936,7 @@ export default function App() {
         <div className="proposal-container">
           <p>Propus cu încredere și profesionalism de 🤝 <strong>partenerul tău digital</strong>, 2026.</p>
           <p style={{ fontSize: '12px', marginTop: '6px', color: '#94a3b8' }}>
-            Această ofertă comercială este confidențială și destinată exclusiv managementului The Cheesecake House.
+            Această ofertă comercială este confidențială și destinată exclusiv managementului Laborator Emanuela.
           </p>
         </div>
       </footer>

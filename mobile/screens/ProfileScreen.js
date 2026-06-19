@@ -195,7 +195,7 @@ export default function ProfileScreen() {
             <Text style={styles.sectionTitle}>{t('walletTitle')}</Text>
             <View style={styles.walletCard}>
               <View style={styles.cardInfo}>
-                <Text style={styles.cardBrand}>THE CHEESECAKE HOUSE</Text>
+                <Text style={styles.cardBrand}>LABORATOR EMANUELA</Text>
                 <Text style={styles.cardLabel}>{t('digitalWalletCard')}</Text>
               </View>
               <View style={styles.cardBalanceContainer}>

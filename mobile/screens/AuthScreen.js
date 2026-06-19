@@ -105,7 +105,7 @@ export default function AuthScreen({ reason, onClose }) {
             style={[styles.logo, { tintColor: colors.text }]}
             resizeMode="contain"
           />
-          <Text style={[styles.title, { color: colors.text }]}>The Cheesecake House</Text>
+          <Text style={[styles.title, { color: colors.text }]}>Laborator Emanuela</Text>
           <Text style={styles.subtitle}>
             {activeTab === 'forgot' ? 'Recuperare parolă cont' : subtitle}
           </Text>

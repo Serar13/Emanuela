@@ -3,8 +3,8 @@
   --panel: #ffffff;
   --sidebar: #2a211c;
   --sidebar-2: #1f1814;
-  --accent: #b07d52;
-  --accent-2: #8a5e3b;
+  --accent: #E92D79;
+  --accent-2: #862875;
   --text: #2a211c;
   --muted: #8a7d72;
   --border: #e7e0d8;
@@ -29,7 +29,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at top, #3a2c23, #1c1511);
+  background: radial-gradient(circle at top, #5c0f34, #1a0e12);
   padding: 20px;
 }
 .login-card {
@@ -235,8 +235,8 @@ body {
   border: 1px solid #ded4ca;
   border-radius: 10px;
   background:
-    linear-gradient(90deg, rgba(176, 125, 82, 0.07) 1px, transparent 1px),
-    linear-gradient(rgba(176, 125, 82, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(233, 45, 121, 0.07) 1px, transparent 1px),
+    linear-gradient(rgba(233, 45, 121, 0.07) 1px, transparent 1px),
     #fbf8f4;
   background-size: 28px 28px;
 }
@@ -277,7 +277,7 @@ body {
   height: 46px;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  border: 2px solid #8a5e3b;
+  border: 2px solid #E92D79;
   background: #fff;
   box-shadow: 0 8px 18px rgba(42, 33, 28, 0.14);
   display: flex;

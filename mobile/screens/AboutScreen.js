@@ -14,94 +14,94 @@ import { useApp } from '../context/AppContext';
 const LOCAL_TRANSLATIONS = {
   ro: {
     storyTitle: "Povestea Noastră",
-    statsTitle: "The Cheesecake House în Cifre",
+    statsTitle: "Laborator Emanuela în Cifre",
     valuesTitle: "Valorile Noastre",
     connectWithUs: "Urmărește-ne online",
-    royalSupplier: "👑 FURNIZOR OFICIAL AL CASEI REGALE",
-    royalDesc: "Furnizor Oficial de cofetărie al Casei Regale a României, titlu acordat de Majestatea Sa Margareta, Custodele Coroanei.",
-    
+    brandBadge: "🍰 LABORATOR DE PRĂJITURI ARTIZANALE",
+    brandBadgeDesc: "Din 2017, creăm lingurițe de bunătate în laboratorul nostru din Târgu Mureș.",
+
     // Stats
     statCakes: "Sortimente",
     statLocations: "Locații",
     statYears: "Ani de Pasiune",
-    
+
     // Timeline
-    t1Title: "2017 - Inspirația din SUA",
-    t1Desc: "După o călătorie peste ocean, fondatorii Vlad, Sabina și Anca s-au îndrăgostit de cheesecake-ul american. Au urmat 6 luni de experimente intense în bucătăria de acasă pentru perfecționarea rețetei.",
+    t1Title: "2017 - Prima rețetă perfectă",
+    t1Desc: "Din dorința de a aduce produse de cofetărie de calitate superioară în Târgu Mureș, primele rețete au fost perfecționate cu grijă timp de câteva luni. Astfel s-a născut Laborator Emanuela.",
     t2Title: "2018-2019 - Primul Laborator",
-    t2Desc: "Am început în Târgu Mureș ca un laborator mic ce livra prăjituri către restaurante partenere. Succesul rapid ne-a motivat să deschidem prima cofetărie proprie în 2019.",
-    t3Title: "2020 - Recunoașterea Regală",
-    t3Desc: "Calitatea excepțională ne-a adus onoarea de a deveni Furnizor Oficial al Casei Regale a României, titlu oferit de MS Majestatea Sa Margareta, Custodele Coroanei.",
-    t4Title: "2023 - Extinderea în Cluj",
-    t4Desc: "Am deschis o nouă locație premium în inima Clujului, pe str. Samuil Micu nr. 7, aducând bucuria deserturilor noastre într-un spațiu cald și elegant.",
+    t2Desc: "Am început în Târgu Mureș ca un laborator mic ce livra prăjituri și torturi către restaurante partenere. Succesul rapid ne-a motivat să deschidem prima cofetărie proprie.",
+    t3Title: "2020 - Extinderea gamei",
+    t3Desc: "Am extins gama de produse artizanale și am consolidat parteneriatele cu restaurantele din Transilvania, construind reputația de laborator de referință.",
+    t4Title: "2024 - Expansiune în Câmpia Turzii",
+    t4Desc: "Am deschis o nouă locație în Câmpia Turzii, pe Str. 1 Decembrie 1918 nr. 3-5, aducând lingurițe de bunătate mai aproape de iubitorii de dulce din regiune.",
 
     // Values
     v1Title: "Simplitate",
-    v1Desc: "Motto-ul nostru este 'Find joy in the simple!'. Credem în simplitatea gustului pur din cremă de brânză fină.",
-    v2Title: "Calitate Regală",
-    v2Desc: "Folosim exclusiv ingrediente premium și coacem manual în propriul laborator, respectând cele mai înalte standarde.",
+    v1Desc: "Motto-ul nostru este 'Lingurițe de bunătate'. Credem în simplitatea gustului autentic și în ingredientele naturale.",
+    v2Title: "Calitate Artizanală",
+    v2Desc: "Folosim exclusiv ingrediente premium și preparăm manual în propriul laborator, respectând cele mai înalte standarde.",
     v3Title: "Comunitate",
     v3Desc: "Fiecare cofetărie este gândită ca un refugiu cald unde te poți bucura de clipe dulci alături de cei dragi."
   },
   en: {
     storyTitle: "Our Story",
-    statsTitle: "The Cheesecake House in Numbers",
+    statsTitle: "Laborator Emanuela in Numbers",
     valuesTitle: "Our Values",
     connectWithUs: "Connect with Us Online",
-    royalSupplier: "👑 OFFICIAL SUPPLIER OF THE ROYAL HOUSE",
-    royalDesc: "Official Confectionery Supplier of the Royal House of Romania, a title awarded by Her Majesty Margareta, Custodian of the Crown.",
-    
+    brandBadge: "🍰 ARTISAN PASTRY LABORATORY",
+    brandBadgeDesc: "Since 2017, crafting sweet spoonfuls in our Târgu Mureș laboratory.",
+
     // Stats
     statCakes: "Flavors",
     statLocations: "Locations",
     statYears: "Years of Passion",
-    
+
     // Timeline
-    t1Title: "2017 - The USA Inspiration",
-    t1Desc: "After a trip across the ocean, founders Vlad, Sabina, and Anca fell in love with authentic cheesecake. Six months of home kitchen experiments followed to craft the perfect recipe.",
+    t1Title: "2017 - The First Perfect Recipe",
+    t1Desc: "Driven by the desire to bring superior quality pastries to Târgu Mureș, the first recipes were carefully perfected over several months. This is how Laborator Emanuela was born.",
     t2Title: "2018-2019 - First Laboratory",
-    t2Desc: "We started in Târgu Mureș as a small laboratory supplying local restaurants. The immediate success motivated us to open our very first cozy retail shop in 2019.",
-    t3Title: "2020 - Royal Supplier Status",
-    t3Desc: "Our commitment to premium quality earned us the title of Official Confectionery Supplier of the Royal House of Romania, awarded by Her Majesty Margareta.",
-    t4Title: "2023 - Launching in Cluj",
-    t4Desc: "We expanded to Cluj-Napoca, opening a gorgeous premium shop on Samuil Micu St. no. 7, welcoming cake lovers into a warm and elegant setting.",
+    t2Desc: "We started in Târgu Mureș as a small laboratory supplying cakes and pastries to partner restaurants. The immediate success motivated us to open our first retail shop.",
+    t3Title: "2020 - Expanding the Range",
+    t3Desc: "We expanded our artisan product range and strengthened partnerships with restaurants across Transylvania, building our reputation as a leading pastry lab.",
+    t4Title: "2024 - Expansion to Câmpia Turzii",
+    t4Desc: "We opened a new location in Câmpia Turzii, at Str. 1 Decembrie 1918 no. 3-5, bringing our sweet creations closer to dessert lovers in the region.",
 
     // Values
     v1Title: "Simplicity",
-    v1Desc: "Our motto is 'Find joy in the simple!'. We believe in the simple beauty of fine, pure cream cheese flavors.",
-    v2Title: "Royal Quality",
-    v2Desc: "We use only premium ingredients and bake from scratch in our own lab, maintaining the highest culinary standards.",
+    v1Desc: "Our motto is 'Sweet spoonfuls'. We believe in the simple beauty of authentic flavors and natural ingredients.",
+    v2Title: "Artisan Quality",
+    v2Desc: "We use only premium ingredients and prepare everything by hand in our own lab, maintaining the highest culinary standards.",
     v3Title: "Community",
     v3Desc: "Our shops are designed as warm spaces where you can share sweet, memorable moments with friends and family."
   },
   hu: {
     storyTitle: "Történetünk",
-    statsTitle: "A The Cheesecake House számokban",
+    statsTitle: "A Laborator Emanuela számokban",
     valuesTitle: "Értékeink",
     connectWithUs: "Kövess minket online",
-    royalSupplier: "👑 A KIRÁLYI HÁZ HIVATALOS BESZÁLLÍTÓJA",
-    royalDesc: "A Román Királyi Ház hivatalos cukrászati beszállítója, Margit Őfelsége, a román korona őre által adományozott cím.",
-    
+    brandBadge: "🍰 KÉZMŰVES CUKRÁSZATI LABORATÓRIUM",
+    brandBadgeDesc: "2017 óta kézzel készített édességeket kínálunk marosvásárhelyi laboratóriumunkból.",
+
     // Stats
-    statCakes: "Sajttorták",
+    statCakes: "Termékek",
     statLocations: "Helyszínek",
     statYears: "Szenvedély Évei",
-    
+
     // Timeline
-    t1Title: "2017 - Amerikai Inspiráció",
-    t1Desc: "Egy tengerentúli utazás után a két alapító, Vlad, Sabina és Anca beleszerettek az amerikai sajttortába. Ezt 6 hónap intenzív otthoni kísérletezés követte a tökéletes receptért.",
+    t1Title: "2017 - Az első tökéletes recept",
+    t1Desc: "A minőségi cukrászsütemények Marosvásárhelyre hozásának vágyától vezérelve az első recepteket gondosan tökéletesítettük. Így született meg a Laborator Emanuela.",
     t2Title: "2018-2019 - Az Első Laboratórium",
-    t2Desc: "Kis laboratóriumként kezdtük Marosvásárhelyen, beszállítva a helyi éttermeknek. A gyors siker arra ösztönzött minket, hogy 2019-ben megnyissuk első saját cukrászdánkat.",
-    t3Title: "2020 - Királyi Elismerés",
-    t3Desc: "A kivételes minőség elnyerte a Román Királyi Ház hivatalos cukrászati beszállítói címét, amelyet Margit Őfelsége, a korona őre adományozott.",
-    t4Title: "2023 - Terjeszkedés Kolozsváron",
-    t4Desc: "Megnyitottuk új prémium cukrászdánkat Kolozsvár szívében, a Samuil Micu utca 7. szám alatt, meleg és elegáns környezetet biztosítva a sajttorta kedvelőinek.",
+    t2Desc: "Kis laboratóriumként kezdtük Marosvásárhelyen, süteményeket és tortákat szállítva partneréttermeinknek. A gyors siker arra ösztönzött minket, hogy megnyissuk első saját cukrászdánkat.",
+    t3Title: "2020 - A kínálat bővítése",
+    t3Desc: "Bővítettük kézműves termékkínálatunkat és erősítettük együttműködéseinket erdélyi partneréttermeinkkel.",
+    t4Title: "2024 - Terjeszkedés Aranyosgyéresen",
+    t4Desc: "Új helyszínt nyitottunk Aranyosgyéresen, az 1918. december 1. utca 3-5. szám alatt, közelebb hozva finomságainkat a régió édességkedvelőihez.",
 
     // Values
     v1Title: "Egyszerűség",
-    v1Desc: "Mottónk: 'Find joy in the simple!'. Hiszünk a krémsajt tiszta, egyszerű és finom ízében.",
-    v2Title: "Királyi Minőség",
-    v2Desc: "Kizárólag prémium alapanyagokat használunk, és kézzel sütünk saját laborunkban, a legmagasabb minőségben.",
+    v1Desc: "Mottónk: 'Édes kanalak'. Hiszünk az autentikus ízek és természetes alapanyagok egyszerű szépségében.",
+    v2Title: "Kézműves Minőség",
+    v2Desc: "Kizárólag prémium alapanyagokat használunk, és kézzel készítünk mindent saját laborunkban, a legmagasabb minőségben.",
     v3Title: "Közösség",
     v3Desc: "Cukrászdáinkat meleg, barátságos menedékként alakítottuk ki, ahol édes pillanatokat oszthat meg szeretteivel."
   }
@@ -120,13 +120,13 @@ export default function AboutScreen() {
         <View style={styles.logoCircle}>
           <Ionicons name="restaurant" size={32} color={colors.gold} />
         </View>
-        <Text style={styles.brandTitle}>The Cheesecake House</Text>
-        <Text style={styles.brandMotto}>Find joy in the simple</Text>
-        
-        {/* Royal Badge Section */}
+        <Text style={styles.brandTitle}>Laborator Emanuela</Text>
+        <Text style={styles.brandMotto}>Lingurițe de bunătate</Text>
+
+        {/* Brand Badge Section */}
         <View style={styles.royalBadge}>
-          <Text style={styles.royalBadgeTitle}>{loc.royalSupplier}</Text>
-          <Text style={styles.royalBadgeDesc}>{loc.royalDesc}</Text>
+          <Text style={styles.royalBadgeTitle}>{loc.brandBadge}</Text>
+          <Text style={styles.royalBadgeDesc}>{loc.brandBadgeDesc}</Text>
         </View>
       </View>
 
@@ -134,31 +134,23 @@ export default function AboutScreen() {
       <View style={styles.socialsRow}>
         <TouchableOpacity 
           style={[styles.socialCard, { borderColor: '#e1306c' }]} 
-          onPress={() => Linking.openURL('https://www.instagram.com/thecheesecakehouse.ro')}
+          onPress={() => Linking.openURL('https://www.instagram.com/laboratoremanuela')}
         >
           <Ionicons name="logo-instagram" size={20} color="#e1306c" />
           <Text style={styles.socialLabel}>Instagram</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity 
-          style={[styles.socialCard, { borderColor: '#1877f2' }]} 
-          onPress={() => Linking.openURL('https://www.facebook.com/TheCheesecakeHouse')}
+        <TouchableOpacity
+          style={[styles.socialCard, { borderColor: '#1877f2' }]}
+          onPress={() => Linking.openURL('https://www.facebook.com/laboratoremanuela')}
         >
           <Ionicons name="logo-facebook" size={20} color="#1877f2" />
           <Text style={styles.socialLabel}>Facebook</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity 
-          style={[styles.socialCard, { borderColor: '#00f2fe' }]} 
-          onPress={() => Linking.openURL('https://www.tiktok.com/@thecheesecakehous5')}
-        >
-          <Ionicons name="logo-tiktok" size={20} color={colors.text} />
-          <Text style={styles.socialLabel}>TikTok</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={[styles.socialCard, { borderColor: colors.gold }]} 
-          onPress={() => Linking.openURL('https://thecheesecake.ro')}
+        <TouchableOpacity
+          style={[styles.socialCard, { borderColor: colors.gold }]}
+          onPress={() => Linking.openURL('https://laboratoremanuela.ro')}
         >
           <Ionicons name="globe-outline" size={20} color={colors.gold} />
           <Text style={styles.socialLabel}>Website</Text>

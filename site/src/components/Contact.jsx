@@ -90,7 +90,7 @@ export default function Contact() {
                 <div key={store.id} className="store-location-card">
                   <div className="store-card-header">
                     <span className="store-icon">🏪</span>
-                    <h4>{store.name.replace('The Cheesecake House ', '')}</h4>
+                    <h4>{store.name.replace('Laborator Emanuela ', '')}</h4>
                   </div>
                   <div className="store-details">
                     {store.address && <p><strong>📍 {t('contactAddressLabel')}</strong> {store.address}</p>}

@@ -216,7 +216,7 @@ export default function CartSidebar() {
                 {/* Info Text */}
                 {deliveryType === 'delivery' && (
                   <p className="delivery-info-text">
-                    * {t('deliveryInfoLabel')} <strong>{selectedStore?.name?.replace('The Cheesecake House ', '')}</strong>.
+                    * {t('deliveryInfoLabel')} <strong>{selectedStore?.name?.replace('Laborator Emanuela ', '')}</strong>.
                     {t('deliveryFreeText')}
                   </p>
                 )}

@@ -15,18 +15,18 @@ export default function SplashScreen() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#fefdfb" />
+      <StatusBar barStyle="dark-content" backgroundColor="#FFF8F2" />
       <View style={styles.logoContainer}>
-        <Image 
-          source={{ uri: 'https://assets.boosteat.com/images/c165/2023-03-21/20230321093311212641979d71009f/logo.png' }} 
+        <Image
+          source={{ uri: 'https://laboratoremanuela.ro/wp-content/uploads/2022/05/logo-web.webp' }}
           style={styles.logo}
           resizeMode="contain"
         />
-        <Text style={styles.title}>The Cheesecake House</Text>
-        <Text style={styles.subtitle}>Premium Craft Cakes</Text>
+        <Text style={styles.title}>Laborator Emanuela</Text>
+        <Text style={styles.subtitle}>Lingurițe de bunătate</Text>
       </View>
       <View style={styles.loaderContainer}>
-        <ActivityIndicator size="large" color="#c4a178" />
+        <ActivityIndicator size="large" color="#E92D79" />
         <Text style={styles.loadingText}>{t('loadingCakes')}</Text>
       </View>
     </View>
@@ -36,7 +36,7 @@ export default function SplashScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fefdfb', // signature cream background
+    backgroundColor: '#FFF8F2',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 80,
@@ -47,21 +47,21 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   logo: {
-    width: 150,
-    height: 150,
+    width: 160,
+    height: 160,
     marginBottom: 20,
   },
   title: {
     fontSize: 26,
     fontWeight: 'bold',
-    color: '#2d241c', // warm chocolate text
+    color: '#241A1C',
     letterSpacing: 0.5,
   },
   subtitle: {
     fontSize: 14,
-    color: '#c4a178', // gold text
+    color: '#E92D79',
     textTransform: 'uppercase',
-    letterSpacing: 3,
+    letterSpacing: 2,
     marginTop: 6,
     fontWeight: '600',
   },
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loadingText: {
-    color: '#7c7063',
+    color: '#7c6060',
     fontSize: 12,
     marginTop: 14,
   },

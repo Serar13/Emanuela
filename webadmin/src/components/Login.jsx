@@ -26,7 +26,7 @@ export default function Login() {
     <div className="login-screen">
       <form className="login-card" onSubmit={submit}>
         <div className="login-brand">🍰</div>
-        <h1>Cheesecake House</h1>
+        <h1>Laborator Emanuela</h1>
         <p className="login-sub">Panou de administrare</p>
 
         <label>

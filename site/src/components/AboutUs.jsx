@@ -33,12 +33,12 @@ export default function AboutUs() {
       image: 'https://assets.boosteat.com/images/c165/2024-04-11/202404111109122126617c4d828492/image.jpg'
     },
     {
-      year: 'Octombrie 2020',
-      title: pick('Furnizori ai Casei Regale 👑', 'Royal House Suppliers 👑', 'A Királyi Ház beszállítói 👑'),
+      year: '2020',
+      title: pick('Certificare & Calitate 🏅', 'Quality Certification 🏅', 'Minőségi tanúsítás 🏅'),
       desc: pick(
-        'După un proces riguros de evaluare început în 2019, am primit titlul de Furnizori Oficiali ai Casei Regale a României, decernat chiar de către Majestatea Sa Margareta, Custodele Coroanei române. Suntem singurul furnizor oficial pe partea de cofetărie.',
-        'After a rigorous evaluation process starting in 2019, we were granted the title of Official Suppliers of the Royal House of Romania, awarded directly by Her Majesty Margareta, Custodian of the Romanian Crown. We are the sole official confectionery supplier.',
-        'A 2019-ben indult szigorú értékelési folyamat után megkaptuk a Román Királyi Ház hivatalos beszállítója címet, amelyet maga Margareta őfelsége adott át. Mi vagyunk az egyetlen hivatalos cukrászati beszállító.'
+        'Am obținut certificarea pentru producție artizanală și am extins colaborările cu restaurantele partenere din Transilvania, consolidând reputația de laborator de referință.',
+        'We obtained artisan production certification and expanded partnerships with restaurants across Transylvania, cementing our reputation as a leading patisserie lab.',
+        'Megszereztük a kézműves termelési tanúsítványt, és bővítettük együttműködéseinket erdélyi partneréttermeinkkel, megerősítve vezető cukrászati laboratóriumi hírnevünket.'
       ),
       image: 'https://assets.boosteat.com/images/c165/2024-04-11/202404111109042126617c4d0cc3ad/image.jpg'
     },
@@ -64,21 +64,21 @@ export default function AboutUs() {
     },
     {
       year: '2023',
-      title: pick('Expansiune în Cluj-Napoca 🚀', 'Expansion in Cluj-Napoca 🚀', 'Terjeszkedés Kolozsváron 🚀'),
+      title: pick('A doua locație în Târgu Mureș 🚀', 'Second Location in Târgu Mureș 🚀', 'Második üzlet Marosvásárhelyen 🚀'),
       desc: pick(
-        'Am investit peste 200.000€ în deschiderea cofetăriei din Cluj-Napoca și peste 300.000€ în modernizarea laboratorului nostru. Tot la finele anului 2023, Majestatea Sa ne-a consemnat prelungirea titlului de Furnizori Oficiali cu încă 3 ani.',
-        'We invested over €200,000 in opening the Cluj-Napoca shop and over €300,000 in upgrading our laboratory. Additionally, Her Majesty extended our Royal Supplier title for another 3 years.',
-        'Több mint 200 000 eurót fektettünk a kolozsvári üzlet megnyitásába és több mint 300 000 eurót laborunk fejlesztésébe. 2023 végén a királyi beszállítói címünket további 3 évvel meghosszabbították.'
+        'Am deschis cea de-a doua cofetărie în Târgu Mureș, pe Bd. Pandurilor 114-116, extinzând prezența noastră în oraș pentru a fi și mai aproape de clienții noștri fideli.',
+        'We opened our second pastry shop in Târgu Mureș, at Bd. Pandurilor 114-116, expanding our presence to be even closer to our loyal customers.',
+        'Megnyitottuk második marosvásárhelyi cukrászdánkat, a Pandurilor 114-116. számú bulváron, terjeszkedve, hogy még közelebb kerüljünk hűséges ügyfeleinkhez.'
       ),
       image: 'https://assets.boosteat.com/images/c211/2024-04-11/202404111148323266617ce109cf5f/image.jpg'
     },
     {
       year: '2024',
-      title: pick('Noua Cofetărie din Bistrița 📍', 'New Shop in Bistrița 📍', 'Új üzlet Besztercén 📍'),
+      title: pick('Expansiune în Câmpia Turzii 📍', 'Expansion to Câmpia Turzii 📍', 'Terjeszkedés Aranyosgyéresen 📍'),
       desc: pick(
-        'Am deschis o nouă locație fermecătoare în inima Bistriței, pe Piața Mică nr. 19, aducând deliciile noastre premiate mai aproape de iubitorii de dulce din județ.',
-        'We opened a charming new location in the heart of Bistrița, at Piața Mică 19, bringing our award-winning treats closer to local dessert lovers.',
-        'Új, hangulatos helyszínt nyitottunk Beszterce szívében, a Kis Piac 19. szám alatt, közelebb hozva díjnyertes desszertjeinket a helyi édességkedvelőkhöz.'
+        'Am deschis o nouă locație în Câmpia Turzii, pe Str. 1 Decembrie 1918 nr. 3-5, aducând lingurițe de bunătate mai aproape de iubitorii de dulce din regiune.',
+        'We opened a new location in Câmpia Turzii, at Str. 1 Decembrie 1918 no. 3-5, bringing our sweet creations closer to dessert lovers in the region.',
+        'Új helyszínt nyitottunk Aranyosgyéresen, az 1918. december 1. utca 3-5. szám alatt, közelebb hozva édes finomságainkat a régió édességkedvelőihez.'
       ),
       image: 'https://assets.boosteat.com/images/c165/2024-04-11/202404111120092126617c769f16c4/image.jpg'
     },
@@ -86,8 +86,8 @@ export default function AboutUs() {
       year: 'Prezent',
       title: pick('Laboratorul Nostru Premium 🧑‍🍳', 'Our Premium Laboratory 🧑‍🍳', 'Prémium laborunk 🧑‍🍳'),
       desc: pick(
-        'Astăzi operăm un laborator modern de 200 mp unde lucrează 10 angajați calificați, cu o capacitate de producție certificată DSV de 200 de cheesecake-uri/zi. Deservim 3 locații proprii și peste 15 restaurante partenere de renume.',
-        'Today we operate a modern 200 sqm laboratory with 10 skilled staff members and a DSV-certified capacity of 200 cheesecakes per day, serving our 3 shops and over 15 partner restaurants.',
+        'Astăzi operăm un laborator modern de 200 mp unde lucrează 10 angajați calificați, cu o capacitate de producție de 200 produse/zi. Deservim 3 locații proprii în Târgu Mureș și Câmpia Turzii, alături de parteneriate cu restaurante de renume.',
+        'Today we operate a modern 200 sqm laboratory with 10 skilled staff members and a production capacity of 200 products per day, serving our 3 locations in Târgu Mureș and Câmpia Turzii and partner restaurants.',
         'Ma egy modern, 200 négyzetméteres laboratóriumot működtetünk 10 képzett munkatárssal és napi 200 sajttorta DSV-tanúsított kapacitással. 3 saját üzletet és több mint 15 partneréttermet szolgálunk ki.'
       ),
       image: 'https://assets.boosteat.com/images/c165/2024-07-09/20240709102004212668d0ed471f47/image.png'
@@ -122,9 +122,9 @@ export default function AboutUs() {
             <h3>{pick('Misiunea Noastră', 'Our Mission', 'Küldetésünk')}</h3>
             <p>
               {pick(
-                'Misiunea noastră este să propunem diversitate în simplitate prin varietatea de arome, texturi și gusturi cu care se identifică cheesecake-ul. Ne dorim ca The Cheesecake House să ofere tuturor dorința de aprofundare a bucuriei prin lucruri simple, aparent mărunte, însă cu potențial mare de transformare.',
-                'Our mission is to offer diversity in simplicity through the variety of flavors, textures, and tastes that identify our cheesecake. We want The Cheesecake House to inspire everyone to find joy in simple things.',
-                'Küldetésünk, hogy az egyszerűségben rejlő sokszínűséget mutassuk meg a sajttorta ízein, textúráin és karakterén keresztül. Azt szeretnénk, hogy a The Cheesecake House mindenkit arra inspiráljon, hogy az egyszerű dolgokban találja meg az örömöt.'
+                'Misiunea noastră este să propunem diversitate în simplitate prin varietatea de arome, texturi și gusturi cu care se identifică produsele noastre artizanale. Ne dorim ca Laborator Emanuela să ofere tuturor dorința de aprofundare a bucuriei prin lucruri simple, aparent mărunte, însă cu potențial mare de transformare.',
+                'Our mission is to offer diversity in simplicity through the variety of flavors, textures, and tastes that identify our artisan pastries. We want Laborator Emanuela to inspire everyone to find joy in simple things.',
+                'Küldetésünk, hogy az egyszerűségben rejlő sokszínűséget mutassuk meg kézműves süteményeink ízein, textúráin és karakterén keresztül. Azt szeretnénk, hogy a Laborator Emanuela mindenkit arra inspiráljon, hogy az egyszerű dolgokban találja meg az örömöt.'
               )}
             </p>
             <p>
@@ -162,7 +162,7 @@ export default function AboutUs() {
         <div className="about-timeline-section">
           <h2 className="timeline-section-title text-center">{pick('Cronologia Reușitelor Noastre', 'Our Achievements Timeline', 'Eredményeink idővonala')}</h2>
           <p className="timeline-subtitle text-center">
-            {pick('Parcursul nostru de la prima încercare acasă până la recunoașterea regală', 'Our journey from the first recipe at home to official royal recognition', 'Utunk az első otthoni recepttől a királyi elismerésig')}
+            {pick('Parcursul nostru de la prima rețetă perfecționată acasă până la laboratorul artizanal de astăzi', 'Our journey from the first home-perfected recipe to today\'s artisan laboratory', 'Utunk az első otthon tökéletesített recepttől a mai kézműves laboratóriumig')}
           </p>
           
           <div className="timeline-container">
@@ -202,17 +202,13 @@ export default function AboutUs() {
           </p>
           <div className="achievements-seals-row">
             <div className="seal-card">
-              <img 
-                src="https://assets.boosteat.com/images/c165/2024-07-08/20240708103119212668bbff7af981/image.png" 
-                alt="Furnizor al Casei Regale a României" 
-                className="seal-img"
-              />
+              <div className="seal-img" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '48px', background: 'var(--color-gold-muted)', borderRadius: '12px', width: '80px', height: '80px' }}>🏅</div>
               <div className="seal-info">
-                <h4>{pick('Furnizor Oficial al Casei Regale', 'Official Supplier of the Royal House', 'A Királyi Ház hivatalos beszállítója')}</h4>
+                <h4>{pick('Producător Artizanal Certificat', 'Certified Artisan Producer', 'Tanúsított kézműves termelő')}</h4>
                 <p>{pick(
-                  'Prelungit în 2023 pentru încă 3 ani. Suntem singurul furnizor pe partea de cofetărie al Casei Regale a României.',
-                  'Renewed in 2023 for 3 more years. We are the sole official confectionery provider of the Romanian Royal Family.',
-                  '2023-ban további 3 évre meghosszabbítva. Mi vagyunk a Román Királyi Család egyetlen hivatalos cukrászati beszállítója.'
+                  'Laborator Emanuela produce exclusiv artizanal, folosind ingrediente naturale selectate cu grijă în fiecare produs.',
+                  'Laborator Emanuela produces exclusively artisan goods, using carefully selected natural ingredients in every product.',
+                  'A Laborator Emanuela kizárólag kézműves termékeket gyárt, gondosan válogatott természetes alapanyagok felhasználásával.'
                 )}</p>
               </div>
             </div>
@@ -240,7 +236,7 @@ export default function AboutUs() {
           <div className="stat-card-glow">
             <span className="stat-num">3</span>
             <span className="stat-label">{pick('Locații Fizice', 'Physical Shops', 'Fizikai üzletek')}</span>
-            <span className="stat-sub">Tg. Mureș, Cluj, Bistrița</span>
+            <span className="stat-sub">Tg. Mureș, Câmpia Turzii</span>
           </div>
           <div className="stat-card-glow">
             <span className="stat-num">200m²</span>
@@ -249,7 +245,7 @@ export default function AboutUs() {
           </div>
           <div className="stat-card-glow">
             <span className="stat-num">200+</span>
-            <span className="stat-label">{pick('Cheesecake-uri / zi', 'Cakes / Day', 'Sajttorta / nap')}</span>
+            <span className="stat-label">{pick('Torturi / zi', 'Cakes / Day', 'Torta / nap')}</span>
             <span className="stat-sub">{pick('Capacitate DSV', 'DSV-certified capacity', 'DSV tanúsított kapacitás')}</span>
           </div>
           <div className="stat-card-glow">

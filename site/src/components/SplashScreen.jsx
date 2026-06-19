@@ -2,8 +2,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { useApp } from '../context/AppContext';
 import './SplashScreen.css';
 
-const LOGO =
-  'https://assets.boosteat.com/images/c165/2023-03-21/20230321093311212641979d71009f/logo.png';
+const LOGO = '/images/logo-emanuela.webp';
 
 const prefersReducedMotion = () =>
   typeof window !== 'undefined' &&
@@ -14,7 +13,7 @@ const prefersReducedMotion = () =>
  * Premium intro splash. Timeline:
  *  - 0.0s  logo fades + scales into the centre of the screen
  *  - ~2.8s the lockup expands: the logo glides left while the
- *          "THE CHEESECAKE HOUSE" wordmark reveals to its right
+ *          "LABORATOR EMANUELA" wordmark reveals to its right
  *  - ~4.4s the whole splash fades up and out
  *  - ~5.0s onDone() hands control back to the app
  *
@@ -75,7 +74,7 @@ export default function SplashScreen({ onDone }) {
     <div
       className={`cch-splash ${phase}`}
       role="dialog"
-      aria-label="The Cheesecake House"
+      aria-label="Laborator Emanuela"
       onClick={skip}
     >
       <div className="cch-splash-bg" aria-hidden="true" />
@@ -85,14 +84,14 @@ export default function SplashScreen({ onDone }) {
           <div className="cch-splash-logo-wrap">
             <img
               src={LOGO}
-              alt="The Cheesecake House"
+              alt="Laborator Emanuela"
               className="cch-splash-logo"
               draggable="false"
             />
           </div>
           <div className="cch-brand-wordmark">
-            <span className="cch-brand-name">THE CHEESECAKE HOUSE</span>
-            <span className="cch-brand-tagline">Premium Craft Cakes</span>
+            <span className="cch-brand-name">LABORATOR EMANUELA</span>
+            <span className="cch-brand-tagline">Lingurițe de bunătate</span>
             <span className="cch-brand-underline" aria-hidden="true" />
           </div>
         </div>

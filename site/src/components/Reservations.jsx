@@ -246,7 +246,7 @@ export default function Reservations() {
                 <span className="success-badge-icon">🎉</span>
                 <h3>{t('reservationsSuccessTitle')}</h3>
                 <p className="success-summary">
-                  {`${t('reservationsSuccessSummaryPrefix')} ${activeLocation ? activeLocation.name.replace('The Cheesecake House ', '') : ''} ${t('reservationsSuccessSummaryMiddle')} ${formDate} ${t('reservationsSuccessSummaryAt')} ${formTime}.`}
+                  {`${t('reservationsSuccessSummaryPrefix')} ${activeLocation ? activeLocation.name.replace('Laborator Emanuela ', '') : ''} ${t('reservationsSuccessSummaryMiddle')} ${formDate} ${t('reservationsSuccessSummaryAt')} ${formTime}.`}
                 </p>
                 {selectedTableObj && (
                   <p className="success-table-summary">

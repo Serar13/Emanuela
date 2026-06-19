@@ -44,13 +44,11 @@ export default function Home() {
   const getHeroImage = (storeId) => {
     switch (storeId) {
       case 'tg-mures':
-        return '/images/mures_hero_real.jpg';
-      case 'cluj-napoca':
-        return '/images/cluj_hero_real.jpg';
-      case 'bistrita':
-        return '/images/bistrita_hero_real.jpg';
+        return '/images/hero-birthday-wide.jpg';
+      case 'campia-turzii':
+        return '/images/hero-anniversary-wide.jpg';
       default:
-        return '/images/mures_hero_real.jpg';
+        return '/images/hero-events-wide.jpeg';
     }
   };
 
@@ -73,7 +71,7 @@ export default function Home() {
                 aria-haspopup="listbox"
                 aria-expanded={locationMenuOpen}
               >
-                <span>📍 {selectedStore?.name.replace('The Cheesecake House ', '') || t('heroLocationChoose')}</span>
+                <span>📍 {selectedStore?.name.replace('Laborator Emanuela ', '') || t('heroLocationChoose')}</span>
                 <span className="hero-location-arrow" aria-hidden="true">{locationMenuOpen ? '▲' : '▼'}</span>
               </button>
 
@@ -93,7 +91,7 @@ export default function Home() {
                         setLocationMenuOpen(false);
                       }}
                     >
-                      <strong>{store.name.replace('The Cheesecake House ', '')}</strong>
+                      <strong>{store.name.replace('Laborator Emanuela ', '')}</strong>
                       {store.address && <span>{store.address.split(',')[0]}</span>}
                     </button>
                   ))}
@@ -101,7 +99,7 @@ export default function Home() {
               )}
             </div>
           </div>
-          <h1 className="hero-title">The Cheesecake House</h1>
+          <h1 className="hero-title">Laborator Emanuela</h1>
           <p className="hero-subtitle">{t('heroSubtitle')}</p>
           <div className="hero-actions-row">
             <Link to="/meniu" className="hero-btn-primary">{t('heroBtnMenu')}</Link>
@@ -143,10 +141,11 @@ export default function Home() {
         <div className="teaser-container">
           <div className="about-teaser-split">
             <div className="about-teaser-img-col">
-              <img 
-                src="https://assets.boosteat.com/images/c165/2024-07-08/20240708103119212668bbff7af981/image.png" 
-                alt="Furnizor al Casei Regale" 
-                className="about-teaser-seal"
+              <img
+                src="/images/cake-citrus.jpg"
+                alt="Tort citrice Laborator Emanuela"
+                className="about-teaser-img-rounded"
+                style={{ width: '100%', borderRadius: '20px', boxShadow: '0 8px 32px rgba(0,0,0,0.07)', maxHeight: '320px', objectFit: 'cover' }}
               />
             </div>
             <div className="about-teaser-text-col text-left">
@@ -172,9 +171,9 @@ export default function Home() {
               <Link to="/candy-bar" className="teaser-btn">{t('homeCandyCta')}</Link>
             </div>
             <div className="candybar-teaser-img-col">
-              <img 
-                src="/images/cheesecake_jar.png" 
-                alt="Candy Bar preview" 
+              <img
+                src="/images/candy-bar-category.jpg"
+                alt="Candy Bar Laborator Emanuela"
                 className="candybar-teaser-img"
               />
             </div>
@@ -187,9 +186,9 @@ export default function Home() {
         <div className="teaser-container">
           <div className="about-teaser-split">
             <div className="about-teaser-img-col">
-              <img 
-                src="https://assets.boosteat.com/images/c165/2024-04-11/202404111109122126617c4d828492/image.jpg" 
-                alt={t('homeReservationsImageAlt')} 
+              <img
+                src="/images/hero-events-mobile.jpg"
+                alt={t('homeReservationsImageAlt')}
                 className="about-teaser-img-rounded"
                 style={{ width: '100%', borderRadius: '20px', boxShadow: '0 8px 32px rgba(0,0,0,0.05)', maxHeight: '300px', objectFit: 'cover' }}
               />
@@ -240,8 +239,7 @@ export default function Home() {
 
           <div className="cities-pills-row">
             <span className="city-pill">Târgu Mureș</span>
-            <span className="city-pill">Cluj-Napoca</span>
-            <span className="city-pill">Bistrița</span>
+            <span className="city-pill">Câmpia Turzii</span>
           </div>
 
           <div className="teaser-cta-row">

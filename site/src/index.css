@@ -1,27 +1,35 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
 
 :root {
-  /* Color Palette Specs - Premium Light Creamy Theme */
-  --color-gold: #c4a178;
-  --color-gold-hover: #b08d64;
-  --color-gold-muted: rgba(196, 161, 120, 0.12);
-  
-  --color-bg-light: #fefdfb;
-  --color-bg-dark: #fefdfb; /* Set dark to light to avoid dark mode overrides */
-  
+  /* Laborator Emanuela — Design Tokens */
+  --color-raspberry: #E92D79;
+  --color-champagne: #F2BF78;
+  --color-plum: #862875;
+  --color-ivory: #FFF8F2;
+  --color-blush: #F9E4E7;
+  --color-ink: #241A1C;
+
+  /* Primary action color = raspberry */
+  --color-gold: #E92D79;
+  --color-gold-hover: #c42268;
+  --color-gold-muted: rgba(233, 45, 121, 0.10);
+
+  --color-bg-light: #FFF8F2;
+  --color-bg-dark: #FFF8F2;
+
   --color-card-bg-light: #ffffff;
   --color-card-bg-dark: #ffffff;
-  
-  --color-text-light: #2d241c;
-  --color-text-dark: #2d241c;
-  
-  --color-text-muted-light: #7c7063;
-  --color-text-muted-dark: #7c7063;
-  
-  --color-border-light: #f1eae0;
-  --color-border-dark: #f1eae0;
-  
-  --color-accent-gold: #c4a178;
+
+  --color-text-light: #241A1C;
+  --color-text-dark: #241A1C;
+
+  --color-text-muted-light: #7c6060;
+  --color-text-muted-dark: #7c6060;
+
+  --color-border-light: #f0e0e8;
+  --color-border-dark: #f0e0e8;
+
+  --color-accent-gold: #F2BF78;
   
   /* Standard custom properties */
   --color-bg: var(--color-bg-light);
@@ -55,12 +63,12 @@
 
 /* Dark theme variables override */
 :root.dark-theme {
-  --color-bg-light: #12100e;
-  --color-card-bg-light: #1b1713;
-  --color-text-light: #f6f2ee;
-  --color-text-muted-light: #aaa093;
-  --color-border-light: #2d241c;
-  --color-gold-muted: rgba(196, 161, 120, 0.15);
+  --color-bg-light: #1a0e12;
+  --color-card-bg-light: #251318;
+  --color-text-light: #f6f0f2;
+  --color-text-muted-light: #b09099;
+  --color-border-light: #3d1e28;
+  --color-gold-muted: rgba(233, 45, 121, 0.15);
   
   --color-bg: var(--color-bg-light);
   --color-card-bg: var(--color-card-bg-light);
@@ -146,7 +154,7 @@ button {
     box-shadow: 0 0 5px var(--color-gold-muted);
   }
   50% {
-    box-shadow: 0 0 15px rgba(196, 161, 120, 0.3);
+    box-shadow: 0 0 15px rgba(233, 45, 121, 0.25);
   }
   100% {
     box-shadow: 0 0 5px var(--color-gold-muted);

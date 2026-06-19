@@ -90,12 +90,12 @@ export default function Header() {
         {/* Center: Brand Logo & Name */}
         <div className="brand-logo-area">
           <Link to="/" className="logo-link">
-            <img 
-              src="https://assets.boosteat.com/images/c165/2023-03-21/20230321093311212641979d71009f/logo.png" 
-              alt="The Cheesecake House Logo" 
+            <img
+              src="/images/logo-emanuela.webp"
+              alt="Laborator Emanuela"
               className="logo-img"
             />
-            <span className="brand-title">THE CHEESECAKE HOUSE</span>
+            <span className="brand-title">LABORATOR EMANUELA</span>
           </Link>
         </div>
 

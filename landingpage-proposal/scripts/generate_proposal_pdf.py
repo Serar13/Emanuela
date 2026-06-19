@@ -21,19 +21,19 @@ from reportlab.platypus import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = ROOT / "public" / "cheesecake-house-propunere.pdf"
+OUTPUT = ROOT / "public" / "emanuela-propunere.pdf"
 APP_SCREEN = ROOT / "public" / "proposal-screens" / "app-menu.jpeg"
 ADMIN_SCREEN = ROOT / "public" / "proposal-screens" / "webadmin-dashboard.png"
 SITE_SCREEN = ROOT / "public" / "proposal-screens" / "site-home.png"
 FONT_REGULAR = Path("/System/Library/Fonts/Supplemental/Arial.ttf")
 FONT_BOLD = Path("/System/Library/Fonts/Supplemental/Arial Bold.ttf")
 
-PRIMARY = colors.HexColor("#caa472")
-PRIMARY_DARK = colors.HexColor("#8f6a3e")
-INK = colors.HexColor("#20150f")
-MUTED = colors.HexColor("#675d56")
-LINE = colors.HexColor("#e7dccf")
-SOFT = colors.HexColor("#f7f1ea")
+PRIMARY = colors.HexColor("#E92D79")
+PRIMARY_DARK = colors.HexColor("#862875")
+INK = colors.HexColor("#241A1C")
+MUTED = colors.HexColor("#6b5050")
+LINE = colors.HexColor("#f0e0e8")
+SOFT = colors.HexColor("#FFF8F2")
 WHITE = colors.HexColor("#ffffff")
 GREEN = colors.HexColor("#0f9d58")
 RED = colors.HexColor("#b34b3a")
@@ -166,7 +166,7 @@ def cover_block(styles):
     story = []
     story.append(Paragraph("Propunere de Parteneriat Digital", styles["title"]))
     story.append(Spacer(1, 2 * mm))
-    story.append(Paragraph("The Cheesecake House", styles["subtitle"]))
+    story.append(Paragraph("Laborator Emanuela", styles["subtitle"]))
     story.append(Spacer(1, 5 * mm))
     story.append(
         Paragraph(
@@ -411,7 +411,7 @@ def add_page_number(canvas, doc):
     canvas.setFont(footer_font, 9)
     canvas.setFillColor(MUTED)
     canvas.drawRightString(196 * mm, 9 * mm, f"Pagina {doc.page}")
-    canvas.drawString(14 * mm, 9 * mm, "Propunere comercială · The Cheesecake House")
+    canvas.drawString(14 * mm, 9 * mm, "Propunere comercială · Laborator Emanuela")
     canvas.restoreState()
 
 
@@ -564,7 +564,7 @@ def build_story(styles):
         )
     )
 
-    story.extend(section_title("7. Ce cumpără efectiv The Cheesecake House", styles))
+    story.extend(section_title("7. Ce cumpără efectiv Laborator Emanuela", styles))
     story.extend(
         bullet_list(
             [
@@ -596,7 +596,7 @@ def build_story(styles):
     story.append(Spacer(1, 8 * mm))
     story.append(
         Paragraph(
-            "Document confidențial pregătit pentru The Cheesecake House. Toate valorile sunt exprimate în EUR și pot fi confirmate în forma finală de colaborare.",
+            "Document confidențial pregătit pentru Laborator Emanuela. Toate valorile sunt exprimate în EUR și pot fi confirmate în forma finală de colaborare.",
             styles["meta"],
         )
     )
@@ -614,7 +614,7 @@ def main():
         rightMargin=14 * mm,
         topMargin=14 * mm,
         bottomMargin=16 * mm,
-        title="Propunere The Cheesecake House",
+        title="Propunere Laborator Emanuela",
         author="Codex",
     )
     story = build_story(styles)

@@ -478,7 +478,7 @@ Buget estimat: aprox. ${totalCostEstimate} RON.`
                 <span className="success-icon">🎉</span>
                 <h4>{pick('Solicitare Trimisă cu Succes!', 'Quote Request Sent Successfully!', 'Az ajánlatkérés sikeresen elküldve!')}</h4>
                 <p>
-                  {pick('Îți mulțumim pentru interes! Un consultant The Cheesecake House te va contacta telefonic sau prin e-mail în maxim 24 de ore.', 'Thank you! A Cheesecake House event specialist will contact you via phone or email within 24 hours.', 'Köszönjük az érdeklődést! A The Cheesecake House egyik tanácsadója 24 órán belül telefonon vagy emailben felveszi veled a kapcsolatot.')}
+                  {pick('Îți mulțumim pentru interes! Un consultant Laborator Emanuela te va contacta telefonic sau prin e-mail în maxim 24 de ore.', 'Thank you! A Laborator Emanuela event specialist will contact you via phone or email within 24 hours.', 'Köszönjük az érdeklődést! A Laborator Emanuela egyik tanácsadója 24 órán belül telefonon vagy emailben felveszi veled a kapcsolatot.')}
                 </p>
                 <button className="reset-btn" onClick={() => setFormSuccess(false)}>
                   {pick('Trimite o altă solicitare', 'Send another request', 'Küldj másik kérést')}

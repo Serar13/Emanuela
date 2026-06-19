@@ -15,59 +15,25 @@ export default function Footer() {
           {/* Brand Col */}
           <div className="footer-brand-col">
             <div className="footer-brand-header">
-              <img 
-                src="https://assets.boosteat.com/images/c165/2023-03-21/20230321093311212641979d71009f/logo.png" 
-                alt="The Cheesecake House Logo" 
+              <img
+                src="/images/logo-emanuela.webp"
+                alt="Laborator Emanuela"
                 className="footer-logo-img"
               />
               <div className="footer-brand-text">
-                <h4>THE CHEESECAKE HOUSE</h4>
+                <h4>LABORATOR EMANUELA</h4>
                 <span className="footer-brand-motto">{t('footerMotto')}</span>
               </div>
             </div>
             <p className="footer-description">{t('footerBrandDesc')}</p>
 
-            
-            {/* Social icons - Using official SVG assets */}
+            {/* Social icons */}
             <div className="social-links-container">
-              <a href="https://www.facebook.com/thecheesecakehousetgm" target="_blank" rel="noopener noreferrer" className="social-icon-btn" aria-label="Facebook">
-                <img 
-                  src="https://assets.boosteat.com/shop-images/be-icons/social/social-icon-facebook-black.svg" 
-                  alt="Facebook" 
-                  className="social-icon-img" 
-                />
+              <a href="https://www.facebook.com/laboratoremanuela/" target="_blank" rel="noopener noreferrer" className="social-icon-btn" aria-label="Facebook">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
               </a>
-              <a href="https://www.instagram.com/cheesecakehouse.ro/" target="_blank" rel="noopener noreferrer" className="social-icon-btn" aria-label="Instagram">
-                <img 
-                  src="https://assets.boosteat.com/shop-images/be-icons/social/social-icon-instagram-black.svg" 
-                  alt="Instagram" 
-                  className="social-icon-img" 
-                />
-              </a>
-              <a href="https://www.tiktok.com/@thecheesecakehous5" target="_blank" rel="noopener noreferrer" className="social-icon-btn" aria-label="TikTok">
-                <img 
-                  src="https://assets.boosteat.com/shop-images/be-icons/social/tiktok-black.svg" 
-                  alt="TikTok" 
-                  className="social-icon-img" 
-                />
-              </a>
-            </div>
-
-            {/* ANPC Badges Section (Relocated) */}
-            <div className="footer-brand-anpc">
-              <a href="https://anpc.ro/ce-este-sal/" target="_blank" rel="noopener noreferrer" className="anpc-badge-link">
-                <img 
-                  src="https://assets.boosteat.com/shop-images/legal/anpc-sal.webp" 
-                  alt="ANPC SAL" 
-                  className="anpc-badge-img" 
-                />
-              </a>
-              <a href="https://ec.europa.eu/consumers/odr/main/index.cfm?event=main.home2.show&lng=RO" target="_blank" rel="noopener noreferrer" className="anpc-badge-link">
-                <img 
-                  src="https://assets.boosteat.com/shop-images/legal/anpc-sol.webp" 
-                  alt="ANPC SOL" 
-                  className="anpc-badge-img" 
-                />
+              <a href="https://www.instagram.com/laboratoremanuela/" target="_blank" rel="noopener noreferrer" className="social-icon-btn" aria-label="Instagram">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
               </a>
             </div>
           </div>
@@ -95,18 +61,24 @@ export default function Footer() {
             <h4>{t('footerInfoTitle')}</h4>
             <div className="footer-schedule-grid">
               <div className="schedule-item">
-                <span className="schedule-city">📍 Tg. Mureș</span>
-                <span className="schedule-hours">{t('footerMonSun')}: 10:00 - 19:30</span>
+                <span className="schedule-city">📍 Tg. Mureș — Str. Ciucului 12</span>
+                <span className="schedule-hours">{t('footerMonSat')}: 08:00–20:00</span>
+                <span className="schedule-hours">{t('footerSun')}: 10:00–16:00</span>
               </div>
               <div className="schedule-item">
-                <span className="schedule-city">📍 Cluj-Napoca</span>
-                <span className="schedule-hours">{t('footerMonSun')}: 10:00 - 21:00</span>
+                <span className="schedule-city">📍 Tg. Mureș — Bd. Pandurilor 114-116</span>
+                <span className="schedule-hours">{t('footerMonSat')}: 08:00–20:00</span>
+                <span className="schedule-hours">{t('footerSun')}: 10:00–16:00</span>
               </div>
               <div className="schedule-item">
-                <span className="schedule-city">📍 Bistrița</span>
-                <span className="schedule-hours">{t('footerMonSun')}: 10:00 - 20:00</span>
+                <span className="schedule-city">📍 Câmpia Turzii — Str. 1 Decembrie 3-5</span>
+                <span className="schedule-hours">{t('footerMonSat')}: 08:00–20:00</span>
+                <span className="schedule-hours">{t('footerSun')}: 10:00–16:00</span>
               </div>
             </div>
+            <p className="footer-phone-events" style={{ marginTop: '16px', fontSize: '14px' }}>
+              📞 {t('footerEventsPhone')}: <strong>0755 047 191</strong>
+            </p>
           </div>
 
           {/* Mobile App Promotion Column */}
@@ -115,7 +87,7 @@ export default function Footer() {
             <p className="footer-app-desc">{t('footerAppDesc')}</p>
             <div className="footer-app-buttons">
               <a 
-                href="https://apps.apple.com/ro/app/the-cheesecake-house" 
+                href="https://apps.apple.com/ro/app/laborator-emanuela"
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="app-badge-btn"
@@ -130,7 +102,7 @@ export default function Footer() {
                 </div>
               </a>
               <a 
-                href="https://play.google.com/store/apps/details?id=ro.cheesecakehouse.app" 
+                href="https://play.google.com/store/apps/details?id=ro.laboratoremanuela.app"
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="app-badge-btn"
@@ -148,22 +120,10 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Seals Bottom Section */}
+        {/* Bottom Section */}
         <div className="footer-seals-bottom-section">
-          <div className="footer-seals-row-centered">
-            <img 
-              src="https://assets.boosteat.com/images/c165/2024-07-08/20240708103119212668bbff7af981/image.png" 
-              alt="Furnizor al Casei Regale a României" 
-              className="footer-seal-img-bottom"
-            />
-            <img 
-              src="https://assets.boosteat.com/images/c165/2024-07-08/20240708103123212668bbffb2ba85/image.png" 
-              alt="Best Takeaway Food 2023 - Restaurant Guru" 
-              className="footer-seal-img-bottom"
-            />
-          </div>
           <p className="footer-copyright-centered">
-            © Copyright 2026 THE CHEESECAKE HOUSE S.R.L.
+            © Copyright 2026 LABORATOR EMANUELA — Toate drepturile rezervate.
           </p>
           <div className="footer-legal-links-inline">
             <a href="#privacy">{t('footerPrivacy')}</a>
@@ -172,9 +132,6 @@ export default function Footer() {
             <span className="inline-sep">•</span>
             <a href="#cookies">Cookies</a>
           </div>
-          <p className="footer-powered-by">
-            {t('footerPoweredBy')}
-          </p>
         </div>
 
       </div>

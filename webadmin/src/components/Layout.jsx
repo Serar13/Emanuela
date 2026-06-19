@@ -24,8 +24,8 @@ export default function Layout({ active, onNavigate, children }) {
         <div className="admin-brand">
           <span className="admin-logo">🍰</span>
           <div>
-            <h2>Cheesecake Admin</h2>
-            <span>Control Panel</span>
+            <h2>Laborator Emanuela</h2>
+            <span>Panou de Administrare</span>
           </div>
         </div>
 

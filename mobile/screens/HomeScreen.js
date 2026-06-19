@@ -100,7 +100,7 @@ export default function HomeScreen() {
 
   const categories = [
     { id: 'all', name: t('all') || 'Toate', icon: 'grid-outline' },
-    { id: 'cheesecake', name: 'Cheesecake', icon: 'pizza-outline' },
+    { id: 'torturi', name: 'Torturi', icon: 'pizza-outline' },
     { id: 'cafe', name: t('cafe') || 'Cafea', icon: 'cafe-outline' },
     { id: 'drinks', name: t('drinks') || 'Răcoritoare', icon: 'beer-outline' },
     { id: 'secret', name: t('secretMenu') || 'Meniu Secret 🤫', icon: 'key-outline' }

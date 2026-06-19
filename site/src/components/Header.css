@@ -3,7 +3,7 @@
   top: 0;
   z-index: 1000;
   width: 100%;
-  border-bottom: 1px solid rgba(196, 161, 120, 0.12); /* Delicate gold-tinted bottom border */
+  border-bottom: 1px solid rgba(233, 45, 121, 0.12); /* Delicate raspberry-tinted bottom border */
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.02);
@@ -37,7 +37,7 @@
   }
   
   background-color: var(--header-bg-scrolled);
-  border-bottom: 1px solid rgba(196, 161, 120, 0.22);
+  border-bottom: 1px solid rgba(233, 45, 121, 0.22);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
@@ -376,7 +376,7 @@
   font-size: 13px;
   font-weight: 600;
   position: relative;
-  box-shadow: 0 4px 10px rgba(196, 161, 120, 0.3);
+  box-shadow: 0 4px 10px rgba(233, 45, 121, 0.3);
 }
 
 .cart-trigger-btn:hover {

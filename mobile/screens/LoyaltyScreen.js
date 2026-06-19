@@ -83,7 +83,7 @@ export default function LoyaltyScreen() {
       {/* Stamp Card Header */}
       <View style={styles.cardContainer}>
         <View style={styles.cardHeader}>
-          <Text style={styles.cardTitle}>Cheesecake Loyalty Card</Text>
+          <Text style={styles.cardTitle}>Emanuela Loyalty Card</Text>
           <Ionicons name="ribbon" size={24} color={colors.gold} />
         </View>
         <Text style={styles.cardSubtitle}>{t('stampNotice')}</Text>

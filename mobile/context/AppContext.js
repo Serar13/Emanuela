@@ -81,25 +81,27 @@ const AppContext = createContext();
 
 export const THEME_COLORS = {
   light: {
-    bg: '#fefdfb',
+    bg: '#FFF8F2',
     cardBg: '#ffffff',
-    text: '#2d241c',
-    textMuted: '#7c7063',
-    border: '#f1eae0',
-    gold: '#c4a178',
-    goldMuted: 'rgba(196, 161, 120, 0.1)',
-    inputBg: '#f6f2ee',
+    text: '#241A1C',
+    textMuted: '#7c6060',
+    border: '#f0e0e8',
+    gold: '#E92D79',
+    goldMuted: 'rgba(233, 45, 121, 0.10)',
+    champagne: '#F2BF78',
+    inputBg: '#fdf0f4',
     statusBar: 'dark-content'
   },
   dark: {
-    bg: '#12100e',
-    cardBg: '#1b1713',
-    text: '#f6f2ee',
-    textMuted: '#aaa093',
-    border: '#2d241c',
-    gold: '#c4a178',
-    goldMuted: 'rgba(196, 161, 120, 0.15)',
-    inputBg: '#2d241c',
+    bg: '#1a0e12',
+    cardBg: '#251318',
+    text: '#f6f0f2',
+    textMuted: '#b09099',
+    border: '#3d1e28',
+    gold: '#E92D79',
+    goldMuted: 'rgba(233, 45, 121, 0.15)',
+    champagne: '#F2BF78',
+    inputBg: '#3d1e28',
     statusBar: 'light-content'
   }
 };
@@ -108,7 +110,7 @@ const TRANSLATIONS = {
   ro: {
     menu: "Meniu",
     aboutUsTitle: "Despre Noi",
-    aboutUsText: "Din căutarea simplităţii şi a micilor plăceri a luat naştere în 2017 conceptul The Cheesecake House. De la prima reţetă perfecţionată în bucătăria de acasă, am dezvoltat peste 60 de sortimente unice, coapte cu drag în laboratorul nostru.\n\nSuntem mândri să fim singurii Furnizori Oficiali pe partea de cofetărie ai Casei Regale a României, titlu acordat de MS Majestatea Sa Margareta, Custodele Coroanei.\n\nMisiunea noastră este să propunem diversitate în simplitate prin texturi, gusturi şi arome deosebite. Motto-ul nostru este: 'Find joy in the simple!'",
+    aboutUsText: "Laborator Emanuela s-a născut din dragostea pentru detaliu și pasiunea pentru prăjiturelele bine făcute. De la torturi elaborate pentru nunți și botezuri, până la prăjiturelele fine la pahar — fiecare comandă este pregătită cu grijă în laboratorul nostru din Târgu Mureș.\n\nNu facem compromisuri cu ingredientele: frișcă proaspătă, ciocolată de calitate și fructe naturale în fiecare produs.\n\nMotto-ul nostru: 'Lingurițe de bunătate!'",
     loyalty: "Fidelitate",
     reservations: "Rezervări",
     profile: "Profil",
@@ -147,11 +149,11 @@ const TRANSLATIONS = {
     topUpSuccess: "Alimentare Reușită",
     error: "Eroare",
     pleaseFillFields: "Vă rugăm să completați toate câmpurile.",
-    welcomeFamily: "Bine ai venit în familia The Cheesecake House!",
-    stampNotice: "Cumpără 9 felii și a 10-a este GRATUITĂ!",
+    welcomeFamily: "Bine ai venit în familia Laborator Emanuela!",
+    stampNotice: "Cumpără 9 produse și al 10-lea este GRATUIT!",
     themeMode: "Mod Întunecat",
     darkMode: "Mod Întunecat",
-    stampsLeftText: "felii până la următorul cheesecake cadou!",
+    stampsLeftText: "produse până la următoarea prăjitură cadou!",
     chooseLocation: "Alege Locația:",
     chooseDay: "Alege Ziua:",
     timeSlot: "Interval Orar:",
@@ -173,7 +175,7 @@ const TRANSLATIONS = {
     needAccountDesc: "Creează un cont sau conectează-te pentru a continua.",
     connectOrRegister: "Conectare / Cont nou",
     birthdayVoucherTitle: "Felie Cadou de Ziua Ta! 🎂",
-    birthdayVoucherDesc: "O felie din orice cheesecake din meniu, gratuită.",
+    birthdayVoucherDesc: "O prăjitură din orice sortiment din meniu, gratuită.",
     voucherScannedTitle: "Voucher scanat",
     voucherScannedDesc: "Voucherul tău pentru o felie gratuită de cheesecake a fost activat și trimis către scaner! Arată acest ecran ospătarului.",
     giftDescription: "Surprinde-ți prietenii cu un card valoric direct pe contul lor de client!",
@@ -182,7 +184,7 @@ const TRANSLATIONS = {
     connectingOrRegistering: "Autentifică-te pentru a plasa comanda",
     cconnect: "Conectare",
     cnew: "Cont nou",
-    loadingCakes: "Se încarcă sortimentele delicioase...",
+    loadingCakes: "Se încarcă bunătățile din laborator...",
     vipPointsLabel: "Puncte VIP",
     secretBadge: "Secret",
     addedToCart: "Adăugat în coș!",
@@ -203,7 +205,7 @@ const TRANSLATIONS = {
   en: {
     menu: "Menu",
     aboutUsTitle: "About Us",
-    aboutUsText: "Born in 2017 from the search of simplicity and life's little pleasures, The Cheesecake House started with a single recipe perfected at home. Today, we have created over 60 unique cheesecake flavors, baked with love in our own laboratory.\n\nWe are proud to be the Official Confectionery Supplier of the Royal House of Romania, a title awarded by Her Majesty Margareta, Custodian of the Romanian Crown.\n\nOur mission is to offer diversity in simplicity through refined textures and flavors. Our motto is: 'Find joy in the simple!'",
+    aboutUsText: "Born in 2017 from a passion for artisan pastry, Laborator Emanuela started with carefully perfected recipes and a dream of bringing quality sweets to Târgu Mureș. Today, we craft dozens of unique cakes and pastries, baked with love in our own laboratory.\n\nWe operate 3 locations across Târgu Mureș and Câmpia Turzii, serving both our shops and partner restaurants throughout Transylvania.\n\nOur mission is to offer diversity in simplicity through refined textures and flavors. Our motto is: 'Sweet spoonfuls of goodness!'",
     loyalty: "Loyalty",
     reservations: "Bookings",
     profile: "Profile",
@@ -242,7 +244,7 @@ const TRANSLATIONS = {
     topUpSuccess: "Top Up Successful",
     error: "Error",
     pleaseFillFields: "Please fill in all fields.",
-    welcomeFamily: "Welcome to The Cheesecake House family!",
+    welcomeFamily: "Welcome to the Laborator Emanuela family!",
     stampNotice: "Buy 9 slices and the 10th is FREE!",
     themeMode: "Dark Mode",
     darkMode: "Dark Mode",
@@ -298,7 +300,7 @@ const TRANSLATIONS = {
   hu: {
     menu: "Menü",
     aboutUsTitle: "Rólunk",
-    aboutUsText: "A The Cheesecake House koncepciója 2017-ben született meg, az egyszerűség és az élet apró örömeinek kereséséből. Az első, otthon tökéletesített recepttől kezdve mára több mint 60 egyedi sajttorta-változatot fejlesztettünk ki, amelyeket szeretettel sütünk saját laboratóriumunkban.\n\nBüszkék vagyunk arra, hogy a Román Királyi Ház hivatalos cukrászati beszállítói vagyunk, ezt a címet Margit Őfelsége, a román korona őre adományozta nekünk.\n\nKüldetésünk, hogy a kifinomult textúrák és ízek révén változatosságot kínáljunk az egyszerűségben. Mottónk: 'Találd meg az örömöt az egyszerűben!'",
+    aboutUsText: "A Laborator Emanuela 2017-ben született meg a kézműves cukrászat iránti szenvedélyből és a minőségi édességek Marosvásárhelyre hozásának vágyából. Gondosan tökéletesített receptekből kiindulva mára torták és sütemények széles választékát kínáljuk, szeretettel sütve saját laboratóriumunkban.\n\n3 helyszínen vagyunk jelen Marosvásárhelyen és Aranyosgyéresen, kiszolgálva saját üzleteinket és a transzilvániai partnerétteremhálózatunkat.\n\nKüldetésünk, hogy a kifinomult textúrák és ízek révén változatosságot kínáljunk az egyszerűségben. Mottónk: 'Édes kanalak a boldogságért!'",
     loyalty: "Hűség",
     reservations: "Foglalások",
     profile: "Profil",
@@ -337,7 +339,7 @@ const TRANSLATIONS = {
     topUpSuccess: "Sikeres Feltöltés",
     error: "Hiba",
     pleaseFillFields: "Kérjük, töltse ki az összes mezőt.",
-    welcomeFamily: "Üdvözöljük a The Cheesecake House családban!",
+    welcomeFamily: "Üdvözöljük a Laborator Emanuela családban!",
     stampNotice: "Vásároljon 9 szeletet, a 10. INGYENES!",
     themeMode: "Sötét Mód",
     darkMode: "Sötét Mód",
@@ -642,7 +644,7 @@ export const AppProvider = ({ children }) => {
       
       if (!email || !password) {
         const randomId = Math.floor(100000 + Math.random() * 900000);
-        email = `${providerName}.user.${randomId}@thecheesecakehouse.ro`;
+        email = `${providerName}.user.${randomId}@laboratoremanuela.ro`;
         password = `PassSocial${randomId}!`;
         
         await AsyncStorage.setItem(emailKey, email);
@@ -654,7 +656,7 @@ export const AppProvider = ({ children }) => {
       console.error("AsyncStorage error generating credentials:", err);
       const randomId = Math.floor(100000 + Math.random() * 900000);
       return {
-        email: `${providerName}.user.fallback.${randomId}@thecheesecakehouse.ro`,
+        email: `${providerName}.user.fallback.${randomId}@laboratoremanuela.ro`,
         password: `PassSocialFallback${randomId}!`
       };
     }

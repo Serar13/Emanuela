@@ -195,7 +195,7 @@ export default function ReservationsScreen() {
 
     Alert.alert(
       t('confirmReservationTitle'),
-      `Te așteptăm la The Cheesecake House ${location}!\n\nDetalii:\n${summaryText}`,
+      `Te așteptăm la Laborator Emanuela ${location}!\n\nDetalii:\n${summaryText}`,
       [{ text: 'OK' }]
     );
 

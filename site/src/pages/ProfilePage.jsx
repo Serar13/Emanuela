@@ -209,7 +209,7 @@ export default function ProfilePage() {
               <h3 className="profile-section-heading">{t('profileWalletTitle')}</h3>
               <div className="profile-wallet-display">
                 <div className="wallet-card-header">
-                  <span className="wallet-card-brand">THE CHEESECAKE HOUSE</span>
+                  <span className="wallet-card-brand">LABORATOR EMANUELA</span>
                   <span className="wallet-card-type">{t('profileWalletType')}</span>
                 </div>
                 <div className="wallet-card-balance">
