@@ -18,7 +18,7 @@ export default function SplashScreen() {
       <StatusBar barStyle="dark-content" backgroundColor="#FFF8F2" />
       <View style={styles.logoContainer}>
         <Image
-          source={{ uri: 'https://laboratoremanuela.ro/wp-content/uploads/2022/05/logo-web.webp' }}
+          source={require('../assets/logo-emanuela.webp')}
           style={styles.logo}
           resizeMode="contain"
         />

@@ -101,8 +101,8 @@ export default function AuthScreen({ reason, onClose }) {
         {/* Logo and Brand */}
         <View style={styles.brandContainer}>
           <Image 
-            source={{ uri: 'https://assets.boosteat.com/images/c165/2023-03-21/20230321093311212641979d71009f/logo.png' }} 
-            style={[styles.logo, { tintColor: colors.text }]}
+            source={require('../assets/logo-emanuela.webp')}
+            style={styles.logo}
             resizeMode="contain"
           />
           <Text style={[styles.title, { color: colors.text }]}>Laborator Emanuela</Text>

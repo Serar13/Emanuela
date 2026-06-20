@@ -280,7 +280,7 @@ export default function ProfileScreen() {
                 <Text style={styles.inputLabel}>{t('giftMessage')}</Text>
                 <TextInput 
                   style={[styles.inputField, styles.textArea]} 
-                  placeholder="La mulți ani! O felie din cheesecake-ul tău preferat!"
+                  placeholder="La mulți ani! O prăjitură din sortimentul tău preferat!"
                   placeholderTextColor={colors.textMuted}
                   multiline={true}
                   numberOfLines={3}

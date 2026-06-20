@@ -49,7 +49,7 @@ const mapProduct = (p) => ({
   desc: p.description || '',
   description: p.description || '',
   price: typeof p.price === 'number' ? p.price : Number(p.price) || 0,
-  category: p.categoryId || p.category || 'cheesecake',
+  category: p.categoryId || p.category || 'prajituri',
   categoryId: p.categoryId || '',
   unit: p.unit || '',
   weight: p.weight || '',
@@ -177,7 +177,7 @@ const TRANSLATIONS = {
     birthdayVoucherTitle: "Felie Cadou de Ziua Ta! 🎂",
     birthdayVoucherDesc: "O prăjitură din orice sortiment din meniu, gratuită.",
     voucherScannedTitle: "Voucher scanat",
-    voucherScannedDesc: "Voucherul tău pentru o felie gratuită de cheesecake a fost activat și trimis către scaner! Arată acest ecran ospătarului.",
+    voucherScannedDesc: "Voucherul tău pentru o prăjitură cadou a fost activat și trimis către scaner! Arată acest ecran personalului.",
     giftDescription: "Surprinde-ți prietenii cu un card valoric direct pe contul lor de client!",
     appSettings: "Setări Aplicație",
     emptyVouchers: "Nu ai alte vouchere active momentan.",
@@ -248,7 +248,7 @@ const TRANSLATIONS = {
     stampNotice: "Buy 9 slices and the 10th is FREE!",
     themeMode: "Dark Mode",
     darkMode: "Dark Mode",
-    stampsLeftText: "slices left until next free cheesecake!",
+    stampsLeftText: "products left until your next complimentary dessert!",
     chooseLocation: "Choose Location:",
     chooseDay: "Choose Day:",
     timeSlot: "Time Slot:",
@@ -270,9 +270,9 @@ const TRANSLATIONS = {
     needAccountDesc: "Create an account or log in to continue.",
     connectOrRegister: "Login / New Account",
     birthdayVoucherTitle: "Birthday Gift Slice! 🎂",
-    birthdayVoucherDesc: "A free slice of any cheesecake from the menu.",
+    birthdayVoucherDesc: "A complimentary dessert from the menu.",
     voucherScannedTitle: "Voucher Scanned",
-    voucherScannedDesc: "Your voucher for a free slice of cheesecake has been activated! Show this screen to the waiter.",
+    voucherScannedDesc: "Your complimentary dessert voucher has been activated! Show this screen to our staff.",
     giftDescription: "Surprise your friends with a gift card value directly to their account!",
     appSettings: "App Settings",
     emptyVouchers: "You have no other active vouchers at the moment.",
@@ -343,7 +343,7 @@ const TRANSLATIONS = {
     stampNotice: "Vásároljon 9 szeletet, a 10. INGYENES!",
     themeMode: "Sötét Mód",
     darkMode: "Sötét Mód",
-    stampsLeftText: "szelet maradt a következő ingyen cheesecake-ig!",
+    stampsLeftText: "termék van hátra a következő ajándék desszertig!",
     chooseLocation: "Válassz Helyszínt:",
     chooseDay: "Válassz Napot:",
     timeSlot: "Idősáv:",
@@ -636,8 +636,8 @@ export const AppProvider = ({ children }) => {
 
   const getOrCreateSocialCredentials = async (providerName) => {
     try {
-      const emailKey = `cheesecake_auth_${providerName}_email`;
-      const passKey = `cheesecake_auth_${providerName}_pass`;
+      const emailKey = `emanuela_auth_${providerName}_email`;
+      const passKey = `emanuela_auth_${providerName}_pass`;
       
       let email = await AsyncStorage.getItem(emailKey);
       let password = await AsyncStorage.getItem(passKey);

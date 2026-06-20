@@ -13,7 +13,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useApp } from '../context/AppContext';
 
-const FALLBACK_LOCATIONS = ['Cluj-Napoca', 'Bistrița', 'Târgu Mureș'];
+const FALLBACK_LOCATIONS = ['Târgu Mureș', 'Câmpia Turzii'];
 
 export default function HomeScreen() {
   const {

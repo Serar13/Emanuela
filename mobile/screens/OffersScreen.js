@@ -85,7 +85,7 @@ export default function OffersScreen() {
       
       <View style={styles.newsCard}>
         <Text style={styles.newsDate}>12 Iunie 2026</Text>
-        <Text style={styles.newsTitle}>Degustare specială de cireșe în Cluj-Napoca 🍒</Text>
+        <Text style={styles.newsTitle}>Degustare specială la Târgu Mureș 🍒</Text>
         <Text style={styles.newsDesc}>
           Te invităm vineri începând cu ora 18:00 la o degustare gratuită de rețete experimentale cu cireșe de sezon. Locuri limitate! Rezervă acum o masă din tab-ul Rezervări.
         </Text>
@@ -93,9 +93,9 @@ export default function OffersScreen() {
 
       <View style={styles.newsCard}>
         <Text style={styles.newsDate}>08 Iunie 2026</Text>
-        <Text style={styles.newsTitle}>Amenajare nouă la locația din Bistrița! 🌿</Text>
+        <Text style={styles.newsTitle}>Noutăți din laboratorul din Câmpia Turzii 🌿</Text>
         <Text style={styles.newsDesc}>
-          Am redecorat intrarea și terasa din Bistrița cu arcade florale noi! Te așteptăm să faci fotografii memorabile în timp ce te bucuri de cafeaua ta favorită.
+          Pregătim sortimente noi și candy bar-uri personalizate pentru evenimente. Descoperă noutățile direct în aplicație.
         </Text>
       </View>
 
@@ -128,7 +128,7 @@ export default function OffersScreen() {
                   />
                 ))}
               </View>
-              <Text style={styles.barcodeText}>* {activeOffer?.code || 'CHEESECAKE50'} *</Text>
+              <Text style={styles.barcodeText}>* {activeOffer?.code || 'EMANUELA50'} *</Text>
             </View>
 
             <TouchableOpacity style={styles.closeModalBtn} onPress={() => setActiveOffer(null)}>

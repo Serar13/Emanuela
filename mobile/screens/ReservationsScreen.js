@@ -13,13 +13,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { useApp } from '../context/AppContext';
 import { getTablesByLocation } from '../services/firestore';
 
-const FALLBACK_LOCATIONS = ['Cluj-Napoca', 'Bistrița', 'Târgu Mureș'];
+const FALLBACK_LOCATIONS = ['Târgu Mureș', 'Câmpia Turzii'];
 
 // Floor-plan assets kept locally (these visual plans are not in Firestore).
 const LAYOUT_IMAGES = {
-  'Cluj-Napoca': require('../assets/cluj_3d.png'),
-  'Bistrița': require('../assets/bistrita_3d.png'),
-  'Târgu Mureș': require('../assets/mures_3d.png')
+  'Târgu Mureș': require('../assets/mures_3d.png'),
+  'Câmpia Turzii': require('../assets/mures_3d.png')
 };
 
 // Map a date label to a YYYY-MM-DD string (used for conflict + persistence).
@@ -275,7 +274,7 @@ export default function ReservationsScreen() {
       <View style={styles.layoutCard}>
         <View style={styles.layoutImageContainer}>
           <Image 
-            source={LAYOUT_IMAGES[location] || LAYOUT_IMAGES['Cluj-Napoca']} 
+            source={LAYOUT_IMAGES[location] || LAYOUT_IMAGES['Târgu Mureș']}
             style={styles.layoutImage} 
             resizeMode="cover"
           />
