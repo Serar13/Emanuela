@@ -29,12 +29,12 @@ LOGO = ROOT / "public" / "logo-emanuela.webp"
 FONT_REGULAR = Path("/System/Library/Fonts/Supplemental/Arial.ttf")
 FONT_BOLD = Path("/System/Library/Fonts/Supplemental/Arial Bold.ttf")
 
-PRIMARY = colors.HexColor("#E92D79")
-PRIMARY_DARK = colors.HexColor("#862875")
+PRIMARY = colors.HexColor("#3A2527")
+PRIMARY_DARK = colors.HexColor("#8A5A2E")
 INK = colors.HexColor("#241A1C")
-MUTED = colors.HexColor("#6b5050")
-LINE = colors.HexColor("#f0e0e8")
-SOFT = colors.HexColor("#FFF8F2")
+MUTED = colors.HexColor("#594A45")
+LINE = colors.HexColor("#E3D2BF")
+SOFT = colors.HexColor("#FBF5EC")
 WHITE = colors.HexColor("#ffffff")
 GREEN = colors.HexColor("#0f9d58")
 RED = colors.HexColor("#b34b3a")
@@ -289,6 +289,14 @@ def build_styles():
             leading=11.6,
             textColor=MUTED,
         ),
+        "table_header": ParagraphStyle(
+            "TableHeader",
+            parent=base["BodyText"],
+            fontName=bold_font,
+            fontSize=8.6,
+            leading=11.6,
+            textColor=WHITE,
+        ),
         "meta": ParagraphStyle(
             "Meta",
             parent=base["BodyText"],
@@ -312,11 +320,11 @@ def build_styles():
 
 def package_table(styles):
     header = [
-        Paragraph("<b>Pachet</b>", styles["body_small"]),
-        Paragraph("<b>Poziționare</b>", styles["body_small"]),
-        Paragraph("<b>Dezvoltare</b>", styles["body_small"]),
-        Paragraph("<b>Primele 6 luni</b>", styles["body_small"]),
-        Paragraph("<b>Din luna 7</b>", styles["body_small"]),
+        Paragraph("Pachet", styles["table_header"]),
+        Paragraph("Poziționare", styles["table_header"]),
+        Paragraph("Dezvoltare", styles["table_header"]),
+        Paragraph("Primele 6 luni", styles["table_header"]),
+        Paragraph("Din luna 7", styles["table_header"]),
     ]
     rows = [header]
     for package in PACKAGES:
@@ -354,10 +362,10 @@ def package_table(styles):
 def custom_table(styles):
     rows = [
         [
-            Paragraph("<b>Buget</b>", styles["body_small"]),
-            Paragraph("<b>Pachet</b>", styles["body_small"]),
-            Paragraph("<b>Volum lunar orientativ</b>", styles["body_small"]),
-            Paragraph("<b>Regulă comercială</b>", styles["body_small"]),
+            Paragraph("Buget", styles["table_header"]),
+            Paragraph("Pachet", styles["table_header"]),
+            Paragraph("Volum lunar orientativ", styles["table_header"]),
+            Paragraph("Regulă comercială", styles["table_header"]),
         ]
     ]
     for price, name, deliverables in CUSTOM_STEPS:
@@ -444,8 +452,8 @@ def build_story(styles):
     component_table = Table(
         [
             [
-                Paragraph("<b>Componentă</b>", styles["body_small"]),
-                Paragraph("<b>Livrabile principale</b>", styles["body_small"]),
+                Paragraph("Componentă", styles["table_header"]),
+                Paragraph("Livrabile principale", styles["table_header"]),
             ],
             [
                 Paragraph("<b>Site web public</b>", styles["body_small"]),
