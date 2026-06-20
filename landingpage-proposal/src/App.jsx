@@ -608,7 +608,7 @@ export default function App() {
                   <div>
                     <h4>Confirmări Instantanee & Rezervări</h4>
                     <p style={{ fontSize: '14px' }}>
-                      Clienții primesc confirmări push în timp real pentru rezervările de mese făcute la Cluj, Bistrița sau Mureș, ridicând nivelul de încredere în serviciile brandului.
+                    Clienții primesc confirmări push în timp real pentru rezervările de mese făcute la Târgu Mureș sau Câmpia Turzii, ridicând nivelul de încredere în serviciile brandului.
                     </p>
                   </div>
                 </div>

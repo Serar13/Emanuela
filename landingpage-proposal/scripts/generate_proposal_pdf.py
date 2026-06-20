@@ -22,9 +22,10 @@ from reportlab.platypus import (
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "public" / "emanuela-propunere.pdf"
-APP_SCREEN = ROOT / "public" / "proposal-screens" / "app-menu.jpeg"
-ADMIN_SCREEN = ROOT / "public" / "proposal-screens" / "webadmin-dashboard.png"
-SITE_SCREEN = ROOT / "public" / "proposal-screens" / "site-home.png"
+APP_SCREEN = ROOT / "public" / "proposal-screens" / "app-emanuela.png"
+ADMIN_SCREEN = ROOT / "public" / "proposal-screens" / "webadmin-emanuela.png"
+SITE_SCREEN = ROOT / "public" / "proposal-screens" / "site-home-emanuela.png"
+LOGO = ROOT / "public" / "logo-emanuela.webp"
 FONT_REGULAR = Path("/System/Library/Fonts/Supplemental/Arial.ttf")
 FONT_BOLD = Path("/System/Library/Fonts/Supplemental/Arial Bold.ttf")
 
@@ -115,7 +116,7 @@ def screenshot_overview(styles):
     if APP_SCREEN.exists():
         items.append(
             [
-                Image(str(APP_SCREEN), width=34 * mm, height=68 * mm),
+                Image(str(APP_SCREEN), width=58 * mm, height=40 * mm),
                 screenshot_label("Aplicație mobilă", styles),
             ]
         )
@@ -123,7 +124,7 @@ def screenshot_overview(styles):
         items.append(
             [
                 Image(str(ADMIN_SCREEN), width=58 * mm, height=40 * mm),
-                screenshot_label("Webadmin operațional", styles),
+                screenshot_label("Webadmin securizat", styles),
             ]
         )
     if SITE_SCREEN.exists():
@@ -146,7 +147,7 @@ def screenshot_overview(styles):
             )
         )
 
-    table = Table([cells], colWidths=[40 * mm, 62 * mm, 62 * mm][: len(cells)])
+    table = Table([cells], colWidths=[58 * mm] * len(cells))
     table.setStyle(
         TableStyle(
             [
@@ -164,6 +165,9 @@ def screenshot_overview(styles):
 
 def cover_block(styles):
     story = []
+    if LOGO.exists():
+        story.append(Image(str(LOGO), width=38 * mm, height=18 * mm))
+        story.append(Spacer(1, 3 * mm))
     story.append(Paragraph("Propunere de Parteneriat Digital", styles["title"]))
     story.append(Spacer(1, 2 * mm))
     story.append(Paragraph("Laborator Emanuela", styles["subtitle"]))

@@ -1275,6 +1275,7 @@ p {
   overflow: hidden;
   user-select: none;
   margin: 0 auto;
+  z-index: 2;
 }
 
 .phone-dynamic-island {
