@@ -136,20 +136,31 @@ export const AppProvider = ({ children }) => {
     };
   }, []);
 
-  const effectiveTheme = isMobileWeb ? systemTheme : theme;
-  const canToggleTheme = !isMobileWeb;
+  const effectiveTheme = theme || systemTheme;
+  const canToggleTheme = true;
 
   useEffect(() => {
-    if (!isMobileWeb) {
-      localStorage.setItem(STORAGE_KEYS.theme, theme);
-    }
-    // Apply class to HTML element for easy styling targeting
-    if (effectiveTheme === 'dark') {
+    localStorage.setItem(STORAGE_KEYS.theme, theme);
+    // Apply classes and attributes for comprehensive theme targeting
+    const isDark = effectiveTheme === 'dark';
+    if (isDark) {
       document.documentElement.classList.add('dark-theme');
+      document.documentElement.classList.add('dark');
+      document.documentElement.setAttribute('data-theme', 'dark');
+      if (document.body) {
+        document.body.classList.add('dark-theme');
+        document.body.classList.add('dark');
+      }
     } else {
       document.documentElement.classList.remove('dark-theme');
+      document.documentElement.classList.remove('dark');
+      document.documentElement.setAttribute('data-theme', 'light');
+      if (document.body) {
+        document.body.classList.remove('dark-theme');
+        document.body.classList.remove('dark');
+      }
     }
-  }, [theme, effectiveTheme, isMobileWeb]);
+  }, [theme, effectiveTheme]);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.language, language);

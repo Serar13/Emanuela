@@ -22,5 +22,40 @@
 .article-cover { width: min(1180px, 90vw); max-height: 720px; display: block; margin: 0 auto 70px; object-fit: cover; }
 .article-body { max-width: 760px; margin: auto; padding: 0 24px; }
 .article-body p { margin: 0 0 28px; font: 18px/1.85 Georgia, serif; }
-.article-state { min-height: 65vh; display: grid; place-content: center; text-align: center; padding: 40px; }
 @media (max-width: 720px) { .journal-item { grid-template-columns: 1fr; } .journal-item-image { min-height: 250px; } .journal-hero h1 { font-size: 54px; } }
+
+/* Dark mode overrides for Journal & Articles */
+:root.dark-theme .journal-page,
+:root.dark-theme .article-page,
+.dark-theme .journal-page,
+.dark-theme .article-page,
+[data-theme="dark"] .journal-page,
+[data-theme="dark"] .article-page {
+  --journal-paper: #120a0e;
+  --journal-ink: #fdf6f7;
+  background: var(--journal-paper);
+  color: var(--journal-ink);
+}
+
+:root.dark-theme .journal-item,
+.dark-theme .journal-item {
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+
+:root.dark-theme .journal-item-image,
+.dark-theme .journal-item-image {
+  background: #1c0e16;
+}
+
+:root.dark-theme .journal-item p,
+:root.dark-theme .article-page header p,
+.dark-theme .journal-item p,
+.dark-theme .article-page header p {
+  color: #c4b0b6;
+}
+
+:root.dark-theme .article-page header > a,
+.dark-theme .article-page header > a {
+  color: #a48e95;
+}
+

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import './Header.css';
 
@@ -17,8 +17,18 @@ export default function Header() {
     setShowAuthModal
   } = useApp();
 
+  const location = useLocation();
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  const handleLogoClick = (e) => {
+    if (location.pathname === '/') {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -89,7 +99,7 @@ export default function Header() {
 
         {/* Center: Brand Logo & Name */}
         <div className="brand-logo-area">
-          <Link to="/" className="logo-link">
+          <Link to="/" className="logo-link" onClick={handleLogoClick}>
             <img
               src="/images/logo-emanuela.webp"
               alt="Laborator Emanuela"
