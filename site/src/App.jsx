@@ -5,6 +5,7 @@ import { AppProvider } from './context/AppContext';
 import Header from './components/Header';
 import CartSidebar from './components/CartSidebar';
 import AuthModal from './components/AuthModal';
+import AiChatWidget from './components/AiChatWidget';
 import Footer from './components/Footer';
 import SplashScreen from './components/SplashScreen';
 import { prefetchCatalog, preloadImages } from './services/prefetch';
@@ -131,6 +132,7 @@ function MainApp() {
         {/* Global Overlays */}
         <CartSidebar />
         <AuthModal />
+        <AiChatWidget />
 
         {/* Global Footer */}
         <Footer />

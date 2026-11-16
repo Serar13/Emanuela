@@ -63,9 +63,9 @@ export default function OfferRequests() {
       render: (r) => (
         <div>
           <span>{r.productName || r.eventType || "—"}</span>
-          {r.source === "mobile_ai_chat" && (
+          {(r.source === "mobile_ai_chat" || r.source === "website_ai_chat") && (
             <span style={{ marginLeft: 6, fontSize: "0.75rem", background: "#fdf0f4", color: "#E92D79", padding: "2px 6px", borderRadius: 4, fontWeight: "bold" }}>
-              🤖 Chat AI
+              🤖 {r.source === "website_ai_chat" ? "AI Web" : "AI Mobil"}
             </span>
           )}
         </div>
@@ -117,7 +117,7 @@ export default function OfferRequests() {
             <p><strong>Email:</strong> {details.email || "—"}</p>
             <p><strong>Telefon:</strong> {details.phone || "—"}</p>
             <p><strong>Produs solicitat:</strong> {details.productName || "—"}</p>
-            <p><strong>Sursă:</strong> {details.source === "mobile_ai_chat" ? "Aplicație Mobilă (Agent AI)" : (details.source || "Formular Web")}</p>
+            <p><strong>Sursă:</strong> {details.source === "website_ai_chat" ? "Website (Asistent AI)" : details.source === "mobile_ai_chat" ? "Aplicație Mobilă (Agent AI)" : (details.source || "Formular Web")}</p>
           </div>
 
           {/* AI Chat Transcript or Message */}

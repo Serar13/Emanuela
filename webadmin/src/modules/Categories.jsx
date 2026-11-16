@@ -37,6 +37,17 @@ const slugify = (s) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 
+function cleanTitle(str) {
+  if (!str) return "";
+  return str
+    .replace(/&#8217;/g, "’")
+    .replace(/&#039;/g, "'")
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">");
+}
+
 export default function Categories() {
   const { rows, loading, refresh } = useCollection(COLLECTIONS.CATEGORIES, {
     orderByField: "sortOrder"
@@ -64,7 +75,7 @@ export default function Categories() {
   if (loading && !items.length) return <Loading />;
 
   const filteredItems = items.filter((item) =>
-    item.name?.toLowerCase().includes(search.toLowerCase())
+    cleanTitle(item.name)?.toLowerCase().includes(search.toLowerCase())
   );
 
   const openCreateModal = () => {
@@ -80,8 +91,8 @@ export default function Categories() {
   const openEditModal = (item) => {
     setEditingItem(item);
     setFormData({
-      name: item.name || "",
-      icon: item.icon || "🍰",
+      name: cleanTitle(item.name) || "",
+      icon: (!item.icon || item.icon === "✦") ? "🍰" : item.icon,
       active: item.active !== false
     });
     setModalOpen(true);
@@ -191,7 +202,7 @@ export default function Categories() {
         <div>
           <h2>Categorii produse</h2>
           <p className="muted" style={{ margin: "4px 0 0", fontSize: "13px" }}>
-            Trage categoriile de mânerul <strong>⋮⋮</strong> pentru a rearanja ordinea în care apar în meniu.
+            Trage categoriile de mânerul de prindere pentru a rearanja ordinea în care apar în meniu și în aplicație.
           </p>
         </div>
 
@@ -229,18 +240,20 @@ export default function Categories() {
         <table className="data-table">
           <thead>
             <tr>
-              <th style={{ width: "50px", textAlign: "center" }}>Poziție</th>
-              <th style={{ width: "40px" }}></th>
-              <th style={{ width: "60px", textAlign: "center" }}>Pictogramă</th>
+              <th style={{ width: "45px", textAlign: "center" }}></th>
+              <th style={{ width: "60px", textAlign: "center" }}>Poziție</th>
+              <th style={{ width: "70px", textAlign: "center" }}>Pictogramă</th>
               <th>Nume Categorie</th>
               <th style={{ width: "120px" }}>Stare</th>
-              <th style={{ width: "130px", textAlign: "right" }}>Acțiuni</th>
+              <th style={{ width: "140px", textAlign: "right" }}>Acțiuni</th>
             </tr>
           </thead>
           <tbody>
             {filteredItems.map((cat, index) => {
               const isDragging = draggedIndex === index;
               const isDragOver = dragOverIndex === index;
+              const displayIcon = (!cat.icon || cat.icon === "✦") ? "🍰" : cat.icon;
+              const displayName = cleanTitle(cat.name);
 
               return (
                 <tr
@@ -258,17 +271,24 @@ export default function Categories() {
                     transition: "background-color 0.15s ease"
                   }}
                 >
+                  <td style={{ textAlign: "center", color: "#a59298", userSelect: "none", cursor: "grab" }} title="Trage pentru a rearanja">
+                    <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" style={{ display: "inline-block", verticalAlign: "middle" }}>
+                      <circle cx="5" cy="3" r="1.5" />
+                      <circle cx="11" cy="3" r="1.5" />
+                      <circle cx="5" cy="8" r="1.5" />
+                      <circle cx="11" cy="8" r="1.5" />
+                      <circle cx="5" cy="13" r="1.5" />
+                      <circle cx="11" cy="13" r="1.5" />
+                    </svg>
+                  </td>
                   <td style={{ textAlign: "center", fontWeight: "700", color: "#8c7e82", fontSize: "13px" }}>
                     #{index + 1}
                   </td>
-                  <td style={{ textAlign: "center", color: "#b0a0a5", fontSize: "18px", userSelect: "none" }} title="Trage pentru a rearanja">
-                    ⋮⋮
-                  </td>
                   <td style={{ textAlign: "center", fontSize: "24px" }}>
-                    {cat.icon || "🍰"}
+                    {displayIcon}
                   </td>
                   <td style={{ fontWeight: "600", fontSize: "15px", color: "var(--text)" }}>
-                    {cat.name}
+                    {displayName}
                   </td>
                   <td>
                     <button
@@ -294,7 +314,7 @@ export default function Categories() {
                     <button
                       type="button"
                       className="btn btn-ghost"
-                      onClick={() => handleDelete(cat.id, cat.name)}
+                      onClick={() => handleDelete(cat.id, displayName)}
                       style={{ padding: "6px 10px", color: "var(--danger)" }}
                     >
                       Șterge
@@ -318,19 +338,30 @@ export default function Categories() {
       <Modal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
-        title={editingItem ? `Editează categoria: ${editingItem.name}` : "Adaugă o nouă categorie"}
+        wide={true}
+        title={editingItem ? `Editează categoria: ${cleanTitle(editingItem.name)}` : "Adaugă o nouă categorie"}
+        footer={
+          <>
+            <button type="button" className="btn btn-ghost" onClick={() => setModalOpen(false)}>
+              Anulează
+            </button>
+            <button type="submit" form="category-form" className="btn btn-primary" style={{ padding: "10px 24px" }}>
+              {editingItem ? "Salvează modificările" : "Creează categoria"}
+            </button>
+          </>
+        }
       >
-        <form onSubmit={handleSaveCategory}>
-          <div style={{ display: "grid", gap: "18px" }}>
+        <form id="category-form" onSubmit={handleSaveCategory}>
+          <div style={{ display: "grid", gap: "20px" }}>
             <label style={{ display: "block" }}>
-              <span style={{ display: "block", marginBottom: "6px", fontWeight: "700", fontSize: "13px" }}>
+              <span style={{ display: "block", marginBottom: "8px", fontWeight: "700", fontSize: "13px" }}>
                 Nume categorie <b style={{ color: "#e92d79" }}>*</b>
               </span>
               <input
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                placeholder="ex: Torturi Aniversare, Monoporții, etc."
+                placeholder="ex: Torturi Aniversare, Monoporții, Macarons…"
                 required
                 autoFocus
                 style={{ width: "100%", padding: "12px 14px", borderRadius: "10px", border: "1px solid var(--border)", fontSize: "15px" }}
@@ -339,36 +370,36 @@ export default function Categories() {
 
             {/* Interactive Emoji Map Picker */}
             <div>
-              <span style={{ display: "block", marginBottom: "8px", fontWeight: "700", fontSize: "13px" }}>
-                Alege Emoji reprezentativ
+              <span style={{ display: "block", marginBottom: "10px", fontWeight: "700", fontSize: "13px" }}>
+                Alege Pictogramă reprezentativă
               </span>
 
               {/* Selected Emoji Showcase */}
-              <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "14px", padding: "12px 16px", background: "#fcf8f6", borderRadius: "12px", border: "1px solid var(--border)" }}>
-                <span style={{ fontSize: "36px", lineHeight: 1 }}>{formData.icon || "🍰"}</span>
+              <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "16px", padding: "14px 18px", background: "#fcf8f6", borderRadius: "12px", border: "1px solid var(--border)" }}>
+                <span style={{ fontSize: "38px", lineHeight: 1 }}>{formData.icon || "🍰"}</span>
                 <div>
-                  <strong style={{ fontSize: "14px", display: "block" }}>Emoji selectat: {formData.icon}</strong>
-                  <small style={{ color: "var(--muted)", fontSize: "12px" }}>Apasă pe oricare emoji din colecția de mai jos pentru a-l selecta</small>
+                  <strong style={{ fontSize: "15px", display: "block", color: "var(--text)" }}>Pictogramă selectată: {formData.icon}</strong>
+                  <small style={{ color: "var(--muted)", fontSize: "12px" }}>Apasă pe oricare pictogramă din colecția de mai jos pentru a o atribui acestei categorii.</small>
                 </div>
               </div>
 
               {/* Emoji Categories Navigation Tabs */}
-              <div style={{ display: "flex", gap: "6px", overflowX: "auto", paddingBottom: "6px", marginBottom: "10px" }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "12px" }}>
                 {EMOJI_PALETTES.map((pal) => (
                   <button
                     type="button"
                     key={pal.category}
                     onClick={() => setActivePalette(pal.category)}
-                    className="btn btn-ghost"
                     style={{
                       fontSize: "12px",
-                      padding: "6px 10px",
+                      padding: "8px 14px",
                       borderRadius: "8px",
-                      whiteSpace: "nowrap",
-                      background: activePalette === pal.category ? "#e92d79" : "#f5ede8",
+                      background: activePalette === pal.category ? "#e92d79" : "#f4ece7",
                       color: activePalette === pal.category ? "#ffffff" : "#4a353c",
-                      fontWeight: activePalette === pal.category ? "700" : "500",
-                      border: "none"
+                      fontWeight: activePalette === pal.category ? "700" : "600",
+                      border: "none",
+                      cursor: "pointer",
+                      transition: "all 0.15s ease"
                     }}
                   >
                     {pal.category}
@@ -379,13 +410,13 @@ export default function Categories() {
               {/* Emoji Grid */}
               <div style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(42px, 1fr))",
+                gridTemplateColumns: "repeat(auto-fill, minmax(46px, 1fr))",
                 gap: "8px",
-                padding: "12px",
+                padding: "14px",
                 background: "#ffffff",
                 borderRadius: "10px",
                 border: "1px solid var(--border)",
-                maxHeight: "160px",
+                maxHeight: "180px",
                 overflowY: "auto"
               }}>
                 {EMOJI_PALETTES.find((p) => p.category === activePalette)?.emojis.map((emoji) => (
@@ -394,8 +425,8 @@ export default function Categories() {
                     key={emoji}
                     onClick={() => setFormData({ ...formData, icon: emoji })}
                     style={{
-                      fontSize: "22px",
-                      height: "42px",
+                      fontSize: "24px",
+                      height: "46px",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -425,15 +456,6 @@ export default function Categories() {
                 Categorie activă (vizibilă clienților în aplicație și pe site)
               </span>
             </label>
-          </div>
-
-          <div className="modal-actions" style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "24px" }}>
-            <button type="button" className="btn btn-ghost" onClick={() => setModalOpen(false)}>
-              Anulează
-            </button>
-            <button type="submit" className="btn btn-primary" style={{ padding: "10px 22px" }}>
-              {editingItem ? "Salvează modificările" : "Creează categoria"}
-            </button>
           </div>
         </form>
       </Modal>
