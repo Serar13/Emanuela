@@ -65,7 +65,20 @@ export default function Products() {
           key: "imageUrl",
           label: "",
           render: (r) =>
-            r.imageUrl ? <img className="thumb" src={r.imageUrl} alt="" /> : <span className="thumb thumb-empty">🍰</span>
+            r.imageUrl ? (
+              <img
+                className="thumb"
+                src={r.imageUrl}
+                alt=""
+                onError={(e) => {
+                  if (r.imageUrl?.startsWith('/images/')) {
+                    e.target.src = `https://laborator-emanuela.web.app${r.imageUrl}`;
+                  }
+                }}
+              />
+            ) : (
+              <span className="thumb thumb-empty">🍰</span>
+            )
         },
         { key: "name", label: "Nume", sortable: true },
         { key: "categoryId", label: "Categorie", render: (r) => catName(r.categoryId), sortable: true },

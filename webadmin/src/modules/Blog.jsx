@@ -28,7 +28,22 @@ export default function Blog() {
       fromForm={(v) => ({ ...v, sortOrder: Number(v.sortOrder) || 0, published: !!v.published })}
       inlineToggles={[{ field: "published", kind: "bool", onLabel: "Publicat", offLabel: "Draft" }]}
       columns={[
-        { key: "imageUrl", label: "", render: (r) => r.imageUrl ? <img className="thumb" src={r.imageUrl} alt="" /> : "—" },
+        { 
+          key: "imageUrl", 
+          label: "", 
+          render: (r) => r.imageUrl ? (
+            <img 
+              className="thumb" 
+              src={r.imageUrl} 
+              alt="" 
+              onError={(e) => {
+                if (r.imageUrl?.startsWith('/images/')) {
+                  e.target.src = `https://laborator-emanuela.web.app${r.imageUrl}`;
+                }
+              }} 
+            />
+          ) : "—" 
+        },
         { key: "title", label: "Titlu", sortable: true },
         { key: "category", label: "Categorie", sortable: true },
         { key: "author", label: "Autor" },

@@ -35,7 +35,18 @@ export default function ImageInput({ folder, value, onChange }) {
         {uploading ? "Se încarcă…" : "⬆ Încarcă"}
         <input type="file" accept="image/*" hidden onChange={handleFile} disabled={uploading} />
       </label>
-      {value && <img className="image-preview" src={value} alt="preview" />}
+      {value && (
+        <img
+          className="image-preview"
+          src={value}
+          alt="preview"
+          onError={(e) => {
+            if (value?.startsWith('/images/')) {
+              e.target.src = `https://laborator-emanuela.web.app${value}`;
+            }
+          }}
+        />
+      )}
       {err && <small className="field-error">{err}</small>}
     </div>
   );

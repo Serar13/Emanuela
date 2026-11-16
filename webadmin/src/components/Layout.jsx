@@ -2,6 +2,7 @@ import { useAuth } from "../auth/AuthContext";
 
 export const NAV_ITEMS = [
   { key: "dashboard", label: "Dashboard", icon: "📊" },
+  { key: "statistics", label: "Statistici", icon: "📈" },
   { key: "siteContent", label: "Conținut site", icon: "✦" },
   { key: "blog", label: "Blog", icon: "✍️" },
   { key: "candyBarSettings", label: "Candy Bar", icon: "🍬" },
@@ -62,7 +63,6 @@ export default function Layout({ active, onNavigate, children }) {
           <h1>
             {current ? `${current.icon} ${current.label}` : "Admin"}
           </h1>
-          <span className="live-indicator">🟢 Conectat la Firestore</span>
         </header>
         <div className="admin-content">{children}</div>
       </main>

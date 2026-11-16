@@ -19,11 +19,13 @@ import SiteContent from "./modules/SiteContent";
 import Blog from "./modules/Blog";
 import CandyBarSettings from "./modules/CandyBarSettings";
 import PushNotifications from "./modules/PushNotifications";
+import Statistics from "./modules/Statistics";
 
 import "./App.css";
 
 const MODULES = {
   dashboard: Dashboard,
+  statistics: Statistics,
   notifications: PushNotifications,
   orders: Orders,
   reservations: Reservations,
