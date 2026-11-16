@@ -8,7 +8,8 @@ import {
   FlatList,
   Modal,
   Alert,
-  ActivityIndicator
+  ActivityIndicator,
+  Image
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useApp } from '../context/AppContext';
@@ -19,7 +20,7 @@ export default function HomeScreen() {
   const {
     cart, addToCart, removeFromCart, updateQuantity, clearCart,
     placeOrder, colors, isLoggedIn, requestAuth: openAuth, t,
-    products, productsLoading, locations
+    products, categories: catalogCategories, productsLoading, locations
   } = useApp();
   const styles = getStyles(colors);
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -89,13 +90,14 @@ export default function HomeScreen() {
     }
   };
 
-  const categories = [
+  const categories = useMemo(() => [
     { id: 'all', name: t('all') || 'Toate', icon: 'grid-outline' },
-    { id: 'torturi', name: 'Torturi', icon: 'pizza-outline' },
-    { id: 'cafe', name: t('cafe') || 'Cafea', icon: 'cafe-outline' },
-    { id: 'drinks', name: t('drinks') || 'Răcoritoare', icon: 'beer-outline' },
-    { id: 'secret', name: t('secretMenu') || 'Meniu Secret 🤫', icon: 'key-outline' }
-  ];
+    ...(catalogCategories || []).map((category) => ({
+      id: category.id,
+      name: category.name,
+      icon: category.slug?.includes('tort') ? 'restaurant-outline' : 'sparkles-outline'
+    }))
+  ], [catalogCategories, t]);
 
   return (
     <View style={styles.container}>
@@ -148,6 +150,7 @@ export default function HomeScreen() {
         )}
         renderItem={({ item }) => (
           <View style={[styles.productCard, item.category === 'secret' && styles.secretProductCard]}>
+            {item.imageUrl ? <Image source={{ uri: item.imageUrl }} style={styles.productImage} resizeMode="cover" /> : null}
             <View style={styles.productInfo}>
               <View style={styles.titleRow}>
                 <Text style={styles.productName}>{item.name}</Text>
@@ -157,17 +160,18 @@ export default function HomeScreen() {
                   </View>
                 )}
               </View>
-              <Text style={styles.productDesc}>{item.desc}</Text>
-              <Text style={styles.productPrice}>{item.price} RON</Text>
+              <Text style={styles.productDesc} numberOfLines={3}>{item.desc}</Text>
+              <Text style={styles.productPrice}>{item.price > 0 ? `${item.price.toFixed(2)} RON` : 'Preț la cerere'}</Text>
             </View>
             <TouchableOpacity 
               style={[styles.addButton, item.category === 'secret' && styles.secretAddButton]} 
+              disabled={item.availability === 'unavailable'}
               onPress={() => {
                 addToCart(item);
                 Alert.alert(t('addedToCart'), `${item.name} -> ${t('addedToCart')}`);
               }}
             >
-              <Ionicons name="add" size={20} color="#1b1713" />
+              <Ionicons name={item.availability === 'unavailable' ? 'chatbubble-ellipses-outline' : 'add'} size={20} color="#1b1713" />
             </TouchableOpacity>
           </View>
         )}
@@ -337,12 +341,19 @@ const getStyles = (colors) => StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: colors.cardBg,
     borderRadius: 12,
-    padding: 16,
+    padding: 10,
     marginBottom: 12,
     borderWidth: 1,
     borderColor: colors.border,
     alignItems: 'center',
     justifyContent: 'space-between'
+  },
+  productImage: {
+    width: 96,
+    height: 112,
+    borderRadius: 10,
+    marginRight: 13,
+    backgroundColor: '#eadfd8'
   },
   secretProductCard: {
     borderColor: colors.gold,

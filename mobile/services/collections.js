@@ -9,7 +9,10 @@ export const COLLECTIONS = {
   TABLES: 'tables',
   LOCATIONS: 'locations',
   OFFER_REQUESTS: 'offerRequests',
-  REVIEWS: 'reviews'
+  REVIEWS: 'reviews',
+  SITE_CONTENT: 'siteContent',
+  ARTICLES: 'articles',
+  CANDY_BAR_ITEMS: 'candyBarItems'
 };
 
 export default COLLECTIONS;

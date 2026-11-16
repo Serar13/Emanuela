@@ -7,7 +7,8 @@
   "scripts": {
     "seed": "node seed.mjs",
     "seed:rest": "node seed-rest.mjs",
-    "admin:create": "node create-admin.mjs"
+    "admin:create": "node create-admin.mjs",
+    "import:woocommerce": "node import-woocommerce.mjs"
   },
   "dependencies": {
     "firebase-admin": "^13.0.0"

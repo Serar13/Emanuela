@@ -21,6 +21,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   getActiveProducts,
+  getActiveCategories,
   getActivePromotions,
   getActiveLocations,
   getUserReservations,
@@ -53,9 +54,8 @@ const mapProduct = (p) => ({
   categoryId: p.categoryId || '',
   unit: p.unit || '',
   weight: p.weight || '',
-  // imageUrl may be a server-relative path ("/images/..") that won't resolve
-  // on a device; expose it as-is and let the UI guard against it.
-  imageUrl: p.imageUrl || '',
+  // Resolve seeded site assets to a public URL while preserving remote catalog images.
+  imageUrl: p.imageUrl?.startsWith('/') ? `https://laborator-emanuela.web.app${p.imageUrl}` : (p.imageUrl || ''),
   availability: p.availability || 'available'
 });
 
@@ -541,6 +541,7 @@ export const AppProvider = ({ children }) => {
 
   // 9. Catalog State (products / locations loaded from Firestore)
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [locations, setLocations] = useState([]);
   const [productsLoading, setProductsLoading] = useState(true);
   const [offersLoading, setOffersLoading] = useState(true);
@@ -551,13 +552,15 @@ export const AppProvider = ({ children }) => {
     let active = true;
     (async () => {
       try {
-        const [prods, promos, locs] = await Promise.all([
+        const [prods, categoryRows, promos, locs] = await Promise.all([
           getActiveProducts(),
+          getActiveCategories(),
           getActivePromotions(),
           getActiveLocations()
         ]);
         if (!active) return;
         setProducts(prods.map(mapProduct));
+        setCategories(categoryRows);
         setOffers(promos.map(mapPromotionToOffer));
         setLocations(locs);
       } catch (err) {
@@ -967,6 +970,7 @@ export const AppProvider = ({ children }) => {
       reservations,
       offers,
       products,
+      categories,
       locations,
       productsLoading,
       offersLoading,
