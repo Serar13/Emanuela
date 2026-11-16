@@ -160,14 +160,63 @@
   grid-template-columns: 1.1fr 0.9fr;
   background-color: var(--color-card-bg);
   border: 1px solid var(--color-border);
-  border-radius: 24px;
+  border-radius: 4px;
   overflow: hidden;
-  box-shadow: 0 10px 32px rgba(0,0,0,0.02);
+  box-shadow: 0 24px 70px rgba(75, 16, 42, 0.10);
 }
 
 .calculator-controls {
   padding: 48px;
   border-right: 1px solid var(--color-border);
+}
+
+.calc-choice-group {
+  margin-bottom: 26px;
+}
+
+.calc-choice-label {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--color-text-muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.calc-segmented {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  padding: 5px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+}
+
+.calc-segmented button {
+  min-height: 44px;
+  padding: 8px;
+  background: transparent;
+  color: var(--color-text-muted);
+  border: 0;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.calc-segmented button.active {
+  background: #4b102a;
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(75, 16, 42, .16);
+}
+
+.calc-segmented button small {
+  display: block;
+  margin-top: 2px;
+  color: #f3a9c5;
+  font-size: 8px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
 }
 
 .calculator-controls h3 {
@@ -278,7 +327,8 @@
 
 .calculator-results {
   padding: 48px;
-  background-color: var(--color-gold-muted);
+  background: #4b102a;
+  color: #fff;
   display: flex;
   flex-direction: column;
 }
@@ -287,6 +337,18 @@
   font-size: 18px;
   margin-bottom: 24px;
 }
+
+.calc-result-heading > span {
+  display: inline-block;
+  margin-bottom: 10px;
+  color: #f3a9c5;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+
+.calc-result-heading h4 { color: #fff; }
 
 .results-list {
   display: flex;
@@ -299,7 +361,7 @@
   display: flex;
   align-items: center;
   font-size: 14px;
-  border-bottom: 1px dashed var(--color-border);
+  border-bottom: 1px solid rgba(255,255,255,.14);
   padding-bottom: 12px;
 }
 
@@ -316,12 +378,12 @@
 
 .item-name {
   flex: 1;
-  color: var(--color-text);
+  color: rgba(255,255,255,.78);
 }
 
 .item-cost {
   font-weight: 600;
-  color: var(--color-text-muted);
+  color: #f3a9c5;
 }
 
 .results-total {
@@ -336,17 +398,18 @@
 .total-label {
   font-size: 16px;
   font-weight: 700;
+  color: #fff;
 }
 
 .total-price {
   font-size: 26px;
   font-weight: 700;
-  color: var(--color-gold);
+  color: #fff;
 }
 
 .calc-disclosure {
   font-size: 11px;
-  color: var(--color-text-muted);
+  color: rgba(255,255,255,.55);
   margin-top: 12px;
   line-height: 1.4;
 }

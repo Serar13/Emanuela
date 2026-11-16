@@ -24,8 +24,10 @@ export default function CandyBar() {
 
   // Calculator state
   const [guestCount, setGuestCount] = useState(100);
+  const [packageType, setPackageType] = useState('premium');
+  const [gramsPerGuest, setGramsPerGuest] = useState(150);
   const [includeCake, setIncludeCake] = useState(true);
-  const [includeSaratle, setIncludeSaratle] = useState(true);
+  const [includeFruitBar, setIncludeFruitBar] = useState(false);
 
   // Form state
   const [formName, setFormName] = useState('');
@@ -164,22 +166,18 @@ export default function CandyBar() {
 
   const currentSlideLoaded = loadedSlides.has(currentSlide);
 
-  // Calculator logic
-  const minicakesQty = Math.round(guestCount * 1.2);
-  const jarsQty = Math.round(guestCount * 0.6);
-  const macaronsQty = Math.round(guestCount * 0.4);
-  const pavlovasQty = Math.round(guestCount * 0.2);
-  const saratleQty = includeSaratle ? parseFloat((guestCount * 0.015).toFixed(1)) : 0;
-  const cakeQty = includeCake ? parseFloat((guestCount * 0.1).toFixed(1)) : 0;
-
-  const minicakesCost = minicakesQty * 12;
-  const jarsCost = jarsQty * 15;
-  const macaronsCost = macaronsQty * 6;
-  const pavlovasCost = pavlovasQty * 15;
-  const saratleCost = Math.round(saratleQty * 60);
-  const cakeCost = Math.round(cakeQty * 150);
-
-  const totalCostEstimate = minicakesCost + jarsCost + macaronsCost + pavlovasCost + saratleCost + cakeCost;
+  // Public Candy Bar pricing from laboratorEmanuela.ro. The final quote may
+  // change after the event theme, transport and presentation are confirmed.
+  const packageRates = {
+    basic: { 100: 16, 150: 24, 200: 32 },
+    premium: { 100: 18, 150: 27, 200: 36 },
+    deluxe: { 100: 24, 150: 36, 200: 48 },
+  };
+  const candyBarCost = guestCount * packageRates[packageType][gramsPerGuest];
+  const fruitBarCost = includeFruitBar ? guestCount * 7.5 : 0;
+  const totalCostEstimate = Math.round(candyBarCost + fruitBarCost);
+  const totalDessertKg = ((guestCount * gramsPerGuest) / 1000).toFixed(1);
+  const fruitKg = includeFruitBar ? ((guestCount * 75) / 1000).toFixed(1) : 0;
 
   // Apply calculator recommendations to form
   const applyCalculatorToForm = () => {
@@ -190,30 +188,12 @@ export default function CandyBar() {
       marturii: formServices.marturii
     });
     
-    const calculatedMessage = language === 'hu'
-      ? `Automatikusan számolt ajánlás:
-	- ${minicakesQty} Mini sütemény (vegyes ízek)
-	- ${jarsQty} Pohárdesszert
-- ${macaronsQty} Prémium Macaron
-- ${pavlovasQty} Mini Pavlova
-${includeSaratle ? `- ${saratleQty} kg sós sajtos rúd\n` : ''}${includeCake ? `- ${cakeQty} kg bemutató torta\n` : ''}
-Becsült költség: kb. ${totalCostEstimate} RON.`
-      : language === 'en'
-      ? `Automatically calculated recommendation:
-	- ${minicakesQty} Mini pastries (mixed selection)
-	- ${jarsQty} Dessert cups
-- ${macaronsQty} Premium Macarons
-- ${pavlovasQty} Mini Pavlova
-${includeSaratle ? `- ${saratleQty} kg Savory cheese crackers\n` : ''}${includeCake ? `- Presentation cake: ${cakeQty} kg\n` : ''}
-Estimated budget: approx. ${totalCostEstimate} RON.`
-      : `Recomandare calculată automat:
-	- ${minicakesQty} Mini prăjituri (selecție mixtă)
-	- ${jarsQty} Deserturi la pahar
-- ${macaronsQty} Macarons Premium
-- ${pavlovasQty} Mini Pavlova
-${includeSaratle ? `- ${saratleQty} kg Sărățele cu telemea\n` : ''}${includeCake ? `- Tort de prezentare de ${cakeQty} kg\n` : ''}
-Buget estimat: aprox. ${totalCostEstimate} RON.`
-      ;
+    const calculatedMessage = `Estimare Candy Bar Emanuela:
+- Pachet: ${packageType.charAt(0).toUpperCase() + packageType.slice(1)}
+- ${guestCount} invitați × ${gramsPerGuest} g (${totalDessertKg} kg deserturi)
+${includeFruitBar ? `- Fruit bar: 75 g/invitat (${fruitKg} kg)\n` : ''}${includeCake ? '- Doresc și ofertă pentru tort de prezentare\n' : ''}
+Buget orientativ Candy Bar: ${totalCostEstimate} RON.
+Oferta finală se confirmă după stabilirea produselor, decorului și transportului.`;
 
     setFormMessage(calculatedMessage);
     
@@ -352,6 +332,38 @@ Buget estimat: aprox. ${totalCostEstimate} RON.`
                 </div>
               </div>
 
+              <div className="calc-choice-group">
+                <span className="calc-choice-label">{pick('Alege pachetul', 'Choose package', 'Válassz csomagot')}</span>
+                <div className="calc-segmented">
+                  {['basic', 'premium', 'deluxe'].map((type) => (
+                    <button
+                      type="button"
+                      key={type}
+                      className={packageType === type ? 'active' : ''}
+                      onClick={() => setPackageType(type)}
+                    >
+                      {type.charAt(0).toUpperCase() + type.slice(1)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="calc-choice-group">
+                <span className="calc-choice-label">{pick('Gramaj per invitat', 'Serving per guest', 'Adag vendégenként')}</span>
+                <div className="calc-segmented grams">
+                  {[100, 150, 200].map((grams) => (
+                    <button
+                      type="button"
+                      key={grams}
+                      className={gramsPerGuest === grams ? 'active' : ''}
+                      onClick={() => setGramsPerGuest(grams)}
+                    >
+                      {grams} g {grams === 150 && <small>{pick('recomandat', 'recommended', 'ajánlott')}</small>}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <div className="checkbox-options">
                 <label className="checkbox-label">
                   <input 
@@ -359,16 +371,16 @@ Buget estimat: aprox. ${totalCostEstimate} RON.`
                     checked={includeCake} 
                     onChange={(e) => setIncludeCake(e.target.checked)} 
                   />
-                  <span>🎂 {pick('Include Tort de Prezentare (100g / invitat)', 'Include Presentation Cake (100g / guest)', 'Tartalmazzon bemutató tortát (100g / vendég)')}</span>
+                  <span>🎂 {pick('Doresc și ofertă pentru Tortul de Prezentare', 'I also want a Presentation Cake quote', 'Bemutató tortára is kérek ajánlatot')}</span>
                 </label>
                 
                 <label className="checkbox-label">
                   <input 
                     type="checkbox" 
-                    checked={includeSaratle} 
-                    onChange={(e) => setIncludeSaratle(e.target.checked)} 
+                    checked={includeFruitBar}
+                    onChange={(e) => setIncludeFruitBar(e.target.checked)}
                   />
-                  <span>🥨 {pick('Include Sărățele cu Telemea (15g / invitat)', 'Include Savory Cheese Crackers (15g / guest)', 'Tartalmazzon sós sajtos rudakat (15g / vendég)')}</span>
+                  <span>🍓 {pick('Adaugă Fruit Bar (75 g / invitat)', 'Add Fruit Bar (75 g / guest)', 'Fruit Bar hozzáadása (75 g / vendég)')}</span>
                 </label>
               </div>
 
@@ -378,40 +390,34 @@ Buget estimat: aprox. ${totalCostEstimate} RON.`
             </div>
 
             <div className="calculator-results">
-              <h4>📋 {pick('Configurație Recomandată', 'Recommended Configuration', 'Ajánlott összeállítás')}</h4>
+              <div className="calc-result-heading">
+                <span>{packageType}</span>
+                <h4>{pick('Estimarea evenimentului', 'Event estimate', 'Eseménybecslés')}</h4>
+              </div>
               <div className="results-list">
                 <div className="result-item">
-                  <span className="item-qty">{minicakesQty}x</span>
-                  <span className="item-name">{pick('Mini prăjituri', 'Mini pastries', 'Mini sütemények')} ({pick('selecție mixtă', 'mixed selection', 'vegyes ízek')})</span>
-                  <span className="item-cost">{minicakesCost} RON</span>
+                  <span className="item-qty">{guestCount}</span>
+                  <span className="item-name">{pick('invitați', 'guests', 'vendég')}</span>
                 </div>
                 <div className="result-item">
-                  <span className="item-qty">{jarsQty}x</span>
-                  <span className="item-name">{pick('Desert la pahar', 'Dessert cup', 'Pohárdesszert')}</span>
-                  <span className="item-cost">{jarsCost} RON</span>
+                  <span className="item-qty">{gramsPerGuest} g</span>
+                  <span className="item-name">{pick('desert / invitat', 'dessert / guest', 'desszert / vendég')}</span>
                 </div>
                 <div className="result-item">
-                  <span className="item-qty">{macaronsQty}x</span>
-                  <span className="item-name">Macarons Premium</span>
-                  <span className="item-cost">{macaronsCost} RON</span>
+                  <span className="item-qty">{totalDessertKg} kg</span>
+                  <span className="item-name">{pick('cantitate totală de deserturi', 'total dessert quantity', 'teljes desszertmennyiség')}</span>
                 </div>
-                <div className="result-item">
-                  <span className="item-qty">{pavlovasQty}x</span>
-                  <span className="item-name">Mini Pavlova</span>
-                  <span className="item-cost">{pavlovasCost} RON</span>
-                </div>
-                {includeSaratle && (
+                {includeFruitBar && (
                   <div className="result-item">
-                    <span className="item-qty">{saratleQty} kg</span>
-                    <span className="item-name">{pick('Sărățele cu telemea', 'Cheese crackers', 'Sós sajtos rudak')}</span>
-                    <span className="item-cost">{saratleCost} RON</span>
+                    <span className="item-qty">{fruitKg} kg</span>
+                    <span className="item-name">Fruit Bar</span>
+                    <span className="item-cost">{fruitBarCost} RON</span>
                   </div>
                 )}
                 {includeCake && (
                   <div className="result-item highlight">
-                    <span className="item-qty">{cakeQty} kg</span>
-                    <span className="item-name">{pick('Tort etajat de prezentare', 'Presentation tiered cake', 'Bemutató emeletes torta')}</span>
-                    <span className="item-cost">{cakeCost} RON</span>
+                    <span className="item-qty">+</span>
+                    <span className="item-name">{pick('Ofertă separată pentru tortul de prezentare', 'Separate quote for presentation cake', 'Külön ajánlat a bemutató tortára')}</span>
                   </div>
                 )}
               </div>
@@ -421,7 +427,7 @@ Buget estimat: aprox. ${totalCostEstimate} RON.`
                 <span className="total-price">{totalCostEstimate} RON</span>
               </div>
               <span className="calc-disclosure">
-                * {pick('Prețul final poate varia în funcție de personalizări, decoruri și transport.', 'Final cost may vary based on customization, decorations, and transport.', 'A végső ár a személyre szabás, dekoráció és szállítás függvényében változhat.')}
+                * {pick('Estimare bazată pe prețurile publice. Oferta finală se confirmă după alegerea produselor, decorului și transportului.', 'Estimate based on public prices. The final quote is confirmed after selecting products, decor and transport.', 'Nyilvános árakon alapuló becslés. A végső ajánlat a termékek, dekoráció és szállítás kiválasztása után kerül megerősítésre.')}
               </span>
             </div>
           </div>

@@ -7,7 +7,6 @@ import CartSidebar from './components/CartSidebar';
 import AuthModal from './components/AuthModal';
 import Footer from './components/Footer';
 import SplashScreen from './components/SplashScreen';
-import MobileAppPrompt from './components/MobileAppPrompt';
 import { prefetchCatalog, preloadImages } from './services/prefetch';
 // Home is the landing page — keep it in the initial bundle.
 import Home from './pages/Home';
@@ -126,7 +125,6 @@ function MainApp() {
         {/* Global Overlays */}
         <CartSidebar />
         <AuthModal />
-        <MobileAppPrompt />
 
         {/* Global Footer */}
         <Footer />
