@@ -81,6 +81,37 @@
 .em-product-editorial h3 { margin: 0; font-size: 17px; font-weight: 500; }
 .em-product-editorial p { margin: 0; color: #f3a9c5; font-size: 12px; white-space: nowrap; }
 
+.em-app-showcase { position: relative; display: grid; grid-template-columns: .78fr 1.22fr; gap: clamp(50px, 7vw, 110px); align-items: center; min-height: 780px; padding: 110px clamp(24px, 6vw, 90px); overflow: hidden; background: #f3e7dc; }
+.em-app-showcase::before { content: ''; position: absolute; width: 560px; height: 560px; right: 12%; top: 12%; border: 1px solid rgba(75,16,42,.13); border-radius: 50%; }
+.em-app-showcase::after { content: 'E'; position: absolute; right: -2vw; bottom: -14vw; color: rgba(255,255,255,.5); font: 500 43vw/.7 Georgia, serif; pointer-events: none; }
+.em-app-copy { position: relative; z-index: 2; max-width: 560px; }
+.em-app-copy h2 { margin-bottom: 28px; font-size: clamp(48px, 5vw, 76px); font-weight: 500; line-height: .95; letter-spacing: -.055em; }
+.em-app-copy h2 em { color: var(--em-pink); font-weight: 400; }
+.em-app-lead { max-width: 500px; color: #6d5a5e; font-size: 16px; line-height: 1.75; }
+.em-app-benefits { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin: 35px 0; border-top: 1px solid rgba(36,22,26,.18); }
+.em-app-benefits > div { display: grid; grid-template-columns: 30px 1fr; gap: 10px; padding: 19px 14px 19px 0; border-bottom: 1px solid rgba(36,22,26,.18); }
+.em-app-benefits > div:nth-child(odd) { margin-right: 18px; }
+.em-app-benefits span { color: var(--em-pink); font-size: 9px; font-weight: 800; letter-spacing: .12em; }
+.em-app-benefits p { margin: 0; color: #756267; font-size: 11px; line-height: 1.5; }
+.em-app-benefits strong { display: block; margin-bottom: 4px; color: var(--em-ink); font-size: 13px; }
+.em-app-downloads { display: flex; flex-wrap: wrap; gap: 10px; }
+.em-app-downloads a { display: flex; gap: 10px; align-items: center; min-width: 166px; min-height: 54px; padding: 8px 15px; border-radius: 7px; background: #24161a; color: #fff; transition: transform .22s ease, background .22s ease; }
+.em-app-downloads a:hover { transform: translateY(-3px); background: var(--em-pink); }
+.em-app-downloads svg { width: 25px; height: 25px; fill: currentColor; }
+.em-app-downloads span { font-size: 16px; font-weight: 700; line-height: 1.05; }
+.em-app-downloads small { display: block; margin-bottom: 3px; font-size: 8px; font-weight: 500; letter-spacing: .04em; }
+.em-app-phones { position: relative; z-index: 2; min-height: 650px; }
+.em-phone { position: absolute; width: clamp(190px, 16vw, 270px); }
+.em-phone-menu { z-index: 3; left: 32%; top: 0; }
+.em-phone-loyalty { z-index: 2; left: 1%; top: 110px; transform: rotate(-7deg); }
+.em-phone-reservations { z-index: 1; right: 0; top: 120px; transform: rotate(7deg); }
+.em-phone-frame { position: relative; padding: 9px; border: 2px solid #191316; border-radius: 38px; background: #191316; box-shadow: 0 35px 70px rgba(55,24,35,.27); }
+.em-phone-frame i { position: absolute; z-index: 2; top: 15px; left: 50%; width: 34%; height: 18px; border-radius: 20px; background: #080708; transform: translateX(-50%); }
+.em-phone-frame img { display: block; width: 100%; aspect-ratio: 390/844; border-radius: 29px; object-fit: cover; object-position: top; background: #fffaf5; }
+.em-phone-label { position: absolute; z-index: 4; top: 20%; right: -28px; padding: 8px 11px; border: 1px solid rgba(75,16,42,.13); border-radius: 30px; background: rgba(255,250,245,.94); color: var(--em-plum); font-size: 9px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; box-shadow: 0 10px 30px rgba(55,24,35,.12); }
+.em-phone-menu .em-phone-label { top: 72%; right: -38px; }
+.em-phone-reservations .em-phone-label { right: auto; left: -40px; top: 30%; }
+
 .em-story { display: grid; grid-template-columns: 1.08fr .92fr; min-height: 700px; background: #ecdfd2; }
 .em-story-image { position: relative; min-height: 620px; overflow: hidden; }
 .em-story-image img { width: 100%; height: 100%; object-fit: cover; }
@@ -141,6 +172,9 @@
   .em-products-section { grid-template-columns: 1fr; }
   .em-products-intro { max-width: 600px; }
   .em-event-feature { grid-template-columns: 1fr 1fr; gap: 45px; }
+  .em-app-showcase { grid-template-columns: 1fr 1fr; gap: 35px; }
+  .em-app-phones { min-height: 580px; }
+  .em-phone { width: clamp(170px, 21vw, 225px); }
 }
 
 @media (max-width: 780px) {
@@ -162,6 +196,17 @@
   .em-collection-card:nth-child(2) { transform: none; }
   .em-product-strip { display: flex; margin-right: -20px; overflow-x: auto; scroll-snap-type: x mandatory; }
   .em-product-editorial { min-width: 78vw; scroll-snap-align: start; }
+  .em-app-showcase { grid-template-columns: 1fr; padding: 82px 20px 70px; }
+  .em-app-copy { max-width: none; }
+  .em-app-benefits { grid-template-columns: 1fr; }
+  .em-app-benefits > div:nth-child(odd) { margin-right: 0; }
+  .em-app-downloads a { flex: 1; min-width: 150px; }
+  .em-app-phones { min-height: 510px; margin: 15px -45px 0; }
+  .em-phone { width: 190px; }
+  .em-phone-menu { left: 50%; transform: translateX(-50%); }
+  .em-phone-loyalty { left: 2%; top: 90px; transform: rotate(-8deg); }
+  .em-phone-reservations { right: 2%; top: 100px; transform: rotate(8deg); }
+  .em-phone-label { display: none; }
   .em-story { grid-template-columns: 1fr; }
   .em-story-image { min-height: 460px; }
   .em-story-copy { padding: 70px 24px; }

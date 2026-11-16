@@ -188,6 +188,49 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="em-app-showcase" id="aplicatie">
+        <div className="em-app-copy">
+          <p className="em-eyebrow">Emanuela, mereu aproape</p>
+          <h2>Toată bunătatea,<br /><em>în buzunarul tău.</em></h2>
+          <p className="em-app-lead">
+            Descoperă meniul actualizat, comandă mai simplu și transformă fiecare vizită într-o recompensă.
+          </p>
+
+          <div className="em-app-benefits">
+            <div><span>01</span><p><strong>Meniu complet</strong>Produse, imagini și prețuri actualizate.</p></div>
+            <div><span>02</span><p><strong>Club de fidelitate</strong>Puncte, vouchere și surprize doar pentru tine.</p></div>
+            <div><span>03</span><p><strong>Rezervări rapide</strong>Alegi locația, masa și ora direct din aplicație.</p></div>
+            <div><span>04</span><p><strong>Oferte exclusive</strong>Primești primul noutățile din laborator.</p></div>
+          </div>
+
+          <div className="em-app-downloads">
+            <a href="https://apps.apple.com/ro/app/laborator-emanuela" target="_blank" rel="noopener noreferrer" aria-label="Descarcă din App Store">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.33.07 2.26.73 3.04.78 1.17-.24 2.29-.93 3.54-.84 1.5.12 2.63.71 3.38 1.8-3.09 1.85-2.36 5.92.48 7.06-.57 1.5-1.31 2.99-2.44 4.17ZM12.03 7.25C11.88 5.02 13.69 3.18 15.77 3c.29 2.58-2.34 4.5-3.74 4.25Z"/></svg>
+              <span><small>Descarcă din</small>App Store</span>
+            </a>
+            <a href="https://play.google.com/store/apps/details?id=ro.laboratoremanuela.app" target="_blank" rel="noopener noreferrer" aria-label="Descarcă din Google Play">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.18 23.75c.33.18.72.23 1.14.07l12.39-7.15-2.75-2.75L3.18 23.75Zm-1-21.86C2.07 2.2 2 2.57 2 3v18c0 .43.07.8.18 1.11l10.8-10.11L2.18 1.89Zm18.89 8.25-2.91-1.68-3.21 3.54 3.21 3.54 2.93-1.69c1.21-.7 1.21-1.82-.02-2.71ZM4.32.18C3.9.02 3.51.07 3.18.25l10.78 9.83 2.75-2.75L4.32.18Z"/></svg>
+              <span><small>Disponibilă pe</small>Google Play</span>
+            </a>
+          </div>
+        </div>
+
+        <div className="em-app-phones" aria-label="Capturi din aplicația Laborator Emanuela">
+          <div className="em-phone em-phone-menu">
+            <span className="em-phone-label">Meniu</span>
+            <div className="em-phone-frame"><i></i><img src="/images/app/app-menu.jpg" alt="Meniul aplicației Laborator Emanuela" /></div>
+          </div>
+          <div className="em-phone em-phone-loyalty">
+            <span className="em-phone-label">Fidelitate</span>
+            <div className="em-phone-frame"><i></i><img src="/images/app/app-loyalty.jpg" alt="Clubul de fidelitate Laborator Emanuela" /></div>
+          </div>
+          <div className="em-phone em-phone-reservations">
+            <span className="em-phone-label">Rezervări</span>
+            <div className="em-phone-frame"><i></i><img src="/images/app/app-reservations.jpg" alt="Rezervări în aplicația Laborator Emanuela" /></div>
+          </div>
+        </div>
+      </section>
+
       <section className="em-story">
         <div className="em-story-image">
           <img src={content.storyImage || '/images/editorial/atelier-seasonal.jpg'} alt="Selecție pregătită în laborator" />
