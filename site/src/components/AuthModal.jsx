@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import './AuthModal.css';
 
@@ -135,7 +135,7 @@ export default function AuthModal() {
         
         {/* Logo/Header */}
         <div className="auth-header text-center">
-          <img src="https://assets.boosteat.com/images/c165/2023-03-21/20230321093311212641979d71009f/logo.png" alt="Logo" className="auth-logo" />
+          <img src="/images/logo-emanuela.webp" alt="Laborator Emanuela" className="auth-logo" />
           <h3>{t('authTitle')}</h3>
           <p>
             {activeTab === 'forgot' ? t('authForgotSubtitle') : t('authDefaultSubtitle')}

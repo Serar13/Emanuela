@@ -13,17 +13,25 @@ service cloud.firestore {
         && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
 
+    function hasSafeLoyaltyDefaults() {
+      return request.resource.data.get('balance', 0) == 0
+        && request.resource.data.get('vipPoints', 0) == 0
+        && request.resource.data.get('stamps', 0) == 0
+        && request.resource.data.get('birthdayVoucherActive', false) == false;
+    }
+
     // ---- Users / loyalty ----
     // Users can read/write their own profile. Admins can read/write any profile.
     // A user may never grant themselves the admin role.
     match /users/{userId} {
       allow read: if isAdmin() || (isSignedIn() && request.auth.uid == userId);
       allow create: if isSignedIn() && request.auth.uid == userId
-        && (!('role' in request.resource.data) || request.resource.data.role == 'customer');
+        && (!('role' in request.resource.data) || request.resource.data.role == 'customer')
+        && hasSafeLoyaltyDefaults();
       allow update: if isAdmin()
         || (isSignedIn() && request.auth.uid == userId
-            && (!('role' in request.resource.data)
-                || request.resource.data.role == resource.data.get('role', 'customer')));
+            && request.resource.data.diff(resource.data).affectedKeys()
+              .hasOnly(['name', 'phone', 'email', 'birthday', 'updatedAt']));
       allow delete: if isAdmin() || (isSignedIn() && request.auth.uid == userId);
     }
 

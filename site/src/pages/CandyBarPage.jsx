@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import CandyBar from '../components/CandyBar';
 
 export default function CandyBarPage() {

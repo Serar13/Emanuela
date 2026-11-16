@@ -1,9 +1,9 @@
 {
-  "name": "cheesecake-seed",
+  "name": "laborator-emanuela-seed",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "One-off Firestore seeding for The Cheesecake House.",
+  "description": "Date inițiale Firestore pentru Laborator Emanuela.",
   "scripts": {
     "seed": "node seed.mjs",
     "seed:rest": "node seed-rest.mjs"

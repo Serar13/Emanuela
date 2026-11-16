@@ -20,7 +20,7 @@ export default function Categories() {
       defaults={{ name: "", slug: "", icon: "🍰", sortOrder: 1, active: true }}
       fields={[
         { name: "name", label: "Nume", type: "text", required: true },
-        { name: "slug", label: "Slug (id)", type: "text", required: true, help: "Folosit ca id și în URL. ex: cheesecake-jar" },
+        { name: "slug", label: "Slug (id)", type: "text", required: true, help: "Folosit ca id și în URL. ex: monoportii" },
         { name: "icon", label: "Icon (emoji)", type: "text" },
         { name: "sortOrder", label: "Ordine", type: "number", step: "1" },
         { name: "active", label: "Activă", type: "checkbox" }

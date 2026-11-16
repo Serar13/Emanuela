@@ -36,24 +36,20 @@ const ROUTE_IMPORTERS = [
 ];
 
 const CANDY_BAR_BROCHURE_SLIDES = [
-  'https://assets.unlayer.com/projects/0/1781076599848-tinywow_ofertacb_90246948_1.jpg?w=1420px',
-  'https://assets.unlayer.com/projects/0/1781076614454-tinywow_ofertacb_90246948_2.jpg?w=1420px',
-  'https://assets.unlayer.com/projects/0/1781076638923-tinywow_ofertacb_90246948_3.jpg?w=1420px',
-  'https://assets.unlayer.com/projects/0/1781076649625-tinywow_ofertacb_90246948_4.jpg?w=1420px',
-  'https://assets.unlayer.com/projects/0/1781076659460-tinywow_ofertacb_90246948_5.jpg?w=1420px',
-  'https://assets.unlayer.com/projects/0/1781076669378-tinywow_ofertacb_90246948_6.jpg?w=1420px',
-  'https://assets.unlayer.com/projects/0/1781076680050-tinywow_ofertacb_90246948_7.jpg?w=1420px',
-  'https://assets.unlayer.com/projects/0/1781076691749-tinywow_ofertacb_90246948_8.jpg?w=1420px',
+  '/images/candy-bar-01.png',
+  '/images/candy-bar-02.png',
+  '/images/wedding-cake-flowers.jpg',
+  '/images/children-cake-unicorn.webp',
 ];
 
 const CANDY_BAR_MENU_IMAGES = [
-  'https://assets.boosteat.com/images/c165/2023-05-10/20230510120118212645b878ee4599/image.jpeg',
-  'https://assets.boosteat.com/images/c165/2023-05-10/20230510120557212645b88a5f418f/image.jpeg',
-  'https://assets.boosteat.com/images/c165/2023-05-10/20230510120611212645b88b3ac05c/image.jpeg',
-  'https://assets.boosteat.com/images/c165/2023-05-10/20230510120633212645b88c9e70d1/image.jpeg',
-  'https://assets.boosteat.com/images/c165/2023-05-10/20230510120530212645b888a4069f/image.jpeg',
-  'https://assets.boosteat.com/images/c165/2023-05-10/20230510120628212645b88c4558cb/image.jpeg',
-  'https://assets.boosteat.com/images/c165/2023-05-10/20230510120548212645b889ca1dc8/image.jpeg',
+  '/images/cake-pops.jpg',
+  '/images/macarons.jpg',
+  '/images/mousse-baby-blue.jpeg',
+  '/images/mousse-baby-pink.jpeg',
+  '/images/savarina.jpeg',
+  '/images/tort-choco-vanilla.jpeg',
+  '/images/tort-red-velvet.jpg',
 ];
 
 function prefetchRoutes() {
@@ -62,20 +58,7 @@ function prefetchRoutes() {
   ROUTE_IMPORTERS.forEach((imp) => idle(() => imp().catch(() => {})));
 }
 
-function preconnect(url) {
-  const origin = new URL(url).origin;
-  if (document.head.querySelector(`link[data-preconnect="${origin}"]`)) return;
-  const link = document.createElement('link');
-  link.rel = 'preconnect';
-  link.href = origin;
-  link.crossOrigin = 'anonymous';
-  link.dataset.preconnect = origin;
-  document.head.appendChild(link);
-}
-
 function warmCandyBarAssets() {
-  preconnect(CANDY_BAR_BROCHURE_SLIDES[0]);
-  preconnect(CANDY_BAR_MENU_IMAGES[0]);
   preloadImages(CANDY_BAR_BROCHURE_SLIDES, 10000);
   preloadImages(CANDY_BAR_MENU_IMAGES, 10000);
 }
@@ -94,7 +77,7 @@ function RouteFallback() {
 function MainApp() {
   const seen =
     typeof sessionStorage !== 'undefined' &&
-    sessionStorage.getItem('cch_splash_seen') === '1';
+    sessionStorage.getItem('emanuela_splash_seen') === '1';
   const [splashDone, setSplashDone] = useState(seen);
 
   // Start warming data + route chunks immediately — this runs underneath the
@@ -107,7 +90,7 @@ function MainApp() {
 
   const finishSplash = () => {
     try {
-      sessionStorage.setItem('cch_splash_seen', '1');
+      sessionStorage.setItem('emanuela_splash_seen', '1');
     } catch {
       /* sessionStorage may be unavailable (private mode) — ignore */
     }

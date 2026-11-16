@@ -429,13 +429,6 @@
   background-position: center;
 }
 
-/* All location renders share the same square 1:1 source ratio. */
-.location-map-cluj-napoca,
-.location-map-bistrita,
-.location-map-tg-mures {
-  aspect-ratio: 1 / 1;
-}
-
 /* Dark theme specific night-lighting filter for the 3D map */
 .dark-theme .floor-plan-map {
   filter: brightness(0.62) contrast(1.18) saturate(0.85);

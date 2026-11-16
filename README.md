@@ -1,6 +1,7 @@
-# Cheesecake House
+# Laborator Emanuela
 
-Monorepo for The Cheesecake House customer apps and admin tools. Firebase
+Monorepo pentru ecosistemul digital Laborator Emanuela: site, aplicație mobilă,
+webadmin, date inițiale și prezentarea comercială. Firebase asigură
 (Auth + Firestore + Storage + Hosting) is the **single source of truth** for all
 dynamic content — products, categories, promotions, orders, reservations,
 tables, locations, event requests, reviews and loyalty are managed from the

@@ -205,7 +205,7 @@ const TRANSLATIONS = {
   en: {
     menu: "Menu",
     aboutUsTitle: "About Us",
-    aboutUsText: "Born in 2017 from a passion for artisan pastry, Laborator Emanuela started with carefully perfected recipes and a dream of bringing quality sweets to Târgu Mureș. Today, we craft dozens of unique cakes and pastries, baked with love in our own laboratory.\n\nWe operate 3 locations across Târgu Mureș and Câmpia Turzii, serving both our shops and partner restaurants throughout Transylvania.\n\nOur mission is to offer diversity in simplicity through refined textures and flavors. Our motto is: 'Sweet spoonfuls of goodness!'",
+    aboutUsText: "For almost 20 years, Laborator Emanuela has grown as a family business built around carefully prepared desserts and long-term customer relationships. Today, our products are available in Târgu Mureș and Câmpia Turzii, including the Emanuela Experience concept in central Târgu Mureș.\n\nWe create cakes, individual desserts and candy bars for everyday moments and special events. Our motto is: 'Sweet spoonfuls of goodness!'",
     loyalty: "Loyalty",
     reservations: "Bookings",
     profile: "Profile",
@@ -300,7 +300,7 @@ const TRANSLATIONS = {
   hu: {
     menu: "Menü",
     aboutUsTitle: "Rólunk",
-    aboutUsText: "A Laborator Emanuela 2017-ben született meg a kézműves cukrászat iránti szenvedélyből és a minőségi édességek Marosvásárhelyre hozásának vágyából. Gondosan tökéletesített receptekből kiindulva mára torták és sütemények széles választékát kínáljuk, szeretettel sütve saját laboratóriumunkban.\n\n3 helyszínen vagyunk jelen Marosvásárhelyen és Aranyosgyéresen, kiszolgálva saját üzleteinket és a transzilvániai partnerétteremhálózatunkat.\n\nKüldetésünk, hogy a kifinomult textúrák és ízek révén változatosságot kínáljunk az egyszerűségben. Mottónk: 'Édes kanalak a boldogságért!'",
+    aboutUsText: "A Laborator Emanuela közel 20 éve családi vállalkozásként fejlődik, gondosan készített desszertekre és tartós ügyfélkapcsolatokra építve. Termékeink ma Marosvásárhelyen és Aranyosgyéresen érhetők el, köztük a marosvásárhelyi Emanuela Experience koncepcióban.\n\nTortákat, egyedi desszerteket és candy bar kínálatot készítünk hétköznapokra és különleges eseményekre. Mottónk: 'Édes kanalak a boldogságért!'",
     loyalty: "Hűség",
     reservations: "Foglalások",
     profile: "Profil",
@@ -460,10 +460,10 @@ export const AppProvider = ({ children }) => {
           if (!nameVal) nameVal = 'Utilizator';
 
           let phoneVal = '';
-          let balanceVal = 150.0;
-          let vipPointsVal = 120;
-          let stampsVal = 4;
-          let birthdayVoucherActiveVal = true;
+          let balanceVal = 0;
+          let vipPointsVal = 0;
+          let stampsVal = 0;
+          let birthdayVoucherActiveVal = false;
 
           if (docSnap.exists()) {
             const userData = docSnap.data();
@@ -522,13 +522,13 @@ export const AppProvider = ({ children }) => {
   }, []);
 
   // 4. Loyalty Program State
-  const [stamps, setStamps] = useState(4);
-  const [vipPoints, setVipPoints] = useState(120);
+  const [stamps, setStamps] = useState(0);
+  const [vipPoints, setVipPoints] = useState(0);
   const maxStamps = 9;
 
   // 5. Wallet & Balance State
-  const [balance, setBalance] = useState(150.0);
-  const [birthdayVoucherActive, setBirthdayVoucherActive] = useState(true);
+  const [balance, setBalance] = useState(0);
+  const [birthdayVoucherActive, setBirthdayVoucherActive] = useState(false);
 
   // 6. Cart State
   const [cart, setCart] = useState([]);
@@ -732,10 +732,10 @@ export const AppProvider = ({ children }) => {
       const firebaseUser = userCredential.user;
       
       const userDocRef = doc(db, 'users', firebaseUser.uid);
-      const balanceVal = 150.0;
-      const vipPointsVal = 120;
-      const stampsVal = 4;
-      const birthdayVoucherActiveVal = true;
+      const balanceVal = 0;
+      const vipPointsVal = 0;
+      const stampsVal = 0;
+      const birthdayVoucherActiveVal = false;
 
       await setDoc(userDocRef, {
         name,
@@ -823,32 +823,6 @@ export const AppProvider = ({ children }) => {
     );
   };
 
-  const addStamp = async (count = 1) => {
-    let newVal = stamps + count;
-    let activeVoucher = birthdayVoucherActive;
-    if (newVal >= maxStamps) {
-      activeVoucher = true;
-      newVal = newVal - maxStamps;
-    }
-    const newVip = vipPoints + (count * 15);
-    
-    try {
-      if (auth.currentUser) {
-        const userDocRef = doc(db, 'users', auth.currentUser.uid);
-        await setDoc(userDocRef, { 
-          stamps: newVal, 
-          vipPoints: newVip, 
-          birthdayVoucherActive: activeVoucher 
-        }, { merge: true });
-      }
-      setStamps(newVal);
-      setBirthdayVoucherActive(activeVoucher);
-      setVipPoints(newVip);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const addToCart = (product) => {
     setCart((prev) => {
       const existing = prev.find(item => item.id === product.id);
@@ -931,79 +905,30 @@ export const AppProvider = ({ children }) => {
     }
   };
 
-  const topUpWallet = async (amount) => {
+  const placeOrder = async (amount, orderMeta = null) => {
+    if (!auth.currentUser) return false;
     try {
-      const newBalance = balance + amount;
-      if (auth.currentUser) {
-        const userDocRef = doc(db, 'users', auth.currentUser.uid);
-        await setDoc(userDocRef, { balance: newBalance }, { merge: true });
-      }
-      setBalance(newBalance);
-    } catch (err) {
-      console.error(err);
+      const orderItems = (orderMeta?.items || cart).map((item) => ({
+        productId: item.id || '',
+        name: item.name || '',
+        price: typeof item.price === 'number' ? item.price : Number(item.price) || 0,
+        quantity: item.quantity || 1
+      }));
+      await createOrder({
+        userId: auth.currentUser.uid,
+        customerName: user?.name || '',
+        source: 'mobile',
+        locationId: orderMeta?.locationId || '',
+        locationName: orderMeta?.locationName || '',
+        items: orderItems,
+        total: amount,
+        status: 'pending'
+      });
+      return true;
+    } catch (error) {
+      console.error('Error creating order:', error);
+      return false;
     }
-  };
-
-  const payWithWallet = async (amount, orderMeta = null) => {
-    if (balance >= amount) {
-      try {
-        const newBalance = balance - amount;
-        const stampsEarned = Math.floor(amount / 30);
-        const count = stampsEarned > 0 ? stampsEarned : 1;
-
-        let newStamps = stamps + count;
-        let newVipPoints = vipPoints + (count * 15);
-        let activeVoucher = birthdayVoucherActive;
-
-        if (newStamps >= maxStamps) {
-          activeVoucher = true;
-          newStamps = newStamps - maxStamps;
-        }
-
-        if (auth.currentUser) {
-          const userDocRef = doc(db, 'users', auth.currentUser.uid);
-          await setDoc(userDocRef, {
-            balance: newBalance,
-            stamps: newStamps,
-            vipPoints: newVipPoints,
-            birthdayVoucherActive: activeVoucher
-          }, { merge: true });
-
-          // Persist the order to Firestore (source: 'mobile', status 'pending').
-          try {
-            const orderItems = (orderMeta?.items || cart).map((item) => ({
-              productId: item.id || '',
-              name: item.name || '',
-              price: typeof item.price === 'number' ? item.price : Number(item.price) || 0,
-              quantity: item.quantity || 1
-            }));
-            await createOrder({
-              userId: auth.currentUser.uid,
-              customerName: user?.name || '',
-              source: 'mobile',
-              locationId: orderMeta?.locationId || '',
-              locationName: orderMeta?.locationName || '',
-              items: orderItems,
-              total: amount,
-              status: 'pending'
-            });
-          } catch (orderErr) {
-            // An order-write failure must not roll back the wallet payment.
-            console.error('Error creating order doc:', orderErr);
-          }
-        }
-
-        setBalance(newBalance);
-        setStamps(newStamps);
-        setVipPoints(newVipPoints);
-        setBirthdayVoucherActive(activeVoucher);
-        return true;
-      } catch (err) {
-        console.error(err);
-        return false;
-      }
-    }
-    return false;
   };
 
   const colors = THEME_COLORS[theme];
@@ -1038,7 +963,6 @@ export const AppProvider = ({ children }) => {
       vipPoints,
       balance,
       birthdayVoucherActive,
-      setBirthdayVoucherActive,
       cart,
       reservations,
       offers,
@@ -1047,14 +971,12 @@ export const AppProvider = ({ children }) => {
       productsLoading,
       offersLoading,
       locationsLoading,
-      addStamp,
       addToCart,
       removeFromCart,
       updateQuantity,
       clearCart,
       addReservation,
-      topUpWallet,
-      payWithWallet,
+      placeOrder,
       setOffers
     }}>
       {children}

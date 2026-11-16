@@ -12,7 +12,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useApp } from '../context/AppContext';
 
 export default function LoyaltyScreen() {
-  const { stamps, maxStamps, vipPoints, addStamp, colors, isLoggedIn, requestAuth: openAuth, t } = useApp();
+  const { stamps, maxStamps, vipPoints, user, colors, isLoggedIn, requestAuth: openAuth, t } = useApp();
   const styles = getStyles(colors);
   const [qrVisible, setQrVisible] = useState(false);
 
@@ -50,16 +50,6 @@ export default function LoyaltyScreen() {
       );
     }
     return stampItems;
-  };
-
-  const handleSimulateScan = () => {
-    if (!isLoggedIn) {
-      requestAuth();
-      return;
-    }
-
-    addStamp(1);
-    setQrVisible(false);
   };
 
   const requestAuth = () => {
@@ -167,38 +157,13 @@ export default function LoyaltyScreen() {
             </View>
             
             <Text style={styles.qrModalDesc}>
-              Apropie ecranul telefonului de scanerul de la casa de marcat din cofetărie pentru a acumula puncte.
+              Arată codul de client personalului. Punctele sunt acordate și validate de echipa Emanuela.
             </Text>
 
-            {/* Visual representation of a styled QR Code */}
             <View style={styles.qrBox}>
-              <View style={styles.qrCornerTopLeft} />
-              <View style={styles.qrCornerTopRight} />
-              <View style={styles.qrCornerBottomLeft} />
-              <View style={styles.qrCornerBottomRight} />
-              
-              {/* Fake QR inner blocks */}
-              <View style={styles.qrRow}>
-                <View style={[styles.qrBlock, styles.qrBlockLarge]} />
-                <View style={styles.qrBlock} />
-                <View style={[styles.qrBlock, styles.qrBlockLarge]} />
-              </View>
-              <View style={styles.qrRow}>
-                <View style={styles.qrBlock} />
-                <View style={[styles.qrBlock, styles.qrBlockLarge]} />
-                <View style={styles.qrBlock} />
-              </View>
-              <View style={styles.qrRow}>
-                <View style={[styles.qrBlock, styles.qrBlockLarge]} />
-                <View style={styles.qrBlock} />
-                <View style={styles.qrBlock} />
-              </View>
+              <Ionicons name="person-circle-outline" size={72} color={colors.gold} />
+              <Text style={[styles.qrModalTitle, { marginTop: 12 }]}>EM-{(user?.uid || '').slice(-8).toUpperCase()}</Text>
             </View>
-
-            {/* Test Action */}
-            <TouchableOpacity style={styles.scanSimBtn} onPress={handleSimulateScan}>
-              <Text style={styles.scanSimBtnText}>Simulează Scanarea (Testare)</Text>
-            </TouchableOpacity>
           </View>
         </View>
       </Modal>

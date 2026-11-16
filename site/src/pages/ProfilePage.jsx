@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import './ProfilePage.css';
@@ -8,8 +8,6 @@ export default function ProfilePage() {
     currentUser, 
     updateProfile, 
     deleteAccount, 
-    topUpWallet, 
-    useBirthdayVoucher,
     setShowAuthModal,
     logout,
     t
@@ -53,19 +51,6 @@ export default function ProfilePage() {
     }
   };
 
-  const handleTopUp = async (amount) => {
-    setLoading(true);
-    try {
-      await topUpWallet(amount);
-      alert(`${t('profileTopUpSuccess')} +${amount} RON!`);
-    } catch (err) {
-      console.error(err);
-      alert(t('profileTopUpError'));
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleUseVoucher = () => {
     if (!currentUser?.birthdayVoucherActive) return;
     alert(t('profileVoucherAlert'));
@@ -98,7 +83,7 @@ export default function ProfilePage() {
   };
 
   const getInitials = (userName) => {
-    if (!userName) return 'CH';
+    if (!userName) return 'EM';
     const parts = userName.trim().split(/\s+/);
     if (parts.length >= 2) {
       return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
@@ -222,12 +207,7 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              {/* Top Up Wallet */}
-              <div className="topup-options-row">
-                <button onClick={() => handleTopUp(50)} disabled={loading} className="wallet-topup-btn">+50 RON</button>
-                <button onClick={() => handleTopUp(100)} disabled={loading} className="wallet-topup-btn">+100 RON</button>
-                <button onClick={() => handleTopUp(200)} disabled={loading} className="wallet-topup-btn">+200 RON</button>
-              </div>
+              <p className="muted">Soldul și recompensele sunt actualizate în siguranță de echipa Emanuela.</p>
             </div>
 
             {/* Right Column: Vouchers & Actions */}

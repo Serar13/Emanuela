@@ -1,25 +1,16 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   StyleSheet,
   Text,
   View,
   ScrollView,
   TouchableOpacity,
-  Alert,
-  Image,
-  ActivityIndicator
+  Alert
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useApp } from '../context/AppContext';
-import { getTablesByLocation } from '../services/firestore';
 
 const FALLBACK_LOCATIONS = ['Târgu Mureș', 'Câmpia Turzii'];
-
-// Floor-plan assets kept locally (these visual plans are not in Firestore).
-const LAYOUT_IMAGES = {
-  'Târgu Mureș': require('../assets/mures_3d.png'),
-  'Câmpia Turzii': require('../assets/mures_3d.png')
-};
 
 // Map a date label to a YYYY-MM-DD string (used for conflict + persistence).
 const dayLabelToDate = (label) => {
@@ -35,7 +26,7 @@ const dayLabelToDate = (label) => {
 export default function ReservationsScreen() {
   const {
     reservations, addReservation, colors, isLoggedIn,
-    requestAuth: openAuth, language, t, products, locations
+    requestAuth: openAuth, t, products, locations
   } = useApp();
   const styles = getStyles(colors);
 
@@ -49,42 +40,11 @@ export default function ReservationsScreen() {
   const [guests, setGuests] = useState(2);
   const [day, setDay] = useState('Astăzi');
   const [time, setTime] = useState('19:30');
-  const [selectedTable, setSelectedTable] = useState(null);
-
-  const [tablesData, setTablesData] = useState([]);
-  const [tablesLoading, setTablesLoading] = useState(false);
 
   const selectedLocationObj = useMemo(
     () => (locations || []).find(l => l.name === location),
     [locations, location]
   );
-
-  // Load tables for the selected location from Firestore.
-  useEffect(() => {
-    let active = true;
-    const locId = selectedLocationObj?.id;
-    if (!locId) {
-      setTablesData([]);
-      return () => { active = false; };
-    }
-    setTablesLoading(true);
-    (async () => {
-      try {
-        const rows = await getTablesByLocation(locId);
-        if (active) setTablesData(rows);
-      } catch (err) {
-        console.error('Error loading tables:', err);
-        if (active) setTablesData([]);
-      } finally {
-        if (active) setTablesLoading(false);
-      }
-    })();
-    return () => { active = false; };
-  }, [selectedLocationObj?.id]);
-
-  const getTableDesc = (table) => {
-    return table.notes || table.descRo || '';
-  };
 
   // Pre-Order Quantities mapping: { productId: quantity }
   const [preOrderQuantities, setPreOrderQuantities] = useState({});
@@ -97,28 +57,6 @@ export default function ReservationsScreen() {
 
   // The current target date string for this booking.
   const targetDate = dayLabelToDate(day);
-
-  // A table is "booked" if a non-cancelled reservation already holds it
-  // for the chosen date + time.
-  const isTableBooked = (table) => {
-    return (reservations || []).some(r =>
-      r.tableId && r.tableId === table.id &&
-      (r.rawDate || '') === targetDate &&
-      (r.time || '') === time &&
-      r.status !== 'Anulată'
-    );
-  };
-
-  // Compose the tables list with computed availability + coordinates.
-  const tables = useMemo(() => tablesData.map(tbl => ({
-    id: tbl.id,
-    name: tbl.name || 'Masă',
-    seats: tbl.seats || 2,
-    notes: tbl.notes || '',
-    x: typeof tbl.x === 'number' ? tbl.x : null,
-    y: typeof tbl.y === 'number' ? tbl.y : null,
-    status: isTableBooked(tbl) ? 'booked' : 'available'
-  })), [tablesData, reservations, targetDate, time]);
 
   const handleQuantityChange = (productId, change) => {
     setPreOrderQuantities(prev => {
@@ -153,11 +91,6 @@ export default function ReservationsScreen() {
       return;
     }
 
-    if (!selectedTable) {
-      Alert.alert(t('error'), t('selectAvailableTableError'));
-      return;
-    }
-
     // Compile pre-ordered items from the Firestore product list.
     const preOrderItems = Object.keys(preOrderQuantities).map(id => {
       const prod = preorderProducts.find(p => p.id === id);
@@ -169,12 +102,11 @@ export default function ReservationsScreen() {
       };
     });
 
-    const tableDesc = getTableDesc(selectedTable);
     const newRes = {
       location,
       locationId: selectedLocationObj?.id || '',
-      tableId: selectedTable.id,
-      table: tableDesc ? `${selectedTable.name} (${tableDesc})` : selectedTable.name,
+      tableId: '',
+      table: '',
       date: `${day}, la ora ${time}`,
       rawDate: targetDate,
       time,
@@ -187,19 +119,18 @@ export default function ReservationsScreen() {
     if (!ok) return;
 
     // Alert confirmation details
-    let summaryText = `${selectedTable.name}\n${day}, ora ${time}\n${guests} persoane`;
+    let summaryText = `${day}, ora ${time}\n${guests} persoane`;
     if (preOrderItems.length > 0) {
       summaryText += `\n\nPre-comandă:\n` + preOrderItems.map(item => `${item.quantity}x ${item.name}`).join('\n');
     }
 
     Alert.alert(
-      t('confirmReservationTitle'),
-      `Te așteptăm la Laborator Emanuela ${location}!\n\nDetalii:\n${summaryText}`,
+      'Cerere trimisă',
+      `Echipa Laborator Emanuela ${location} va confirma disponibilitatea.\n\nDetalii:\n${summaryText}`,
       [{ text: 'OK' }]
     );
 
     // Reset Form
-    setSelectedTable(null);
     setPreOrderQuantities({});
   };
 
@@ -216,7 +147,6 @@ export default function ReservationsScreen() {
               style={[styles.pickerBtn, location === loc && styles.pickerBtnActive]}
               onPress={() => {
                 setLocation(loc);
-                setSelectedTable(null);
               }}
             >
               <Text style={[styles.pickerText, location === loc && styles.pickerTextActive]}>
@@ -269,125 +199,8 @@ export default function ReservationsScreen() {
         </View>
       </View>
 
-      {/* Location Layout Render */}
-      <Text style={styles.sectionTitle}>{t('locationLayoutTitle')} ({location})</Text>
-      <View style={styles.layoutCard}>
-        <View style={styles.layoutImageContainer}>
-          <Image 
-            source={LAYOUT_IMAGES[location] || LAYOUT_IMAGES['Târgu Mureș']}
-            style={styles.layoutImage} 
-            resizeMode="cover"
-          />
-          {tables.filter(tbl => tbl.x !== null && tbl.y !== null).map(table => {
-            const isBooked = table.status === 'booked';
-            const isSelected = selectedTable?.id === table.id;
-
-            return (
-              <TouchableOpacity
-                key={table.id}
-                disabled={isBooked}
-                style={[
-                  styles.tableOverlay,
-                  { left: `${table.x}%`, top: `${table.y}%` },
-                  isBooked && styles.tableOverlayBooked,
-                  isSelected && styles.tableOverlaySelected,
-                ]}
-                onPress={() => setSelectedTable(table)}
-              >
-                <Text style={[
-                  styles.overlayText,
-                  isBooked && styles.overlayTextBooked,
-                  isSelected && styles.overlayTextSelected
-                ]}>
-                  {(table.name.match(/\d+/) || [table.name])[0]}
-                </Text>
-                <Text style={[
-                  styles.overlaySeats,
-                  isSelected && styles.overlaySeatsSelected
-                ]}>
-                  {table.seats}p
-                </Text>
-                {isSelected && (
-                  <View style={styles.overlayCheckmark}>
-                    <Ionicons name="checkmark" size={10} color={colors.cardBg} />
-                  </View>
-                )}
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-
-        <View style={styles.legendContainer}>
-          <View style={styles.legendItem}>
-            <View style={[styles.legendColor, { borderColor: colors.gold, backgroundColor: colors.cardBg === '#ffffff' ? 'rgba(255, 255, 255, 0.65)' : 'rgba(18, 16, 14, 0.6)' }]} />
-            <Text style={styles.legendText}>{t('tableAvailable')}</Text>
-          </View>
-          <View style={styles.legendItem}>
-            <View style={[styles.legendColor, { borderColor: '#a0a0a0', backgroundColor: colors.cardBg === '#ffffff' ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.05)' }]} />
-            <Text style={styles.legendText}>{t('tableBooked')}</Text>
-          </View>
-          <View style={styles.legendItem}>
-            <View style={[styles.legendColor, { borderColor: colors.gold, backgroundColor: colors.gold }]} />
-            <Text style={styles.legendText}>{t('tableSelected')}</Text>
-          </View>
-        </View>
-      </View>
-
-      {/* Table Selector */}
-      <Text style={styles.sectionTitle}>{t('availableTables')} {location}</Text>
-      <View style={styles.tableList}>
-        {tablesLoading && (
-          <View style={styles.emptyReservations}>
-            <ActivityIndicator color={colors.gold} />
-          </View>
-        )}
-        {!tablesLoading && tables.length === 0 && (
-          <View style={styles.emptyReservations}>
-            <Text style={styles.emptyText}>{t('noActiveReservations')}</Text>
-          </View>
-        )}
-        {tables.map(table => {
-          const isSelected = selectedTable?.id === table.id;
-          const isBooked = table.status === 'booked';
-
-          return (
-            <TouchableOpacity 
-              key={table.id}
-              disabled={isBooked}
-              style={[
-                styles.tableCard,
-                isSelected && styles.tableCardSelected,
-                isBooked && styles.tableCardBooked
-              ]}
-              onPress={() => setSelectedTable(table)}
-            >
-              <View style={styles.tableLeft}>
-                <Ionicons 
-                  name={isBooked ? "close-circle-outline" : (isSelected ? "checkbox" : "square-outline")} 
-                  size={22} 
-                  color={isBooked ? "#e57373" : (isSelected ? colors.gold : colors.textMuted)} 
-                />
-                <View style={styles.tableInfo}>
-                  <Text style={[styles.tableName, isBooked && styles.tableTextBooked]}>
-                    {table.name} ({table.seats} {table.seats === 1 ? 'loc' : 'locuri'})
-                  </Text>
-                  <Text style={styles.tableDesc}>{getTableDesc(table)}</Text>
-                </View>
-              </View>
-              <Text style={[
-                styles.tableStatus,
-                isBooked ? styles.statusBooked : (isSelected ? styles.statusSelected : styles.statusAvailable)
-              ]}>
-                {isBooked ? t('tableBooked') : (isSelected ? t('tableSelected') : t('tableAvailable'))}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
-
       {/* ADVANCED PRE-ORDER SECTION */}
-      {selectedTable && (
-        <View style={styles.preOrderCard}>
+      <View style={styles.preOrderCard}>
           <View style={styles.preOrderHeader}>
             <Ionicons name="cart-outline" size={20} color={colors.gold} />
             <Text style={styles.preOrderTitle}>{t('preOrderTitle')}</Text>
@@ -427,15 +240,13 @@ export default function ReservationsScreen() {
               );
             })}
           </View>
-        </View>
-      )}
+      </View>
 
       <TouchableOpacity 
-        style={[styles.bookButton, !selectedTable && styles.bookButtonDisabled]}
+        style={styles.bookButton}
         onPress={handleBook}
-        disabled={!selectedTable}
       >
-        <Text style={styles.bookButtonText}>{t('bookTableButton')}</Text>
+        <Text style={styles.bookButtonText}>Trimite cererea de rezervare</Text>
       </TouchableOpacity>
 
       {/* Active Reservations list */}
@@ -456,7 +267,7 @@ export default function ReservationsScreen() {
                 <Text style={styles.resBadgeText}>{res.status}</Text>
               </View>
             </View>
-            <Text style={styles.resDetails}>{res.table}</Text>
+            {!!res.table && <Text style={styles.resDetails}>{res.table}</Text>}
             <Text style={styles.resTime}>{res.date} • {res.guests} persoane</Text>
             
             {/* Show Pre-Orders on Card if exists */}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { getActiveLocations } from '../services/catalog';
 import { createOfferRequest } from '../services/submissions';

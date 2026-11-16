@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import Contact from '../components/Contact';
 
 export default function ContactPage() {

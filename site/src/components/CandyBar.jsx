@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { createOfferRequest } from '../services/submissions';
 import { isImagePreloaded, preloadImages } from '../services/prefetch';
@@ -7,23 +7,19 @@ import './Skeleton.css';
 
 export default function CandyBar() {
   const { t, language } = useApp();
-  const pick = (ro, en, hu) => {
+  const pick = useCallback((ro, en, hu) => {
     if (language === 'hu') return hu;
     if (language === 'en') return en;
     return ro;
-  };
+  }, [language]);
 
   // Carousel state
   const [currentSlide, setCurrentSlide] = useState(0);
   const brochureSlides = useMemo(() => ([
-    'https://assets.unlayer.com/projects/0/1781076599848-tinywow_ofertacb_90246948_1.jpg?w=1420px',
-    'https://assets.unlayer.com/projects/0/1781076614454-tinywow_ofertacb_90246948_2.jpg?w=1420px',
-    'https://assets.unlayer.com/projects/0/1781076638923-tinywow_ofertacb_90246948_3.jpg?w=1420px',
-    'https://assets.unlayer.com/projects/0/1781076649625-tinywow_ofertacb_90246948_4.jpg?w=1420px',
-    'https://assets.unlayer.com/projects/0/1781076659460-tinywow_ofertacb_90246948_5.jpg?w=1420px',
-    'https://assets.unlayer.com/projects/0/1781076669378-tinywow_ofertacb_90246948_6.jpg?w=1420px',
-    'https://assets.unlayer.com/projects/0/1781076680050-tinywow_ofertacb_90246948_7.jpg?w=1420px',
-    'https://assets.unlayer.com/projects/0/1781076691749-tinywow_ofertacb_90246948_8.jpg?w=1420px',
+    '/images/candy-bar-01.png',
+    '/images/candy-bar-02.png',
+    '/images/wedding-cake-flowers.jpg',
+    '/images/children-cake-unicorn.webp',
   ]), []);
 
   // Calculator state
@@ -36,7 +32,7 @@ export default function CandyBar() {
   const [formPhone, setFormPhone] = useState('');
   const [formEmail, setFormEmail] = useState('');
   const [formDate, setFormDate] = useState('');
-  const [formLocation, setFormLocation] = useState('Cluj-Napoca');
+  const [formLocation, setFormLocation] = useState('Târgu Mureș');
   const [formServices, setFormServices] = useState({
     candyBar: true,
     tortPrezentare: true,
@@ -52,48 +48,48 @@ export default function CandyBar() {
   // A-la-carte menu items
   const menuItems = useMemo(() => ([
     {
-      name: 'Mini Cheesecake',
+      name: pick('Mini prăjituri', 'Mini pastries', 'Mini sütemények'),
       price: '12 RON',
-      desc: pick('Varianta miniaturală a cheesecakes-urilor noastre. Arome la alegere: Căpșuni, Zmeură, Caramel Sărat, Oreo, Snickers, Fistic.', 'Miniature version of our signature cheesecakes. Available flavors: Strawberry, Raspberry, Salted Caramel, Oreo, Snickers, Pistachio.', 'Saját cheesecakes-eink miniatűr változata. Elérhető ízek: eper, málna, sós karamell, Oreo, Snickers, pisztácia.'),
-      image: 'https://assets.boosteat.com/images/c165/2023-05-10/20230510120118212645b878ee4599/image.jpeg'
+      desc: pick('Selecție de prăjituri artizanale în format potrivit pentru evenimente.', 'A selection of artisan pastries sized for events.', 'Kézműves mini süteményválogatás rendezvényekre.'),
+      image: '/images/candy-bar-01.png'
     },
     {
-      name: pick('Cheesecake la Pahar (120g)', 'Cheesecake in a Jar (120g)', 'Poharas Cheesecake (120g)'),
+      name: pick('Desert la pahar', 'Dessert cup', 'Pohárdesszert'),
       price: '15 RON',
-      desc: pick('Shot premium de cheesecake fin așezat în straturi într-un borcan elegant de sticlă, acoperit cu sos de fructe de pădure sau caramel.', 'Premium cheesecake layered beautifully in an elegant glass jar, topped with fresh berry sauce or rich caramel.', 'Prémium cheesecake elegáns üvegpohárban rétegezve, erdei gyümölcsös szósszal vagy karamellel a tetején.'),
-      image: 'https://assets.boosteat.com/images/c165/2023-05-10/20230510120557212645b88a5f418f/image.jpeg'
+      desc: pick('Straturi fine de cremă, blat și inserții de fructe, servite individual.', 'Fine layers of cream, sponge, and fruit, served individually.', 'Finom krém-, piskóta- és gyümölcsrétegek egyedi adagban.'),
+      image: '/images/mousse-baby-pink.jpeg'
     },
     {
       name: 'Mini Pavlova',
       price: '15 RON',
       desc: pick('Coajă fină de bezea crocantă la exterior și moale la interior, umplută cu cremă fină de vanilie și decorată cu fructe proaspete.', 'Delicate meringue shell, crisp on the outside and soft inside, filled with fine vanilla cream and decorated with fresh fruits.', 'Finom habcsókhéj, kívül roppanós, belül puha, vaníliakrémmel töltve és friss gyümölcsökkel díszítve.'),
-      image: 'https://assets.boosteat.com/images/c165/2023-05-10/20230510120611212645b88b3ac05c/image.jpeg'
+      image: '/images/mousse-baby-blue.jpeg'
     },
     {
       name: pick('Macarons Premium', 'Premium Macarons', 'Prémium Macaronok'),
       price: '6 RON',
       desc: pick('Biscuiți franțuzești din făină de migdale cu umpluturi cremoase de fistic, ciocolată neagră, zmeură sau caramel sărat.', 'French almond meringue cookies with rich, creamy fillings of pistachio, dark chocolate, raspberry, or salted caramel.', 'Francia mandulalisztes macaronok gazdag pisztáciás, étcsokoládés, málnás vagy sós karamellás töltelékkel.'),
-      image: 'https://assets.boosteat.com/images/c165/2023-05-10/20230510120633212645b88c9e70d1/image.jpeg'
+      image: '/images/macarons.jpg'
     },
     {
-      name: pick('Cupcakes Tematice', 'Themed Cupcakes', 'Tematikus Cupcake-ek'),
+      name: 'Cake Pops',
       price: '8 RON',
       desc: pick('Brioșe pufoase cu morcovi și nuci sau banane, decorate cu o cupolă bogată de cremă de brânză fină.', 'Fluffy carrot & walnut or banana muffins, decorated with a rich swirl of cream cheese frosting.', 'Puha répa-diós vagy banános muffinok gazdag krémsajtos toppinggal.'),
-      image: 'https://assets.boosteat.com/images/c165/2023-05-10/20230510120530212645b888a4069f/image.jpeg'
+      image: '/images/cake-pops.jpg'
     },
     {
       name: pick('Sărățele cu Telemea (kg)', 'Salty Cheese Crackers (kg)', 'Sós sajtos rudak (kg)'),
       price: '60 RON',
       desc: pick('Sărățele crocante preparate cu unt, telemea maturată și chimen sau mac, perfecte pentru echilibrarea gustului dulce al candy bar-ului.', 'Crisp savory crackers made with butter, matured local cheese, and cumin or poppy seeds, perfect to balance the sweet bar.', 'Ropogós sós rudak vajjal, érlelt sajttal és köménnyel vagy mákkal, tökéletesen kiegyensúlyozzák az édes candy bart.'),
-      image: 'https://assets.boosteat.com/images/c165/2023-05-10/20230510120628212645b88c4558cb/image.jpeg'
+      image: '/images/candy-bar-02.png'
     },
     {
       name: pick('Tort de Prezentare (kg)', 'Presentation Cake (kg)', 'Bemutató torta (kg)'),
       price: '150 RON',
       desc: pick('Tort personalizat cu etaje pentru ocazii speciale, îmbrăcat în cremă fină de brânză și decorat cu flori naturale sau fructe.', 'Custom multi-tiered cake for special occasions, coated in smooth cream cheese frosting and decorated with real flowers or fruits.', 'Egyedi emeletes torta különleges alkalmakra, sima krémsajtos bevonattal és valódi virágokkal vagy gyümölcsökkel díszítve.'),
-      image: 'https://assets.boosteat.com/images/c165/2023-05-10/20230510120548212645b889ca1dc8/image.jpeg'
+      image: '/images/wedding-cake-flowers.jpg'
     }
-  ]), [language]);
+  ]), [pick]);
 
   const [brochureReady, setBrochureReady] = useState(() => isImagePreloaded(brochureSlides[0]));
   const [loadedSlides, setLoadedSlides] = useState(
@@ -196,23 +192,23 @@ export default function CandyBar() {
     
     const calculatedMessage = language === 'hu'
       ? `Automatikusan számolt ajánlás:
-- ${minicakesQty} Mini Cheesecake (vegyes ízek)
-- ${jarsQty} Poharas Cheesecake (120g)
+	- ${minicakesQty} Mini sütemény (vegyes ízek)
+	- ${jarsQty} Pohárdesszert
 - ${macaronsQty} Prémium Macaron
 - ${pavlovasQty} Mini Pavlova
 ${includeSaratle ? `- ${saratleQty} kg sós sajtos rúd\n` : ''}${includeCake ? `- ${cakeQty} kg bemutató torta\n` : ''}
 Becsült költség: kb. ${totalCostEstimate} RON.`
       : language === 'en'
       ? `Automatically calculated recommendation:
-- ${minicakesQty} Mini Cheesecakes (Mixed flavors)
-- ${jarsQty} Cheesecake jars (120g)
+	- ${minicakesQty} Mini pastries (mixed selection)
+	- ${jarsQty} Dessert cups
 - ${macaronsQty} Premium Macarons
 - ${pavlovasQty} Mini Pavlova
 ${includeSaratle ? `- ${saratleQty} kg Savory cheese crackers\n` : ''}${includeCake ? `- Presentation cake: ${cakeQty} kg\n` : ''}
 Estimated budget: approx. ${totalCostEstimate} RON.`
       : `Recomandare calculată automat:
-- ${minicakesQty} Mini Cheesecakes (Aromă mixtă)
-- ${jarsQty} Borcanele de Cheesecake (120g)
+	- ${minicakesQty} Mini prăjituri (selecție mixtă)
+	- ${jarsQty} Deserturi la pahar
 - ${macaronsQty} Macarons Premium
 - ${pavlovasQty} Mini Pavlova
 ${includeSaratle ? `- ${saratleQty} kg Sărățele cu telemea\n` : ''}${includeCake ? `- Tort de prezentare de ${cakeQty} kg\n` : ''}
@@ -386,12 +382,12 @@ Buget estimat: aprox. ${totalCostEstimate} RON.`
               <div className="results-list">
                 <div className="result-item">
                   <span className="item-qty">{minicakesQty}x</span>
-                  <span className="item-name">Mini Cheesecakes ({pick('diverse arome', 'mixed flavors', 'vegyes ízek')})</span>
+                  <span className="item-name">{pick('Mini prăjituri', 'Mini pastries', 'Mini sütemények')} ({pick('selecție mixtă', 'mixed selection', 'vegyes ízek')})</span>
                   <span className="item-cost">{minicakesCost} RON</span>
                 </div>
                 <div className="result-item">
                   <span className="item-qty">{jarsQty}x</span>
-                  <span className="item-name">Cheesecake la Pahar (120g)</span>
+                  <span className="item-name">{pick('Desert la pahar', 'Dessert cup', 'Pohárdesszert')}</span>
                   <span className="item-cost">{jarsCost} RON</span>
                 </div>
                 <div className="result-item">
@@ -529,9 +525,8 @@ Buget estimat: aprox. ${totalCostEstimate} RON.`
                   <div className="form-group">
                     <label>{pick('Locația Evenimentului *', 'Event Location *', 'Esemény helyszíne *')}</label>
                     <select value={formLocation} onChange={(e) => setFormLocation(e.target.value)}>
-                      <option value="Cluj-Napoca">Cluj-Napoca</option>
                       <option value="Târgu Mureș">Târgu Mureș</option>
-                      <option value="Bistrița">Bistrița</option>
+                      <option value="Câmpia Turzii">Câmpia Turzii</option>
                       <option value="Alta">{pick('Alta (În afara acestor orașe)', 'Other (outside these cities)', 'Más helyszín (ezeken a városokon kívül)')}</option>
                     </select>
                   </div>

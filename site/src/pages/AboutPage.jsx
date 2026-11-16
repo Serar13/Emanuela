@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
   import AboutUs from '../components/AboutUs';
 
   export default function AboutPage() {

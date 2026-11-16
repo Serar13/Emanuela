@@ -18,7 +18,7 @@ const FALLBACK_LOCATIONS = ['Târgu Mureș', 'Câmpia Turzii'];
 export default function HomeScreen() {
   const {
     cart, addToCart, removeFromCart, updateQuantity, clearCart,
-    balance, payWithWallet, colors, isLoggedIn, requestAuth: openAuth, t,
+    placeOrder, colors, isLoggedIn, requestAuth: openAuth, t,
     products, productsLoading, locations
   } = useApp();
   const styles = getStyles(colors);
@@ -67,16 +67,7 @@ export default function HomeScreen() {
       return;
     }
 
-    if (balance < cartTotal) {
-      Alert.alert(
-        t('insufficientFunds'),
-        `${t('insufficientFunds')}: ${balance} RON < ${cartTotal} RON`,
-        [{ text: 'OK' }]
-      );
-      return;
-    }
-
-    const success = await payWithWallet(cartTotal, {
+    const success = await placeOrder(cartTotal, {
       items: cart,
       locationId: selectedLocationObj?.id || '',
       locationName: pickupLocation
@@ -84,7 +75,7 @@ export default function HomeScreen() {
     if (success) {
       Alert.alert(
         'Comandă Plasată!',
-        `Comanda a fost trimisă cu succes la locația din ${pickupLocation}.\n\nVa fi pregătită în ${pickupTime}.\nSuma de ${cartTotal} RON a fost reținută din portofel. Ai primit ștampile în programul de loialitate!`,
+        `Cererea a fost trimisă la ${pickupLocation}.\n\nEchipa Emanuela va confirma disponibilitatea și timpul de pregătire. Plata se face după confirmarea comenzii.`,
         [
           { 
             text: 'Super!', 
@@ -269,12 +260,7 @@ export default function HomeScreen() {
                 <Text style={styles.totalLabel}>Total:</Text>
                 <Text style={styles.totalValue}>{cartTotal} RON</Text>
               </View>
-              <View style={styles.balanceRow}>
-                <Text style={styles.balanceLabel}>Sold curent:</Text>
-                <Text style={[styles.balanceValue, balance < cartTotal ? styles.insufficient : styles.sufficient]}>
-                  {balance} RON
-                </Text>
-              </View>
+              <Text style={styles.checkoutNotice}>Plata se stabilește după confirmarea comenzii de către locație.</Text>
               
               <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>
                 <Ionicons name="wallet-outline" size={20} color="#1b1713" style={{ marginRight: 8 }} />
@@ -585,24 +571,11 @@ const getStyles = (colors) => StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold'
   },
-  balanceRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 16
-  },
-  balanceLabel: {
+  checkoutNotice: {
     color: colors.textMuted,
-    fontSize: 13
-  },
-  balanceValue: {
-    fontSize: 14,
-    fontWeight: 'bold'
-  },
-  insufficient: {
-    color: '#e57373'
-  },
-  sufficient: {
-    color: '#81c784'
+    fontSize: 13,
+    lineHeight: 18,
+    marginBottom: 16,
   },
   checkoutButton: {
     backgroundColor: colors.gold,

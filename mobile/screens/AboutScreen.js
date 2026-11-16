@@ -18,7 +18,7 @@ const LOCAL_TRANSLATIONS = {
     valuesTitle: "Valorile Noastre",
     connectWithUs: "Urmărește-ne online",
     brandBadge: "🍰 LABORATOR DE PRĂJITURI ARTIZANALE",
-    brandBadgeDesc: "Din 2017, creăm lingurițe de bunătate în laboratorul nostru din Târgu Mureș.",
+    brandBadgeDesc: "De aproape 20 de ani, creăm lingurițe de bunătate pentru momente de zi cu zi și evenimente speciale.",
 
     // Stats
     statCakes: "Sortimente",
@@ -26,14 +26,14 @@ const LOCAL_TRANSLATIONS = {
     statYears: "Ani de Pasiune",
 
     // Timeline
-    t1Title: "2017 - Prima rețetă perfectă",
-    t1Desc: "Din dorința de a aduce produse de cofetărie de calitate superioară în Târgu Mureș, primele rețete au fost perfecționate cu grijă timp de câteva luni. Astfel s-a născut Laborator Emanuela.",
-    t2Title: "2018-2019 - Primul Laborator",
-    t2Desc: "Am început în Târgu Mureș ca un laborator mic ce livra prăjituri și torturi către restaurante partenere. Succesul rapid ne-a motivat să deschidem prima cofetărie proprie.",
-    t3Title: "2020 - Extinderea gamei",
-    t3Desc: "Am extins gama de produse artizanale și am consolidat parteneriatele cu restaurantele din Transilvania, construind reputația de laborator de referință.",
-    t4Title: "2024 - Expansiune în Câmpia Turzii",
-    t4Desc: "Am deschis o nouă locație în Câmpia Turzii, pe Str. 1 Decembrie 1918 nr. 3-5, aducând lingurițe de bunătate mai aproape de iubitorii de dulce din regiune.",
+    t1Title: "O afacere de familie",
+    t1Desc: "Laborator Emanuela a crescut în jurul deserturilor pregătite cu grijă, al seriozității și al relațiilor construite cu fiecare client.",
+    t2Title: "Laborator și cofetării proprii",
+    t2Desc: "În Târgu Mureș, produsele Emanuela au devenit parte din aniversări, nunți, botezuri și momentele dulci de zi cu zi.",
+    t3Title: "Extindere în Câmpia Turzii",
+    t3Desc: "Noua locație a dus experiența Emanuela mai aproape de comunitatea din Câmpia Turzii.",
+    t4Title: "2026 - Emanuela Experience",
+    t4Desc: "În centrul Târgu Mureșului, noul concept aduce împreună deserturile artizanale, cafeaua și un Dessert Bar personalizabil.",
 
     // Values
     v1Title: "Simplitate",
@@ -49,7 +49,7 @@ const LOCAL_TRANSLATIONS = {
     valuesTitle: "Our Values",
     connectWithUs: "Connect with Us Online",
     brandBadge: "🍰 ARTISAN PASTRY LABORATORY",
-    brandBadgeDesc: "Since 2017, crafting sweet spoonfuls in our Târgu Mureș laboratory.",
+    brandBadgeDesc: "For almost 20 years, crafting sweet moments for everyday life and special events.",
 
     // Stats
     statCakes: "Flavors",
@@ -57,14 +57,14 @@ const LOCAL_TRANSLATIONS = {
     statYears: "Years of Passion",
 
     // Timeline
-    t1Title: "2017 - The First Perfect Recipe",
-    t1Desc: "Driven by the desire to bring superior quality pastries to Târgu Mureș, the first recipes were carefully perfected over several months. This is how Laborator Emanuela was born.",
-    t2Title: "2018-2019 - First Laboratory",
-    t2Desc: "We started in Târgu Mureș as a small laboratory supplying cakes and pastries to partner restaurants. The immediate success motivated us to open our first retail shop.",
-    t3Title: "2020 - Expanding the Range",
-    t3Desc: "We expanded our artisan product range and strengthened partnerships with restaurants across Transylvania, building our reputation as a leading pastry lab.",
-    t4Title: "2024 - Expansion to Câmpia Turzii",
-    t4Desc: "We opened a new location in Câmpia Turzii, at Str. 1 Decembrie 1918 no. 3-5, bringing our sweet creations closer to dessert lovers in the region.",
+    t1Title: "A family business",
+    t1Desc: "Laborator Emanuela grew around carefully prepared desserts, reliability, and relationships built with every customer.",
+    t2Title: "Our own laboratory and shops",
+    t2Desc: "In Târgu Mureș, Emanuela products became part of birthdays, weddings, baptisms, and everyday sweet moments.",
+    t3Title: "Expansion to Câmpia Turzii",
+    t3Desc: "The new location brought the Emanuela experience closer to the Câmpia Turzii community.",
+    t4Title: "2026 - Emanuela Experience",
+    t4Desc: "In central Târgu Mureș, the new concept brings together artisan desserts, coffee, and a customizable Dessert Bar.",
 
     // Values
     v1Title: "Simplicity",
@@ -80,7 +80,7 @@ const LOCAL_TRANSLATIONS = {
     valuesTitle: "Értékeink",
     connectWithUs: "Kövess minket online",
     brandBadge: "🍰 KÉZMŰVES CUKRÁSZATI LABORATÓRIUM",
-    brandBadgeDesc: "2017 óta kézzel készített édességeket kínálunk marosvásárhelyi laboratóriumunkból.",
+    brandBadgeDesc: "Közel 20 éve készítünk édes pillanatokat hétköznapokra és különleges eseményekre.",
 
     // Stats
     statCakes: "Termékek",
@@ -88,14 +88,14 @@ const LOCAL_TRANSLATIONS = {
     statYears: "Szenvedély Évei",
 
     // Timeline
-    t1Title: "2017 - Az első tökéletes recept",
-    t1Desc: "A minőségi cukrászsütemények Marosvásárhelyre hozásának vágyától vezérelve az első recepteket gondosan tökéletesítettük. Így született meg a Laborator Emanuela.",
-    t2Title: "2018-2019 - Az Első Laboratórium",
-    t2Desc: "Kis laboratóriumként kezdtük Marosvásárhelyen, süteményeket és tortákat szállítva partneréttermeinknek. A gyors siker arra ösztönzött minket, hogy megnyissuk első saját cukrászdánkat.",
-    t3Title: "2020 - A kínálat bővítése",
-    t3Desc: "Bővítettük kézműves termékkínálatunkat és erősítettük együttműködéseinket erdélyi partneréttermeinkkel.",
-    t4Title: "2024 - Terjeszkedés Aranyosgyéresen",
-    t4Desc: "Új helyszínt nyitottunk Aranyosgyéresen, az 1918. december 1. utca 3-5. szám alatt, közelebb hozva finomságainkat a régió édességkedvelőihez.",
+    t1Title: "Családi vállalkozás",
+    t1Desc: "A Laborator Emanuela gondosan készített desszertek, megbízhatóság és az ügyfelekkel kialakított kapcsolatok köré épült.",
+    t2Title: "Saját laboratórium és cukrászdák",
+    t2Desc: "Marosvásárhelyen az Emanuela termékei születésnapok, esküvők, keresztelők és hétköznapi édes pillanatok részévé váltak.",
+    t3Title: "Terjeszkedés Aranyosgyéresre",
+    t3Desc: "Az új helyszín közelebb hozta az Emanuela élményt az aranyosgyéresi közösséghez.",
+    t4Title: "2026 - Emanuela Experience",
+    t4Desc: "Marosvásárhely központjában az új koncepció kézműves desszerteket, kávét és személyre szabható Dessert Bar élményt kínál.",
 
     // Values
     v1Title: "Egyszerűség",
@@ -165,11 +165,11 @@ export default function AboutScreen() {
           <Text style={styles.statLabel}>{loc.statCakes}</Text>
         </View>
         <View style={styles.statCard}>
-          <Text style={styles.statValue}>3</Text>
+          <Text style={styles.statValue}>4</Text>
           <Text style={styles.statLabel}>{loc.statLocations}</Text>
         </View>
         <View style={styles.statCard}>
-          <Text style={styles.statValue}>7+</Text>
+          <Text style={styles.statValue}>19+</Text>
           <Text style={styles.statLabel}>{loc.statYears}</Text>
         </View>
       </View>

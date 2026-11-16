@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { translations } from '../mockData/translations';
 import { subscribeActiveLocations } from '../services/catalog';
 import { auth, db } from '../firebase';
@@ -22,6 +22,16 @@ import {
 
 const AppContext = createContext();
 const MOBILE_THEME_BREAKPOINT = 768;
+const STORAGE_KEYS = {
+  cart: 'emanuela_cart',
+  store: 'emanuela_store',
+  theme: 'emanuela_theme',
+  language: 'emanuela_lang',
+};
+
+function readStoredValue(key, legacyKey) {
+  return localStorage.getItem(key) ?? localStorage.getItem(legacyKey);
+}
 
 function getSystemTheme() {
   if (typeof window === 'undefined' || !window.matchMedia) return 'light';
@@ -37,7 +47,7 @@ export const useApp = () => useContext(AppContext);
 
 export const AppProvider = ({ children }) => {
   const [cart, setCart] = useState(() => {
-    const savedCart = localStorage.getItem('cheesecake_cart');
+    const savedCart = readStoredValue(STORAGE_KEYS.cart, 'cheesecake_cart');
     return savedCart ? JSON.parse(savedCart) : [];
   });
   
@@ -45,7 +55,7 @@ export const AppProvider = ({ children }) => {
   const [locations, setLocations] = useState([]);
   const [locationsLoading, setLocationsLoading] = useState(true);
   const [selectedStore, setSelectedStore] = useState(() => {
-    const savedStore = localStorage.getItem('cheesecake_store');
+    const savedStore = readStoredValue(STORAGE_KEYS.store, 'cheesecake_store');
     return savedStore ? JSON.parse(savedStore) : null;
   });
 
@@ -53,14 +63,14 @@ export const AppProvider = ({ children }) => {
 
   // Theme support (light default)
   const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('cheesecake_theme') || 'light';
+    return readStoredValue(STORAGE_KEYS.theme, 'cheesecake_theme') || 'light';
   });
   const [systemTheme, setSystemTheme] = useState(getSystemTheme);
   const [isMobileWeb, setIsMobileWeb] = useState(getIsMobileWeb);
 
   // Language support (ro default)
   const [language, setLanguage] = useState(() => {
-    return localStorage.getItem('cheesecake_lang') || 'ro';
+    return readStoredValue(STORAGE_KEYS.language, 'cheesecake_lang') || 'ro';
   });
 
   // Authentication support with Firebase
@@ -71,12 +81,12 @@ export const AppProvider = ({ children }) => {
   const [showProfileModal, setShowProfileModal] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem('cheesecake_cart', JSON.stringify(cart));
+    localStorage.setItem(STORAGE_KEYS.cart, JSON.stringify(cart));
   }, [cart]);
 
   useEffect(() => {
     if (selectedStore) {
-      localStorage.setItem('cheesecake_store', JSON.stringify(selectedStore));
+      localStorage.setItem(STORAGE_KEYS.store, JSON.stringify(selectedStore));
     }
   }, [selectedStore]);
 
@@ -131,7 +141,7 @@ export const AppProvider = ({ children }) => {
 
   useEffect(() => {
     if (!isMobileWeb) {
-      localStorage.setItem('cheesecake_theme', theme);
+      localStorage.setItem(STORAGE_KEYS.theme, theme);
     }
     // Apply class to HTML element for easy styling targeting
     if (effectiveTheme === 'dark') {
@@ -142,7 +152,7 @@ export const AppProvider = ({ children }) => {
   }, [theme, effectiveTheme, isMobileWeb]);
 
   useEffect(() => {
-    localStorage.setItem('cheesecake_lang', language);
+    localStorage.setItem(STORAGE_KEYS.language, language);
     document.documentElement.lang = language;
   }, [language]);
 
@@ -154,14 +164,10 @@ export const AppProvider = ({ children }) => {
           const userDoc = await getDoc(userDocRef);
           if (userDoc.exists()) {
             const userData = userDoc.data();
-            const balance = userData.balance !== undefined ? userData.balance : 150.0;
-            const vipPoints = userData.vipPoints !== undefined ? userData.vipPoints : 120;
-            const stamps = userData.stamps !== undefined ? userData.stamps : 4;
-            const birthdayVoucherActive = userData.birthdayVoucherActive !== undefined ? userData.birthdayVoucherActive : true;
-
-            if (userData.balance === undefined) {
-              await setDoc(userDocRef, { balance, vipPoints, stamps, birthdayVoucherActive }, { merge: true });
-            }
+            const balance = userData.balance !== undefined ? userData.balance : 0;
+            const vipPoints = userData.vipPoints !== undefined ? userData.vipPoints : 0;
+            const stamps = userData.stamps !== undefined ? userData.stamps : 0;
+            const birthdayVoucherActive = userData.birthdayVoucherActive === true;
 
             setCurrentUser({
               uid: firebaseUser.uid,
@@ -174,10 +180,10 @@ export const AppProvider = ({ children }) => {
               birthdayVoucherActive
             });
           } else {
-            const balance = 150.0;
-            const vipPoints = 120;
-            const stamps = 4;
-            const birthdayVoucherActive = true;
+            const balance = 0;
+            const vipPoints = 0;
+            const stamps = 0;
+            const birthdayVoucherActive = false;
 
             await setDoc(userDocRef, {
               name: firebaseUser.displayName || (firebaseUser.email ? firebaseUser.email.split('@')[0] : 'Utilizator'),
@@ -208,10 +214,10 @@ export const AppProvider = ({ children }) => {
             email: firebaseUser.email || '',
             name: firebaseUser.displayName || (firebaseUser.email ? firebaseUser.email.split('@')[0] : 'Utilizator'),
             phone: '',
-            balance: 150.0,
-            vipPoints: 120,
-            stamps: 4,
-            birthdayVoucherActive: true
+            balance: 0,
+            vipPoints: 0,
+            stamps: 0,
+            birthdayVoucherActive: false
           });
         }
       } else {
@@ -275,14 +281,10 @@ export const AppProvider = ({ children }) => {
       userData = userDoc.data();
     }
     
-    const balance = userData.balance !== undefined ? userData.balance : 150.0;
-    const vipPoints = userData.vipPoints !== undefined ? userData.vipPoints : 120;
-    const stamps = userData.stamps !== undefined ? userData.stamps : 4;
-    const birthdayVoucherActive = userData.birthdayVoucherActive !== undefined ? userData.birthdayVoucherActive : true;
-
-    if (userDoc.exists() && userData.balance === undefined) {
-      await setDoc(userDocRef, { balance, vipPoints, stamps, birthdayVoucherActive }, { merge: true });
-    }
+    const balance = userData.balance !== undefined ? userData.balance : 0;
+    const vipPoints = userData.vipPoints !== undefined ? userData.vipPoints : 0;
+    const stamps = userData.stamps !== undefined ? userData.stamps : 0;
+    const birthdayVoucherActive = userData.birthdayVoucherActive === true;
 
     const user = {
       uid: firebaseUser.uid,
@@ -330,10 +332,10 @@ export const AppProvider = ({ children }) => {
     const firebaseUser = userCredential.user;
     
     const userDocRef = doc(db, 'users', firebaseUser.uid);
-    const balance = 150.0;
-    const vipPoints = 120;
-    const stamps = 4;
-    const birthdayVoucherActive = true;
+    const balance = 0;
+    const vipPoints = 0;
+    const stamps = 0;
+    const birthdayVoucherActive = false;
 
     const userData = {
       name,
@@ -373,23 +375,6 @@ export const AppProvider = ({ children }) => {
     const userDocRef = doc(db, 'users', currentUser.uid);
     await setDoc(userDocRef, { name, phone }, { merge: true });
     setCurrentUser(prev => ({ ...prev, name, phone }));
-    return true;
-  };
-
-  const topUpWallet = async (amount) => {
-    if (!currentUser) return false;
-    const userDocRef = doc(db, 'users', currentUser.uid);
-    const newBalance = (currentUser.balance || 0) + amount;
-    await setDoc(userDocRef, { balance: newBalance }, { merge: true });
-    setCurrentUser(prev => ({ ...prev, balance: newBalance }));
-    return true;
-  };
-
-  const useBirthdayVoucher = async () => {
-    if (!currentUser) return false;
-    const userDocRef = doc(db, 'users', currentUser.uid);
-    await setDoc(userDocRef, { birthdayVoucherActive: false }, { merge: true });
-    setCurrentUser(prev => ({ ...prev, birthdayVoucherActive: false }));
     return true;
   };
 
@@ -451,8 +436,6 @@ export const AppProvider = ({ children }) => {
       register,
       logout,
       updateProfile,
-      topUpWallet,
-      useBirthdayVoucher,
       deleteAccount
     }}>
       {children}

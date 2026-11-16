@@ -20,9 +20,7 @@ export default function ProfileScreen() {
     updateProfile, 
     deleteAccount, 
     balance, 
-    topUpWallet, 
     birthdayVoucherActive, 
-    setBirthdayVoucherActive, 
     theme, 
     colors, 
     toggleTheme, 
@@ -41,11 +39,6 @@ export default function ProfileScreen() {
   const [editEmail, setEditEmail] = useState(user?.email || '');
   const [editPhone, setEditPhone] = useState(user?.phone || '');
 
-  // Gift Card form state
-  const [recipient, setRecipient] = useState('');
-  const [giftAmount, setGiftAmount] = useState('50');
-  const [note, setNote] = useState('');
-
   const handleOpenEdit = () => {
     setEditName(user?.name || '');
     setEditEmail(user?.email || '');
@@ -60,60 +53,9 @@ export default function ProfileScreen() {
     }
   };
 
-  const handleTopUp = (amount) => {
-    topUpWallet(amount);
-    Alert.alert(t('topUpSuccess'), `${t('topUpSuccess')}: +${amount} RON`);
-  };
-
-  const handleUseBirthdayVoucher = () => {
-    if (!birthdayVoucherActive) return;
-
-    Alert.alert(
-      t('voucherScannedTitle'),
-      t('voucherScannedDesc'),
-      [
-        {
-          text: 'Ok',
-          onPress: () => setBirthdayVoucherActive(false)
-        }
-      ]
-    );
-  };
-
-  const handleSendGift = () => {
-    if (!recipient.trim()) {
-      Alert.alert(t('error'), t('pleaseFillFields'));
-      return;
-    }
-
-    const amount = parseFloat(giftAmount);
-    if (isNaN(amount) || amount <= 0) {
-      Alert.alert(t('error'), t('pleaseFillFields'));
-      return;
-    }
-
-    if (balance < amount) {
-      Alert.alert(t('insufficientFunds'), t('insufficientFunds'));
-      return;
-    }
-
-    Alert.alert(
-      t('giftSent'),
-      `${t('giftSent')} ${amount} RON -> ${recipient}`,
-      [{ 
-        text: 'OK',
-        onPress: () => {
-          topUpWallet(-amount);
-          setRecipient('');
-          setNote('');
-        }
-      }]
-    );
-  };
-
   // Get user initials for avatar
   const getInitials = (name) => {
-    if (!name) return 'CH';
+    if (!name) return 'EM';
     const parts = name.trim().split(/\s+/);
     if (parts.length >= 2) {
       return (parts[0][0] + parts[1][0]).toUpperCase();
@@ -208,24 +150,12 @@ export default function ProfileScreen() {
               </View>
             </View>
 
-            {/* TOP UP SECTION */}
-            <Text style={styles.sectionTitle}>{t('topUpWallet')}</Text>
-            <View style={styles.topUpRow}>
-              {[50, 100, 200].map(amount => (
-                <TouchableOpacity 
-                  key={amount} 
-                  style={styles.topUpBtn}
-                  onPress={() => handleTopUp(amount)}
-                >
-                  <Text style={styles.topUpBtnText}>+{amount} RON</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
+            <Text style={[styles.balanceLabel, { marginBottom: 18 }]}>Soldul și recompensele sunt actualizate în siguranță de echipa Emanuela.</Text>
 
             {/* VOUCHERS SECTION */}
             <Text style={styles.sectionTitle}>{t('vouchersAndActiveGifts')}</Text>
             {birthdayVoucherActive ? (
-              <TouchableOpacity style={styles.voucherCard} onPress={handleUseBirthdayVoucher}>
+              <View style={styles.voucherCard}>
                 <View style={styles.voucherLeft}>
                   <View style={styles.voucherIconBg}>
                     <Ionicons name="gift" size={24} color="#1b1713" />
@@ -235,65 +165,14 @@ export default function ProfileScreen() {
                     <Text style={styles.voucherDesc}>{t('birthdayVoucherDesc')}</Text>
                   </View>
                 </View>
-                <Text style={styles.voucherAction}>Scan</Text>
-              </TouchableOpacity>
+                <Text style={styles.voucherAction}>Activ</Text>
+              </View>
             ) : (
               <View style={styles.emptyVouchers}>
                 <Text style={styles.emptyText}>{t('emptyVouchers')}</Text>
               </View>
             )}
 
-            {/* SEND GIFT CARD FORM */}
-            <View style={styles.giftCardSection}>
-              <Text style={styles.sectionTitleForm}>{t('sendGiftCard')}</Text>
-              <Text style={styles.giftDesc}>{t('giftDescription')}</Text>
-              
-              <View style={styles.formGroup}>
-                <Text style={styles.inputLabel}>{t('recipientName')}</Text>
-                <TextInput 
-                  style={styles.inputField} 
-                  placeholder="Ex: Andrei Popescu"
-                  placeholderTextColor={colors.textMuted}
-                  value={recipient}
-                  onChangeText={setRecipient}
-                />
-              </View>
-
-              <View style={styles.formGroup}>
-                <Text style={styles.inputLabel}>{t('giftAmount')}</Text>
-                <View style={styles.amountToggleRow}>
-                  {['30', '50', '100', '150'].map(val => (
-                    <TouchableOpacity 
-                      key={val}
-                      style={[styles.amountToggle, giftAmount === val && styles.amountToggleActive]}
-                      onPress={() => setGiftAmount(val)}
-                    >
-                      <Text style={[styles.amountToggleText, giftAmount === val && styles.amountToggleTextActive]}>
-                        {val} RON
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              </View>
-
-              <View style={styles.formGroup}>
-                <Text style={styles.inputLabel}>{t('giftMessage')}</Text>
-                <TextInput 
-                  style={[styles.inputField, styles.textArea]} 
-                  placeholder="La mulți ani! O prăjitură din sortimentul tău preferat!"
-                  placeholderTextColor={colors.textMuted}
-                  multiline={true}
-                  numberOfLines={3}
-                  value={note}
-                  onChangeText={setNote}
-                />
-              </View>
-
-              <TouchableOpacity style={styles.sendGiftBtn} onPress={handleSendGift}>
-                <Ionicons name="paper-plane" size={18} color="#1b1713" style={{ marginRight: 8 }} />
-                <Text style={styles.sendGiftBtnText}>{t('sendGiftButton')}</Text>
-              </TouchableOpacity>
-            </View>
           </>
         )}
 

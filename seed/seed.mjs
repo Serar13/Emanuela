@@ -34,6 +34,10 @@ initializeApp({ credential, projectId: process.env.FIREBASE_PROJECT_ID || "emanu
 const db = getFirestore();
 
 async function seedCollection(name, items) {
+  if (items.length === 0) {
+    console.log(`- ${name}: no demo documents`);
+    return;
+  }
   const batch = db.batch();
   for (const item of items) {
     const { id, ...rest } = item;
