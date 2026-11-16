@@ -121,14 +121,93 @@ body {
   transition: border-color .2s, box-shadow .2s;
 }
 .login-card input::placeholder { color: #b2a6a2; }
-.login-card input:focus { border-color: #e92d79; box-shadow: 0 0 0 4px rgba(233,45,121,.1); }
+.login-password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.login-password-wrapper input {
+  padding-right: 46px;
+  margin-top: 0;
+}
+.login-toggle-password-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #8c7e82;
+  padding: 6px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  z-index: 2;
+}
+.login-toggle-password-btn:hover {
+  color: #e92d79;
+}
+.login-toggle-password-btn svg {
+  width: 20px;
+  height: 20px;
+}
+.login-forgot-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -8px;
+  margin-bottom: 18px;
+}
+.login-forgot-btn {
+  background: none;
+  border: none;
+  color: #e92d79;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 0.2s ease;
+}
+.login-forgot-btn:hover {
+  text-decoration: underline;
+}
 .login-error {
   background: #fdecea;
   color: var(--danger);
-  padding: 9px 12px;
+  padding: 10px 14px;
   border-radius: 9px;
   font-size: 13px;
+  line-height: 1.5;
   margin-bottom: 14px;
+}
+.login-success {
+  background: #e8f5e9;
+  color: #2e7d32;
+  padding: 10px 14px;
+  border-radius: 9px;
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 14px;
+  border: 1px solid rgba(46, 125, 50, 0.2);
+}
+.login-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: #837276;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 18px;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+.login-back-btn:hover {
+  color: #27151b;
 }
 .login-submit { min-height: 50px; display: flex; align-items: center; justify-content: space-between; padding-inline: 18px; margin-top: 8px; border-radius: 12px; font-weight: 800; }
 .login-security { margin: 22px 0 0; color: #a09591; font-size: 11px; text-align: center; }

@@ -6,7 +6,7 @@ import { getStorage } from "firebase/storage";
 // The Firebase web config is safe to ship in client apps; access is protected
 // by Firebase Auth + Firestore security rules (see ../../site/firestore.rules).
 const firebaseConfig = {
-  apiKey: "AIzaSyCbYU70q82YMscOJB6f_QfjoQZEe3uHn_Q",
+  apiKey: "AIzaSyCbYU7Oq82YMscOJB6f_QfjoQZEe3uHn_Q",
   authDomain: "emanuela-da572.firebaseapp.com",
   projectId: "emanuela-da572",
   storageBucket: "emanuela-da572.firebasestorage.app",
