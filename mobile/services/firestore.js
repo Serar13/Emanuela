@@ -150,6 +150,21 @@ export const checkReservationConflict = async ({ tableId, date, time }) => {
   }
 };
 
+export const createOfferRequest = async (data) => {
+  try {
+    const ref = await addDoc(collection(db, COLLECTIONS.OFFER_REQUESTS), {
+      ...data,
+      status: data.status || 'new',
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    });
+    return ref.id;
+  } catch (err) {
+    console.error('[firestore] createOfferRequest failed:', err);
+    throw err;
+  }
+};
+
 export default {
   getActiveProducts,
   getActiveCategories,
@@ -159,5 +174,6 @@ export default {
   getUserReservations,
   createOrder,
   createReservation,
-  checkReservationConflict
+  checkReservationConflict,
+  createOfferRequest
 };

@@ -10,6 +10,7 @@ export const NAV_ITEMS = [
   { key: "products", label: "Produse", icon: "🍰" },
   { key: "categories", label: "Categorii", icon: "🗂️" },
   { key: "promotions", label: "Promoții", icon: "🏷️" },
+  { key: "notifications", label: "Notificări Push", icon: "🔔" },
   { key: "tables", label: "Mese", icon: "🪑" },
   { key: "locations", label: "Locații", icon: "📍" },
   { key: "offerRequests", label: "Cereri Evenimente", icon: "🎉" },

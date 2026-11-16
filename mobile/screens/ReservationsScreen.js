@@ -1,18 +1,36 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
   View,
   ScrollView,
   TouchableOpacity,
-  Alert
+  Alert,
+  Animated
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useApp } from '../context/AppContext';
 
 const FALLBACK_LOCATIONS = ['Târgu Mureș', 'Câmpia Turzii'];
 
-// Map a date label to a YYYY-MM-DD string (used for conflict + persistence).
+// Architectural 2D tables map per location
+const LOCATION_TABLES = {
+  'Târgu Mureș': [
+    { id: 'tm-1', name: 'Masa 1', zone: 'Terasă', seats: 2, x: '18%', y: '25%', shape: 'round' },
+    { id: 'tm-2', name: 'Masa 2', zone: 'Terasă', seats: 2, x: '42%', y: '25%', shape: 'round' },
+    { id: 'tm-3', name: 'Masa 3', zone: 'Salon Central', seats: 4, x: '25%', y: '60%', shape: 'square' },
+    { id: 'tm-4', name: 'Masa 4', zone: 'Salon Central', seats: 4, x: '55%', y: '60%', shape: 'square' },
+    { id: 'tm-5', name: 'Masa 5', zone: 'Lounge VIP', seats: 6, x: '78%', y: '45%', shape: 'rect' },
+    { id: 'tm-6', name: 'Masa 6', zone: 'Geam Stradal', seats: 2, x: '78%', y: '78%', shape: 'round' },
+  ],
+  'Câmpia Turzii': [
+    { id: 'ct-1', name: 'Masa 1', zone: 'Bistro', seats: 2, x: '25%', y: '30%', shape: 'round' },
+    { id: 'ct-2', name: 'Masa 2', zone: 'Salon Degustare', seats: 4, x: '65%', y: '30%', shape: 'square' },
+    { id: 'ct-3', name: 'Masa 3', zone: 'Salon Degustare', seats: 4, x: '35%', y: '65%', shape: 'square' },
+    { id: 'ct-4', name: 'Masa 4', zone: 'Evenimente Speciale', seats: 6, x: '75%', y: '65%', shape: 'rect' },
+  ]
+};
+
 const dayLabelToDate = (label) => {
   const d = new Date();
   if (label === 'Mâine') d.setDate(d.getDate() + 1);
@@ -30,7 +48,6 @@ export default function ReservationsScreen() {
   } = useApp();
   const styles = getStyles(colors);
 
-  // Location names from Firestore, graceful fallback to static list.
   const locationNames = useMemo(() => {
     const names = (locations || []).map(l => l.name).filter(Boolean);
     return names.length > 0 ? names : FALLBACK_LOCATIONS;
@@ -39,23 +56,45 @@ export default function ReservationsScreen() {
   const [location, setLocation] = useState(FALLBACK_LOCATIONS[0]);
   const [guests, setGuests] = useState(2);
   const [day, setDay] = useState('Astăzi');
-  const [time, setTime] = useState('19:30');
+  const [time, setTime] = useState('18:00');
+  const [selectedTable, setSelectedTable] = useState(null);
+
+  // Animation pulse for selected table on 2D map
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, { toValue: 1.15, duration: 600, useNativeDriver: true }),
+        Animated.timing(pulseAnim, { toValue: 1, duration: 600, useNativeDriver: true }),
+      ])
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [pulseAnim]);
+
+  // Current floor plan tables based on chosen location
+  const currentTables = useMemo(() => {
+    return LOCATION_TABLES[location] || LOCATION_TABLES['Târgu Mureș'];
+  }, [location]);
+
+  // Reset selected table if location changes
+  useEffect(() => {
+    setSelectedTable(null);
+  }, [location]);
 
   const selectedLocationObj = useMemo(
     () => (locations || []).find(l => l.name === location),
     [locations, location]
   );
 
-  // Pre-Order Quantities mapping: { productId: quantity }
   const [preOrderQuantities, setPreOrderQuantities] = useState({});
 
-  // Pre-order options come from the shared Firestore product list.
   const preorderProducts = useMemo(
     () => (products || []).slice(0, 8),
     [products]
   );
 
-  // The current target date string for this booking.
   const targetDate = dayLabelToDate(day);
 
   const handleQuantityChange = (productId, change) => {
@@ -91,7 +130,6 @@ export default function ReservationsScreen() {
       return;
     }
 
-    // Compile pre-ordered items from the Firestore product list.
     const preOrderItems = Object.keys(preOrderQuantities).map(id => {
       const prod = preorderProducts.find(p => p.id === id);
       return {
@@ -105,8 +143,8 @@ export default function ReservationsScreen() {
     const newRes = {
       location,
       locationId: selectedLocationObj?.id || '',
-      tableId: '',
-      table: '',
+      tableId: selectedTable?.id || '',
+      table: selectedTable ? `${selectedTable.name} (${selectedTable.zone})` : 'Masa alocată de personal',
       date: `${day}, la ora ${time}`,
       rawDate: targetDate,
       time,
@@ -118,37 +156,41 @@ export default function ReservationsScreen() {
     const ok = await addReservation(newRes);
     if (!ok) return;
 
-    // Alert confirmation details
     let summaryText = `${day}, ora ${time}\n${guests} persoane`;
+    if (selectedTable) {
+      summaryText += `\nMasă aleasă: ${selectedTable.name} (${selectedTable.zone})`;
+    }
     if (preOrderItems.length > 0) {
       summaryText += `\n\nPre-comandă:\n` + preOrderItems.map(item => `${item.quantity}x ${item.name}`).join('\n');
     }
 
     Alert.alert(
-      'Cerere trimisă',
-      `Echipa Laborator Emanuela ${location} va confirma disponibilitatea.\n\nDetalii:\n${summaryText}`,
-      [{ text: 'OK' }]
+      'Rezervare Înregistrată! 🎉',
+      `Echipa Laborator Emanuela ${location} a preluat cererea ta.\n\nDetalii:\n${summaryText}`,
+      [{ text: 'Super!' }]
     );
 
-    // Reset Form
     setPreOrderQuantities({});
   };
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer} keyboardShouldPersistTaps="handled">
-      {/* Configuration Card */}
+      {/* 1. Location & Date Selector */}
       <View style={styles.configCard}>
-        {/* Location Picker */}
         <Text style={styles.sectionLabel}>{t('chooseLocation')}</Text>
         <View style={styles.pickerRow}>
           {locationNames.map(loc => (
             <TouchableOpacity
               key={loc}
               style={[styles.pickerBtn, location === loc && styles.pickerBtnActive]}
-              onPress={() => {
-                setLocation(loc);
-              }}
+              onPress={() => setLocation(loc)}
             >
+              <Ionicons 
+                name="location-outline" 
+                size={16} 
+                color={location === loc ? '#12100e' : colors.text} 
+                style={{ marginRight: 6 }} 
+              />
               <Text style={[styles.pickerText, location === loc && styles.pickerTextActive]}>
                 {loc.split('-')[0]}
               </Text>
@@ -170,86 +212,195 @@ export default function ReservationsScreen() {
           ))}
         </View>
 
-        {/* Time Selector */}
-        <Text style={styles.sectionLabel}>{t('timeSlot')}</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.timeScroll}>
-          {['12:00', '13:30', '15:00', '16:30', '18:00', '19:30', '21:00'].map(t => (
+        {/* Compact Grid Time Slots (No endless horizontal scroll) */}
+        <Text style={styles.sectionLabel}>Interval Orar Disponibil:</Text>
+        <View style={styles.timeGrid}>
+          {['12:00', '13:30', '15:00', '16:30', '18:00', '19:30', '21:00'].map(tSlot => (
             <TouchableOpacity 
-              key={t}
-              style={[styles.timeBtn, time === t && styles.timeBtnActive]}
-              onPress={() => setTime(t)}
+              key={tSlot}
+              style={[styles.timeGridBtn, time === tSlot && styles.timeGridBtnActive]}
+              onPress={() => setTime(tSlot)}
             >
-              <Text style={[styles.timeText, time === t && styles.timeTextActive]}>{t}</Text>
+              <Text style={[styles.timeGridText, time === tSlot && styles.timeGridTextActive]}>
+                {tSlot}
+              </Text>
             </TouchableOpacity>
           ))}
-        </ScrollView>
+        </View>
 
-        {/* Guests Counter */}
-        <Text style={styles.sectionLabel}>{t('guestsNum')}</Text>
-        <View style={styles.guestsRow}>
-          {[1, 2, 3, 4, 5, 6].map(num => (
+        {/* Guests Stepper & Quick Presets */}
+        <Text style={styles.sectionLabel}>Număr Persoane:</Text>
+        <View style={styles.guestsStepperRow}>
+          <TouchableOpacity 
+            style={styles.stepperBtn} 
+            onPress={() => setGuests(prev => Math.max(1, prev - 1))}
+          >
+            <Ionicons name="remove" size={20} color={colors.text} />
+          </TouchableOpacity>
+
+          <View style={styles.guestsDisplay}>
+            <Ionicons name="people" size={18} color={colors.gold} style={{ marginRight: 6 }} />
+            <Text style={styles.guestsDisplayText}>{guests} {guests === 1 ? 'persoană' : 'persoane'}</Text>
+          </View>
+
+          <TouchableOpacity 
+            style={styles.stepperBtn} 
+            onPress={() => setGuests(prev => Math.min(16, prev + 1))}
+          >
+            <Ionicons name="add" size={20} color={colors.text} />
+          </TouchableOpacity>
+        </View>
+
+        {/* Quick Chips for Guest count */}
+        <View style={styles.quickGuestsRow}>
+          {[2, 4, 6, 8, 10].map(n => (
             <TouchableOpacity 
-              key={num}
-              style={[styles.guestBtn, guests === num && styles.guestBtnActive]}
-              onPress={() => setGuests(num)}
+              key={n}
+              style={[styles.quickGuestChip, guests === n && styles.quickGuestChipActive]}
+              onPress={() => setGuests(n)}
             >
-              <Text style={[styles.guestText, guests === num && styles.guestTextActive]}>{num}</Text>
+              <Text style={[styles.quickGuestText, guests === n && styles.quickGuestTextActive]}>
+                {n} pers
+              </Text>
             </TouchableOpacity>
           ))}
         </View>
       </View>
 
-      {/* ADVANCED PRE-ORDER SECTION */}
-      <View style={styles.preOrderCard}>
-          <View style={styles.preOrderHeader}>
-            <Ionicons name="cart-outline" size={20} color={colors.gold} />
-            <Text style={styles.preOrderTitle}>{t('preOrderTitle')}</Text>
+      {/* 2. Interactive Animated 2D Floor Plan */}
+      <View style={styles.floorPlanCard}>
+        <View style={styles.floorPlanHeader}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Ionicons name="map-outline" size={18} color={colors.gold} style={{ marginRight: 6 }} />
+            <Text style={styles.floorPlanTitle}>Harta 2D a localului · {location}</Text>
           </View>
-          <Text style={styles.preOrderDesc}>{t('preOrderDesc')}</Text>
-          
-          <View style={styles.preOrderList}>
-            {preorderProducts.map(product => {
-              const currentQty = preOrderQuantities[product.id] || 0;
-              return (
-                <View key={product.id} style={styles.preOrderItemRow}>
-                  <View style={styles.preOrderProductInfo}>
-                    <Text style={styles.preOrderProductName}>{product.name}</Text>
-                    <Text style={styles.preOrderProductPrice}>{product.price} RON</Text>
-                  </View>
-                  
-                  <View style={styles.qtyContainer}>
-                    {currentQty > 0 ? (
-                      <>
-                        <TouchableOpacity 
-                          style={styles.qtyBtn}
-                          onPress={() => handleQuantityChange(product.id, -1)}
-                        >
-                          <Ionicons name="remove" size={16} color={colors.gold} />
-                        </TouchableOpacity>
-                        <Text style={styles.qtyText}>{currentQty}</Text>
-                      </>
-                    ) : null}
-                    <TouchableOpacity 
-                      style={styles.qtyBtn}
-                      onPress={() => handleQuantityChange(product.id, 1)}
-                    >
-                      <Ionicons name="add" size={16} color={colors.gold} />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              );
-            })}
+          <Text style={styles.floorPlanSubtitle}>Apasă pe o masă pentru a o rezerva</Text>
+        </View>
+
+        {/* 2D Architectural Canvas */}
+        <View style={styles.blueprintCanvas}>
+          {/* Top Bar / Reception landmark */}
+          <View style={styles.landmarkBar}>
+            <Ionicons name="cafe-outline" size={14} color={colors.gold} />
+            <Text style={styles.landmarkText}>Vitrină Torturi & Bar Emanuela</Text>
           </View>
+
+          {/* Entrance Door landmark */}
+          <View style={styles.landmarkEntrance}>
+            <Ionicons name="enter-outline" size={12} color={colors.textMuted} />
+            <Text style={styles.entranceText}>Intrare</Text>
+          </View>
+
+          {/* Render Interactive Tables */}
+          {currentTables.map(tbl => {
+            const isSelected = selectedTable?.id === tbl.id;
+            return (
+              <TouchableOpacity
+                key={tbl.id}
+                style={[
+                  styles.tableNode,
+                  { left: tbl.x, top: tbl.y },
+                  tbl.shape === 'round' && styles.tableRound,
+                  tbl.shape === 'rect' && styles.tableRect,
+                  isSelected && styles.tableNodeSelected
+                ]}
+                onPress={() => setSelectedTable(isSelected ? null : tbl)}
+                activeOpacity={0.8}
+              >
+                {isSelected ? (
+                  <Animated.View style={{ transform: [{ scale: pulseAnim }], alignItems: 'center' }}>
+                    <Text style={styles.tableNodeTextSelected}>{tbl.name}</Text>
+                    <Text style={styles.tableSeatTextSelected}>{tbl.seats}p</Text>
+                  </Animated.View>
+                ) : (
+                  <View style={{ alignItems: 'center' }}>
+                    <Text style={styles.tableNodeText}>{tbl.name}</Text>
+                    <Text style={styles.tableSeatText}>{tbl.seats}p</Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+
+        {/* Table Selection Summary Badge */}
+        {selectedTable ? (
+          <View style={styles.selectedTableBanner}>
+            <Ionicons name="checkmark-circle" size={18} color="#81c784" style={{ marginRight: 6 }} />
+            <Text style={styles.selectedTableBannerText}>
+              Ai selectat: <Text style={{ fontWeight: 'bold' }}>{selectedTable.name}</Text> ({selectedTable.zone}, capacitate {selectedTable.seats} locuri)
+            </Text>
+            <TouchableOpacity onPress={() => setSelectedTable(null)}>
+              <Ionicons name="close-circle" size={18} color={colors.textMuted} />
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View style={styles.legendRow}>
+            <View style={styles.legendItem}>
+              <View style={[styles.legendDot, { backgroundColor: colors.inputBg, borderColor: colors.border }]} />
+              <Text style={styles.legendText}>Liberă</Text>
+            </View>
+            <View style={styles.legendItem}>
+              <View style={[styles.legendDot, { backgroundColor: colors.gold, borderColor: colors.gold }]} />
+              <Text style={styles.legendText}>Selectată (puls)</Text>
+            </View>
+          </View>
+        )}
       </View>
 
+      {/* 3. Pre-order Optional Section */}
+      <View style={styles.preOrderCard}>
+        <View style={styles.preOrderHeader}>
+          <Ionicons name="cart-outline" size={18} color={colors.gold} />
+          <Text style={styles.preOrderTitle}>{t('preOrderTitle')}</Text>
+        </View>
+        <Text style={styles.preOrderDesc}>{t('preOrderDesc')}</Text>
+        
+        <View style={styles.preOrderList}>
+          {preorderProducts.map(product => {
+            const currentQty = preOrderQuantities[product.id] || 0;
+            return (
+              <View key={product.id} style={styles.preOrderItemRow}>
+                <View style={styles.preOrderProductInfo}>
+                  <Text style={styles.preOrderProductName}>{product.name}</Text>
+                  <Text style={styles.preOrderProductPrice}>{product.price} RON</Text>
+                </View>
+                
+                <View style={styles.qtyContainer}>
+                  {currentQty > 0 ? (
+                    <>
+                      <TouchableOpacity 
+                        style={styles.qtyBtn}
+                        onPress={() => handleQuantityChange(product.id, -1)}
+                      >
+                        <Ionicons name="remove" size={16} color={colors.gold} />
+                      </TouchableOpacity>
+                      <Text style={styles.qtyText}>{currentQty}</Text>
+                    </>
+                  ) : null}
+                  <TouchableOpacity 
+                    style={styles.qtyBtn}
+                    onPress={() => handleQuantityChange(product.id, 1)}
+                  >
+                    <Ionicons name="add" size={16} color={colors.gold} />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            );
+          })}
+        </View>
+      </View>
+
+      {/* 4. Book Button */}
       <TouchableOpacity 
         style={styles.bookButton}
         onPress={handleBook}
       >
-        <Text style={styles.bookButtonText}>Trimite cererea de rezervare</Text>
+        <Ionicons name="calendar-outline" size={18} color="#12100e" style={{ marginRight: 8 }} />
+        <Text style={styles.bookButtonText}>Confirmă Rezervarea Mesei</Text>
       </TouchableOpacity>
 
-      {/* Active Reservations list */}
+      {/* 5. Active Reservations list */}
       <Text style={styles.sectionTitle}>{t('activeReservations')}</Text>
       {reservations.length === 0 ? (
         <View style={styles.emptyReservations}>
@@ -267,10 +418,9 @@ export default function ReservationsScreen() {
                 <Text style={styles.resBadgeText}>{res.status}</Text>
               </View>
             </View>
-            {!!res.table && <Text style={styles.resDetails}>{res.table}</Text>}
-            <Text style={styles.resTime}>{res.date} • {res.guests} persoane</Text>
+            {!!res.table && <Text style={styles.resDetails}>📍 {res.table}</Text>}
+            <Text style={styles.resTime}>🕒 {res.date} • {res.guests} persoane</Text>
             
-            {/* Show Pre-Orders on Card if exists */}
             {res.preOrder && res.preOrder.length > 0 && (
               <View style={styles.resPreOrderContainer}>
                 <Text style={styles.resPreOrderLabel}>🛒 Pre-comandă:</Text>
@@ -303,155 +453,275 @@ const getStyles = (colors) => StyleSheet.create({
     padding: 16,
     borderWidth: 1,
     borderColor: colors.border,
-    marginBottom: 20
+    marginBottom: 16
   },
   sectionLabel: {
-    color: colors.textMuted,
-    fontSize: 12,
+    color: colors.text,
+    fontSize: 13,
     fontWeight: 'bold',
     marginBottom: 8,
-    marginTop: 4
+    marginTop: 6
   },
   pickerRow: {
     flexDirection: 'row',
-    marginBottom: 14
+    marginBottom: 12,
+    gap: 8
   },
   pickerBtn: {
     flex: 1,
+    flexDirection: 'row',
     backgroundColor: colors.inputBg,
     paddingVertical: 10,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginRight: 6,
-    borderWidth: 1,
-    borderColor: 'transparent'
-  },
-  pickerBtnActive: {
-    borderColor: colors.gold,
-    backgroundColor: colors.goldMuted
-  },
-  pickerText: {
-    color: colors.textMuted,
-    fontSize: 12,
-    fontWeight: 'bold'
-  },
-  pickerTextActive: {
-    color: colors.gold
-  },
-  timeScroll: {
-    marginBottom: 14
-  },
-  timeBtn: {
-    backgroundColor: colors.inputBg,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
-    marginRight: 6,
-    borderWidth: 1,
-    borderColor: 'transparent'
-  },
-  timeBtnActive: {
-    borderColor: colors.gold,
-    backgroundColor: colors.goldMuted
-  },
-  timeText: {
-    color: colors.textMuted,
-    fontSize: 13,
-    fontWeight: 'bold'
-  },
-  timeTextActive: {
-    color: colors.gold
-  },
-  guestsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
-  guestBtn: {
-    width: '15%',
-    aspectRatio: 1,
-    backgroundColor: colors.inputBg,
-    borderRadius: 8,
+    borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
     borderColor: 'transparent'
   },
-  guestBtnActive: {
+  pickerBtnActive: {
     borderColor: colors.gold,
-    backgroundColor: colors.goldMuted
+    backgroundColor: colors.gold
   },
-  guestText: {
+  pickerText: {
     color: colors.textMuted,
+    fontSize: 13,
+    fontWeight: '600'
+  },
+  pickerTextActive: {
+    color: '#12100e',
     fontWeight: 'bold'
   },
-  guestTextActive: {
-    color: colors.gold
-  },
-  sectionTitle: {
-    color: colors.text,
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 12,
-    marginTop: 8
-  },
-  tableList: {
-    marginBottom: 16
-  },
-  tableCard: {
+  timeGrid: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 14
+  },
+  timeGridBtn: {
+    width: '22.5%',
+    backgroundColor: colors.inputBg,
+    paddingVertical: 9,
+    borderRadius: 8,
     alignItems: 'center',
-    backgroundColor: colors.cardBg,
+    borderWidth: 1,
+    borderColor: 'transparent'
+  },
+  timeGridBtnActive: {
+    borderColor: colors.gold,
+    backgroundColor: colors.gold
+  },
+  timeGridText: {
+    color: colors.text,
+    fontSize: 12,
+    fontWeight: 'bold'
+  },
+  timeGridTextActive: {
+    color: '#12100e'
+  },
+  guestsStepperRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: colors.inputBg,
     borderRadius: 12,
-    padding: 14,
-    marginBottom: 8,
+    padding: 6,
+    marginBottom: 8
+  },
+  stepperBtn: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: colors.cardBg,
+    alignItems: 'center',
+    justifyContent: 'center',
     borderWidth: 1,
     borderColor: colors.border
   },
-  tableCardSelected: {
+  guestsDisplay: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  guestsDisplayText: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: colors.text
+  },
+  quickGuestsRow: {
+    flexDirection: 'row',
+    gap: 6
+  },
+  quickGuestChip: {
+    flex: 1,
+    backgroundColor: colors.inputBg,
+    paddingVertical: 6,
+    borderRadius: 8,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.border
+  },
+  quickGuestChipActive: {
     borderColor: colors.gold,
     backgroundColor: colors.goldMuted
   },
-  tableCardBooked: {
-    opacity: 0.5,
-    backgroundColor: colors.bg
+  quickGuestText: {
+    fontSize: 11,
+    color: colors.textMuted,
+    fontWeight: '600'
   },
-  tableLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-    marginRight: 10
-  },
-  tableInfo: {
-    marginLeft: 12,
-    flex: 1
-  },
-  tableName: {
-    color: colors.text,
-    fontSize: 14,
+  quickGuestTextActive: {
+    color: colors.gold,
     fontWeight: 'bold'
   },
-  tableTextBooked: {
-    color: colors.textMuted,
-    textDecorationLine: 'line-through'
+  floorPlanCard: {
+    backgroundColor: colors.cardBg,
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: colors.border,
+    marginBottom: 16
   },
-  tableDesc: {
-    color: colors.textMuted,
+  floorPlanHeader: {
+    marginBottom: 12
+  },
+  floorPlanTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: colors.text
+  },
+  floorPlanSubtitle: {
     fontSize: 11,
+    color: colors.textMuted,
     marginTop: 2
   },
-  tableStatus: {
+  blueprintCanvas: {
+    width: '100%',
+    height: 220,
+    backgroundColor: colors.inputBg,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: colors.border,
+    position: 'relative',
+    overflow: 'hidden'
+  },
+  landmarkBar: {
+    position: 'absolute',
+    top: 6,
+    left: '15%',
+    right: '15%',
+    height: 28,
+    backgroundColor: colors.cardBg,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: colors.gold,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6
+  },
+  landmarkText: {
     fontSize: 11,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    color: colors.text
   },
-  statusAvailable: {
-    color: '#81c784'
+  landmarkEntrance: {
+    position: 'absolute',
+    bottom: 6,
+    left: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4
   },
-  statusSelected: {
-    color: colors.gold
+  entranceText: {
+    fontSize: 10,
+    color: colors.textMuted,
+    textTransform: 'uppercase'
   },
-  statusBooked: {
-    color: '#e57373'
+  tableNode: {
+    position: 'absolute',
+    width: 48,
+    height: 48,
+    borderRadius: 8,
+    backgroundColor: colors.cardBg,
+    borderWidth: 1.5,
+    borderColor: colors.border,
+    alignItems: 'center',
+    justifyContent: 'center',
+    transform: [{ translateX: -24 }, { translateY: -24 }],
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 3
+  },
+  tableRound: {
+    borderRadius: 24
+  },
+  tableRect: {
+    width: 60,
+    height: 44,
+    borderRadius: 8,
+    transform: [{ translateX: -30 }, { translateY: -22 }]
+  },
+  tableNodeSelected: {
+    backgroundColor: colors.gold,
+    borderColor: '#12100e',
+    borderWidth: 2
+  },
+  tableNodeText: {
+    fontSize: 10,
+    fontWeight: 'bold',
+    color: colors.text
+  },
+  tableSeatText: {
+    fontSize: 9,
+    color: colors.textMuted
+  },
+  tableNodeTextSelected: {
+    fontSize: 10,
+    fontWeight: 'bold',
+    color: '#12100e'
+  },
+  tableSeatTextSelected: {
+    fontSize: 9,
+    color: '#12100e',
+    fontWeight: '600'
+  },
+  selectedTableBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: colors.inputBg,
+    padding: 10,
+    borderRadius: 8,
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: colors.gold
+  },
+  selectedTableBannerText: {
+    fontSize: 12,
+    color: colors.text,
+    flex: 1
+  },
+  legendRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 16,
+    marginTop: 10
+  },
+  legendItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6
+  },
+  legendDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    borderWidth: 1
+  },
+  legendText: {
+    fontSize: 11,
+    color: colors.textMuted
   },
   preOrderCard: {
     backgroundColor: colors.cardBg,
@@ -459,33 +729,33 @@ const getStyles = (colors) => StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
     padding: 16,
-    marginBottom: 20
+    marginBottom: 16
   },
   preOrderHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 6
+    marginBottom: 4
   },
   preOrderTitle: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: 'bold',
     color: colors.text,
-    marginLeft: 8
+    marginLeft: 6
   },
   preOrderDesc: {
     fontSize: 12,
     color: colors.textMuted,
-    marginBottom: 14,
+    marginBottom: 12,
     lineHeight: 16
   },
   preOrderList: {
-    marginTop: 4
+    marginTop: 2
   },
   preOrderItemRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 10,
+    paddingVertical: 8,
     borderBottomWidth: 1,
     borderBottomColor: colors.border
   },
@@ -512,9 +782,9 @@ const getStyles = (colors) => StyleSheet.create({
     padding: 2
   },
   qtyBtn: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -526,25 +796,28 @@ const getStyles = (colors) => StyleSheet.create({
   },
   bookButton: {
     backgroundColor: colors.gold,
-    borderRadius: 24,
+    borderRadius: 22,
     paddingVertical: 14,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 24
-  },
-  bookButtonDisabled: {
-    backgroundColor: colors.inputBg,
-    opacity: 0.6
+    marginBottom: 20
   },
   bookButtonText: {
     color: '#12100e',
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 'bold'
+  },
+  sectionTitle: {
+    color: colors.text,
+    fontSize: 15,
+    fontWeight: 'bold',
+    marginBottom: 10
   },
   emptyReservations: {
     backgroundColor: colors.cardBg,
     borderRadius: 12,
-    padding: 20,
+    padding: 18,
     borderWidth: 1,
     borderColor: colors.border,
     alignItems: 'center'
@@ -556,7 +829,7 @@ const getStyles = (colors) => StyleSheet.create({
   resCard: {
     backgroundColor: colors.cardBg,
     borderRadius: 12,
-    padding: 16,
+    padding: 14,
     borderWidth: 1,
     borderColor: colors.border,
     marginBottom: 10
@@ -565,7 +838,7 @@ const getStyles = (colors) => StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8
+    marginBottom: 6
   },
   resLocationRow: {
     flexDirection: 'row',
@@ -574,7 +847,7 @@ const getStyles = (colors) => StyleSheet.create({
   resLocation: {
     color: colors.text,
     fontWeight: 'bold',
-    fontSize: 15,
+    fontSize: 14,
     marginLeft: 6
   },
   resBadge: {
@@ -590,7 +863,8 @@ const getStyles = (colors) => StyleSheet.create({
   },
   resDetails: {
     color: colors.gold,
-    fontSize: 13,
+    fontSize: 12,
+    fontWeight: '600',
     marginBottom: 4
   },
   resTime: {
@@ -598,166 +872,20 @@ const getStyles = (colors) => StyleSheet.create({
     fontSize: 12
   },
   resPreOrderContainer: {
-    marginTop: 10,
+    marginTop: 8,
     paddingTop: 8,
     borderTopWidth: 1,
     borderTopColor: colors.border
   },
   resPreOrderLabel: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: 'bold',
     color: colors.text,
-    marginBottom: 4
+    marginBottom: 2
   },
   resPreOrderItem: {
     fontSize: 11,
     color: colors.textMuted,
     marginTop: 2
-  },
-  layoutCard: {
-    backgroundColor: colors.cardBg,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: colors.border,
-    padding: 12,
-    marginBottom: 20,
-    overflow: 'hidden',
-    alignItems: 'center',
-  },
-  layoutImageContainer: {
-    position: 'relative',
-    width: '100%',
-    aspectRatio: 1,
-    borderRadius: 12,
-    overflow: 'hidden',
-    backgroundColor: colors.inputBg,
-  },
-  layoutImage: {
-    width: '100%',
-    height: '100%',
-  },
-  tableOverlay: {
-    position: 'absolute',
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    borderWidth: 2,
-    borderColor: colors.gold,
-    backgroundColor: colors.cardBg === '#ffffff' ? 'rgba(255, 255, 255, 0.65)' : 'rgba(18, 16, 14, 0.6)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: -22,
-    marginTop: -22,
-    shadowColor: colors.gold,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 4,
-  },
-  tableOverlayBooked: {
-    borderColor: '#a0a0a0',
-    backgroundColor: colors.cardBg === '#ffffff' ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.05)',
-    shadowColor: 'transparent',
-    elevation: 0,
-  },
-  tableOverlaySelected: {
-    backgroundColor: colors.gold,
-    borderColor: colors.gold,
-    shadowOpacity: 0.5,
-    shadowRadius: 8,
-  },
-  overlayText: {
-    fontSize: 12,
-    fontWeight: '800',
-    color: colors.text,
-    lineHeight: 13,
-  },
-  overlayTextBooked: {
-    color: colors.cardBg === '#ffffff' ? '#707070' : '#808080',
-    textDecorationLine: 'line-through',
-  },
-  overlayTextSelected: {
-    color: '#12100e',
-  },
-  overlaySeats: {
-    fontSize: 8,
-    fontWeight: '600',
-    color: colors.textMuted,
-    marginTop: 1,
-    lineHeight: 9,
-  },
-  overlaySeatsSelected: {
-    color: 'rgba(18, 16, 14, 0.8)',
-  },
-  overlayCheckmark: {
-    position: 'absolute',
-    top: -4,
-    right: -4,
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    backgroundColor: colors.text,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1.5,
-    borderColor: colors.cardBg,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 1,
-    elevation: 1,
-  },
-  legendContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 14,
-    width: '100%',
-    flexWrap: 'wrap',
-  },
-  legendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginHorizontal: 8,
-    marginVertical: 4,
-  },
-  legendColor: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    borderWidth: 2,
-    marginRight: 6,
-  },
-  legendText: {
-    fontSize: 11,
-    color: colors.text,
-    fontWeight: '600',
-  },
-  layoutToggleRow: {
-    flexDirection: 'row',
-    marginTop: 14,
-    width: '100%',
-    justifyContent: 'space-between',
-  },
-  layoutToggleBtn: {
-    flex: 1,
-    backgroundColor: colors.inputBg,
-    paddingVertical: 8,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginHorizontal: 4,
-    borderWidth: 1,
-    borderColor: 'transparent',
-  },
-  layoutToggleBtnActive: {
-    borderColor: colors.gold,
-    backgroundColor: colors.goldMuted,
-  },
-  layoutToggleText: {
-    color: colors.textMuted,
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  layoutToggleTextActive: {
-    color: colors.gold,
   }
 });

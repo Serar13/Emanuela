@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { Alert } from 'react-native';
+import { Alert, useColorScheme } from 'react-native';
 import { auth, db } from '../firebase';
 import { 
   signInWithEmailAndPassword, 
@@ -16,9 +16,14 @@ import {
   setDoc,
   getDoc,
   deleteDoc,
-  onSnapshot
+  onSnapshot,
+  collection,
+  query,
+  orderBy,
+  limit
 } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { COLLECTIONS } from '../services/collections';
 import {
   getActiveProducts,
   getActiveCategories,
@@ -398,8 +403,9 @@ export const AppProvider = ({ children }) => {
   // 1. Language State
   const [language, setLanguage] = useState('ro');
 
-  // 2. Theme State
-  const [theme, setTheme] = useState('light'); 
+  // 2. Theme State - Automatic system light/dark mode
+  const systemColorScheme = useColorScheme();
+  const theme = systemColorScheme === 'dark' ? 'dark' : 'light'; 
 
   // 3. Auth & Loading State
   const [splashDone, setSplashDone] = useState(false);
@@ -595,6 +601,41 @@ export const AppProvider = ({ children }) => {
     })();
     return () => { active = false; };
   }, [user?.uid]);
+
+  // 10. Real-time Notifications Listener (Push & Broadcasts)
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+    let isInitial = true;
+    const q = query(
+      collection(db, COLLECTIONS.NOTIFICATIONS),
+      orderBy('createdAt', 'desc'),
+      limit(20)
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const rows = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      setNotifications(rows);
+
+      if (!isInitial) {
+        snapshot.docChanges().forEach((change) => {
+          if (change.type === 'added') {
+            const data = change.doc.data();
+            Alert.alert(
+              `🔔 ${data.title || 'Notificare Nouă'}`,
+              data.body || '',
+              [{ text: 'Super!' }]
+            );
+          }
+        });
+      }
+      isInitial = false;
+    }, (err) => {
+      console.warn('Notifications listener warning:', err);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   // Translations helper
   const t = (key) => {
@@ -920,9 +961,13 @@ export const AppProvider = ({ children }) => {
       await createOrder({
         userId: auth.currentUser.uid,
         customerName: user?.name || '',
+        customerPhone: user?.phone || '',
         source: 'mobile',
         locationId: orderMeta?.locationId || '',
         locationName: orderMeta?.locationName || '',
+        fulfillmentType: orderMeta?.fulfillmentType || 'pickup',
+        deliveryAddress: orderMeta?.deliveryAddress || null,
+        paymentMethod: orderMeta?.paymentMethod || 'cash_pos',
         items: orderItems,
         total: amount,
         status: 'pending'
@@ -981,7 +1026,8 @@ export const AppProvider = ({ children }) => {
       clearCart,
       addReservation,
       placeOrder,
-      setOffers
+      setOffers,
+      notifications
     }}>
       {children}
     </AppContext.Provider>

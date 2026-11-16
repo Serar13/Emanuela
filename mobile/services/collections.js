@@ -12,7 +12,9 @@ export const COLLECTIONS = {
   REVIEWS: 'reviews',
   SITE_CONTENT: 'siteContent',
   ARTICLES: 'articles',
-  CANDY_BAR_ITEMS: 'candyBarItems'
+  CANDY_BAR_ITEMS: 'candyBarItems',
+  NOTIFICATIONS: 'notifications',
+  PUSH_TOKENS: 'pushTokens'
 };
 
 export default COLLECTIONS;

@@ -12,7 +12,9 @@ export const COLLECTIONS = {
   REVIEWS: "reviews",
   ARTICLES: "articles",
   SITE_CONTENT: "siteContent",
-  CANDY_BAR_ITEMS: "candyBarItems"
+  CANDY_BAR_ITEMS: "candyBarItems",
+  NOTIFICATIONS: "notifications",
+  PUSH_TOKENS: "pushTokens"
 };
 
 // Allowed status enums (kept here so UI dropdowns never drift from the schema).
