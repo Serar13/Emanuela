@@ -51,6 +51,13 @@ export default function HomeScreen() {
   const [paymentMethod, setPaymentMethod] = useState('card_stripe'); // 'card_stripe' | 'cash_pos'
   const [isProcessingOrder, setIsProcessingOrder] = useState(false);
 
+  // Surprise Gift Delivery States
+  const [isGiftSurprise, setIsGiftSurprise] = useState(false);
+  const [giftRecipientName, setGiftRecipientName] = useState('');
+  const [giftRecipientPhone, setGiftRecipientPhone] = useState('');
+  const [giftCardMessage, setGiftCardMessage] = useState('');
+  const [giftIsAnonymous, setGiftIsAnonymous] = useState(false);
+
   // Location names sourced from Firestore (graceful fallback to static list).
   const locationNames = useMemo(() => {
     const names = (locations || []).map(l => l.name).filter(Boolean);
@@ -176,7 +183,14 @@ export default function HomeScreen() {
         notes: deliveryNotes.trim()
       } : null,
       paymentMethod,
-      paymentStatus: paymentMethod === 'card_stripe' ? 'paid_stripe' : 'pending_on_delivery'
+      paymentStatus: paymentMethod === 'card_stripe' ? 'paid_stripe' : 'pending_on_delivery',
+      isGiftSurprise,
+      giftDetails: isGiftSurprise ? {
+        recipientName: giftRecipientName.trim() || 'Persoană dragă',
+        recipientPhone: giftRecipientPhone.trim() || '',
+        cardMessage: giftCardMessage.trim() || '',
+        isAnonymous: giftIsAnonymous
+      } : null
     };
 
     try {
@@ -186,9 +200,13 @@ export default function HomeScreen() {
           ? 'Plata prin Stripe a fost confirmată cu succes! 💳'
           : 'Plata se va efectua la livrare / ridicare.';
 
-        const destMsg = fulfillmentType === 'pickup'
+        let destMsg = fulfillmentType === 'pickup'
           ? `Ridicare pregătită la: ${pickupLocation}`
           : `Livrare la: ${deliveryAddress}, ${deliveryCity}`;
+
+        if (isGiftSurprise) {
+          destMsg += `\n\n🎁 Cadou surpriză pentru: ${giftRecipientName.trim() || 'Persoană dragă'}\n💌 Felicitare caligrafică inclusă gratuit!`;
+        }
 
         Alert.alert(
           'Comandă Plasată cu Succes! 🎉',
@@ -481,6 +499,85 @@ export default function HomeScreen() {
                     />
                   </View>
                 )}
+
+                {/* Surprise Someone Special (Gift Delivery) */}
+                <View style={styles.giftCardSection}>
+                  <TouchableOpacity
+                    style={[styles.giftToggleRow, isGiftSurprise && styles.giftToggleRowActive]}
+                    onPress={() => setIsGiftSurprise(!isGiftSurprise)}
+                  >
+                    <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+                      <Text style={{ fontSize: 20, marginRight: 8 }}>🎁</Text>
+                      <View style={{ flex: 1 }}>
+                        <Text style={[styles.giftToggleTitle, isGiftSurprise && { color: colors.gold }]}>
+                          Surprinde pe cineva drag (Comandă Cadou)
+                        </Text>
+                        <Text style={styles.giftToggleSubtitle}>
+                          Livrare cadou & felicitare caligrafică inclusă gratuit
+                        </Text>
+                      </View>
+                    </View>
+                    <Ionicons 
+                      name={isGiftSurprise ? "checkbox" : "square-outline"} 
+                      size={22} 
+                      color={isGiftSurprise ? colors.gold : colors.textMuted} 
+                    />
+                  </TouchableOpacity>
+
+                  {isGiftSurprise && (
+                    <View style={styles.giftFieldsBox}>
+                      <Text style={styles.subConfigLabel}>Numele persoanei dragi (Destinatar):</Text>
+                      <TextInput
+                        style={styles.deliveryInput}
+                        placeholder="Ex: Maria Popescu"
+                        placeholderTextColor={colors.textMuted}
+                        value={giftRecipientName}
+                        onChangeText={setGiftRecipientName}
+                      />
+
+                      <Text style={[styles.subConfigLabel, { marginTop: 8 }]}>Număr de telefon destinatar:</Text>
+                      <TextInput
+                        style={styles.deliveryInput}
+                        placeholder="Ex: 0740 123 456 (pentru curier)"
+                        placeholderTextColor={colors.textMuted}
+                        keyboardType="phone-pad"
+                        value={giftRecipientPhone}
+                        onChangeText={setGiftRecipientPhone}
+                      />
+
+                      <Text style={[styles.subConfigLabel, { marginTop: 8 }]}>Mesajul tău pentru felicitare:</Text>
+                      <TextInput
+                        style={[styles.deliveryInput, { height: 65, textAlignVertical: 'top' }]}
+                        placeholder="Ex: La mulți ani, mami dragă! Te iubim mult!"
+                        placeholderTextColor={colors.textMuted}
+                        multiline
+                        value={giftCardMessage}
+                        onChangeText={setGiftCardMessage}
+                      />
+
+                      <View style={styles.giftNoticePill}>
+                        <Ionicons name="sparkles" size={14} color={colors.gold} />
+                        <Text style={styles.giftNoticeText}>
+                          💌 Personalul cofetăriei va transcrie manual mesajul tău pe o felicitare elegantă de lux cu sigiliu de ceară.
+                        </Text>
+                      </View>
+
+                      <TouchableOpacity 
+                        style={styles.anonymousToggleRow}
+                        onPress={() => setGiftIsAnonymous(!giftIsAnonymous)}
+                      >
+                        <Ionicons 
+                          name={giftIsAnonymous ? "checkbox" : "square-outline"} 
+                          size={18} 
+                          color={giftIsAnonymous ? colors.gold : colors.textMuted} 
+                        />
+                        <Text style={styles.anonymousToggleText}>
+                          Păstrează expeditorul anonim până la deschiderea felicitării
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                </View>
 
                 {/* Clarified Timp de Pregătire */}
                 <View style={styles.prepTimeBox}>
@@ -1081,5 +1178,64 @@ const getStyles = (colors) => StyleSheet.create({
     color: '#12100e',
     fontSize: 15,
     fontWeight: 'bold'
+  },
+  giftCardSection: {
+    backgroundColor: colors.inputBg,
+    borderRadius: 14,
+    padding: 12,
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: colors.border
+  },
+  giftToggleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+  giftToggleRowActive: {
+    marginBottom: 8
+  },
+  giftToggleTitle: {
+    fontSize: 13,
+    fontWeight: 'bold',
+    color: colors.text
+  },
+  giftToggleSubtitle: {
+    fontSize: 11,
+    color: colors.textMuted,
+    marginTop: 2
+  },
+  giftFieldsBox: {
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+    paddingTop: 10,
+    marginTop: 4
+  },
+  giftNoticePill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.cardBg,
+    padding: 8,
+    borderRadius: 8,
+    marginTop: 8,
+    gap: 6,
+    borderWidth: 1,
+    borderColor: colors.border
+  },
+  giftNoticeText: {
+    fontSize: 11,
+    color: colors.textMuted,
+    flex: 1,
+    lineHeight: 15
+  },
+  anonymousToggleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+    gap: 8
+  },
+  anonymousToggleText: {
+    fontSize: 11,
+    color: colors.textMuted
   }
 });

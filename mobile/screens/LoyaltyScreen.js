@@ -11,10 +11,49 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useApp } from '../context/AppContext';
 
+const SWEET_PASSPORT_ITEMS = [
+  { id: 'p1', name: 'Mousse Trio Ciocolată', desc: 'Ciocolată albă, lapte și neagră belgiană', emoji: '🍫' },
+  { id: 'p2', name: 'Tartă Fistic de Bronte', desc: 'Cremă pură de fistic și bezea crocantă', emoji: '🌰' },
+  { id: 'p3', name: 'Pavlova Fructe de Pădure', desc: 'Bezea crocantă și frișcă proaspătă', emoji: '🍓' },
+  { id: 'p4', name: 'Cheesecake Cireșe Negre', desc: 'Cremă fină de brânză și vișine aromate', emoji: '🍒' },
+  { id: 'p5', name: 'Desert Pahar Diplomat', desc: 'Fructe exotice și cremă aerată', emoji: '🧁' },
+  { id: 'p6', name: 'Tartă Meringue Lămâie', desc: 'Cremă acrișoară și bezea flambată', emoji: '🍋' },
+  { id: 'p7', name: 'Caramel Sărat & Alune', desc: 'Blat crocant cu caramel artizanal', emoji: '🍯' },
+  { id: 'p8', name: 'Mousse Mango & Maracuja', desc: 'Inserție tropicală fresh și ciocolată albă', emoji: '🥭' }
+];
+
 export default function LoyaltyScreen() {
   const { stamps, maxStamps, vipPoints, user, colors, isLoggedIn, requestAuth: openAuth, t } = useApp();
   const styles = getStyles(colors);
   const [qrVisible, setQrVisible] = useState(false);
+
+  // Sweet Passport Tasted Items State
+  const [tastedIds, setTastedIds] = useState(['p1', 'p3']);
+
+  const handleTogglePassportItem = (item) => {
+    if (!isLoggedIn) {
+      requestAuth();
+      return;
+    }
+    const alreadyTasted = tastedIds.includes(item.id);
+    if (alreadyTasted) {
+      setTastedIds(prev => prev.filter(id => id !== item.id));
+    } else {
+      const nextTasted = [...tastedIds, item.id];
+      setTastedIds(nextTasted);
+      if (nextTasted.length === SWEET_PASSPORT_ITEMS.length) {
+        Alert.alert(
+          'Felicitări, Connoisseur Emanuela! 👑🎉',
+          'Ai degustat toate cele 8 arome semnătură! Ai deblocat o prăjitură gratuită din orice vitrină și acces la sesiunile private de degustare.'
+        );
+      } else {
+        Alert.alert(
+          `Aromă Ștampilată! 🏷️ ${item.emoji}`,
+          `Ai adăugat "${item.name}" în Pașaportul tău Dulce! (${nextTasted.length}/${SWEET_PASSPORT_ITEMS.length} arome degustate)`
+        );
+      }
+    }
+  };
 
   // Determine VIP Tier
   let vipTier = 'Bronze Member';
@@ -54,7 +93,6 @@ export default function LoyaltyScreen() {
 
   const requestAuth = () => {
     const reason = t('needAccountDesc');
-
     Alert.alert(
       t('needAccountTitle'),
       reason,
@@ -69,8 +107,8 @@ export default function LoyaltyScreen() {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-      {/* Stamp Card Header */}
+    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
+      {/* 1. Stamp Card Header */}
       <View style={styles.cardContainer}>
         <View style={styles.cardHeader}>
           <Text style={styles.cardTitle}>Emanuela Loyalty Card</Text>
@@ -94,7 +132,78 @@ export default function LoyaltyScreen() {
         <Text style={styles.qrButtonText}>Scanează la Casă</Text>
       </TouchableOpacity>
 
-      {/* VIP Tracker section */}
+      {/* 2. THE SWEET TASTE PASSPORT (Pașaportul Dulce Emanuela) */}
+      <View style={styles.passportCard}>
+        <View style={styles.passportHeader}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Text style={{ fontSize: 24, marginRight: 8 }}>📖</Text>
+            <View>
+              <Text style={styles.passportTitle}>Pașaportul Dulce Emanuela</Text>
+              <Text style={styles.passportSubtitle}>Harta celor 8 arome semnătură ale laboratorului</Text>
+            </View>
+          </View>
+          <View style={styles.passportCounterBadge}>
+            <Text style={styles.passportCounterText}>
+              {tastedIds.length} / {SWEET_PASSPORT_ITEMS.length}
+            </Text>
+          </View>
+        </View>
+
+        {/* Passport Progress Bar */}
+        <View style={styles.passportProgressBarBg}>
+          <View style={[styles.passportProgressBarFill, { width: `${(tastedIds.length / SWEET_PASSPORT_ITEMS.length) * 100}%` }]} />
+        </View>
+
+        <Text style={styles.passportMilestoneText}>
+          {tastedIds.length >= 8 
+            ? '👑 Felicitări! Ești oficial Connoisseur Emanuela!'
+            : tastedIds.length >= 4 
+            ? '🥈 Nivel: Explorator Gurmand · Încă 4 arome până la Connoisseur'
+            : '🥉 Nivel: Inițiat în Dulce · Apasă pe o aromă degustată pentru ștampilă'}
+        </Text>
+
+        {/* Passport Grid */}
+        <View style={styles.passportGrid}>
+          {SWEET_PASSPORT_ITEMS.map(item => {
+            const isTasted = tastedIds.includes(item.id);
+            return (
+              <TouchableOpacity
+                key={item.id}
+                style={[styles.passportItemCard, isTasted && styles.passportItemCardTasted]}
+                onPress={() => handleTogglePassportItem(item)}
+                activeOpacity={0.7}
+              >
+                <View style={styles.passportItemTop}>
+                  <Text style={{ fontSize: 24 }}>{item.emoji}</Text>
+                  <View style={[styles.stampPill, isTasted && styles.stampPillActive]}>
+                    <Ionicons 
+                      name={isTasted ? "checkmark-circle" : "ellipse-outline"} 
+                      size={14} 
+                      color={isTasted ? '#12100e' : colors.textMuted} 
+                    />
+                    <Text style={[styles.stampPillText, isTasted && styles.stampPillTextActive]}>
+                      {isTasted ? 'Degustat' : 'Netestat'}
+                    </Text>
+                  </View>
+                </View>
+
+                <Text style={styles.passportItemName} numberOfLines={1}>{item.name}</Text>
+                <Text style={styles.passportItemDesc} numberOfLines={2}>{item.desc}</Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+
+        {/* Connoisseur perk note */}
+        <View style={styles.connoisseurNote}>
+          <Ionicons name="sparkles" size={16} color={colors.gold} />
+          <Text style={styles.connoisseurNoteText}>
+            Colecționează toate cele 8 ștampile pentru a debloca o prăjitură gratuită la alegere și invitație la degustările exclusive din laborator!
+          </Text>
+        </View>
+      </View>
+
+      {/* 3. VIP Tracker section */}
       <View style={styles.vipContainer}>
         <View style={styles.vipHeader}>
           <View>
@@ -115,8 +224,7 @@ export default function LoyaltyScreen() {
         </Text>
       </View>
 
-
-      {/* Rewards Description list */}
+      {/* 4. Rewards Description list */}
       <View style={styles.infoSection}>
         <Text style={styles.sectionTitle}>Beneficii Niveluri VIP</Text>
         
@@ -219,15 +327,18 @@ const getStyles = (colors) => StyleSheet.create({
     width: '28%',
     aspectRatio: 1,
     borderRadius: 12,
-    backgroundColor: colors.inputBg,
+    borderWidth: 2,
+    borderColor: colors.border,
+    borderStyle: 'dashed',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 14,
-    borderWidth: 1,
-    borderColor: colors.border
+    marginBottom: 12,
+    backgroundColor: colors.inputBg
   },
   stampSlotActive: {
-    backgroundColor: colors.gold
+    backgroundColor: colors.gold,
+    borderColor: colors.gold,
+    borderStyle: 'solid'
   },
   stampNumber: {
     color: colors.textMuted,
@@ -235,19 +346,19 @@ const getStyles = (colors) => StyleSheet.create({
     fontWeight: 'bold'
   },
   stampsLeftText: {
-    color: colors.text,
-    fontSize: 13,
+    color: colors.textMuted,
+    fontSize: 12,
     textAlign: 'center',
-    marginTop: 6
+    marginTop: 8
   },
   qrButton: {
     backgroundColor: colors.gold,
-    flexDirection: 'row',
     borderRadius: 24,
     paddingVertical: 14,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 24
+    marginBottom: 16
   },
   qrButtonText: {
     color: '#12100e',
@@ -255,19 +366,154 @@ const getStyles = (colors) => StyleSheet.create({
     fontWeight: 'bold',
     marginLeft: 8
   },
+  passportCard: {
+    backgroundColor: colors.cardBg,
+    borderRadius: 20,
+    padding: 18,
+    borderWidth: 1.5,
+    borderColor: colors.gold,
+    marginBottom: 16,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6
+  },
+  passportHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10
+  },
+  passportTitle: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: colors.text
+  },
+  passportSubtitle: {
+    fontSize: 11,
+    color: colors.textMuted,
+    marginTop: 2
+  },
+  passportCounterBadge: {
+    backgroundColor: colors.gold,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12
+  },
+  passportCounterText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#12100e'
+  },
+  passportProgressBarBg: {
+    height: 6,
+    backgroundColor: colors.inputBg,
+    borderRadius: 3,
+    overflow: 'hidden',
+    marginBottom: 8
+  },
+  passportProgressBarFill: {
+    height: '100%',
+    backgroundColor: colors.gold,
+    borderRadius: 3
+  },
+  passportMilestoneText: {
+    fontSize: 11,
+    color: colors.gold,
+    fontWeight: '600',
+    marginBottom: 14
+  },
+  passportGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    justifyContent: 'space-between'
+  },
+  passportItemCard: {
+    width: '48.5%',
+    backgroundColor: colors.inputBg,
+    borderRadius: 12,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: colors.border,
+    marginBottom: 8
+  },
+  passportItemCardTasted: {
+    borderColor: colors.gold,
+    backgroundColor: colors.goldMuted
+  },
+  passportItemTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 6
+  },
+  stampPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.cardBg,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 8,
+    gap: 3,
+    borderWidth: 1,
+    borderColor: colors.border
+  },
+  stampPillActive: {
+    backgroundColor: colors.gold,
+    borderColor: colors.gold
+  },
+  stampPillText: {
+    fontSize: 9,
+    fontWeight: '600',
+    color: colors.textMuted
+  },
+  stampPillTextActive: {
+    color: '#12100e',
+    fontWeight: 'bold'
+  },
+  passportItemName: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: colors.text,
+    marginBottom: 2
+  },
+  passportItemDesc: {
+    fontSize: 10,
+    color: colors.textMuted,
+    lineHeight: 13
+  },
+  connoisseurNote: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.inputBg,
+    padding: 10,
+    borderRadius: 10,
+    marginTop: 8,
+    gap: 8,
+    borderWidth: 1,
+    borderColor: colors.border
+  },
+  connoisseurNoteText: {
+    fontSize: 11,
+    color: colors.textMuted,
+    flex: 1,
+    lineHeight: 15
+  },
   vipContainer: {
     backgroundColor: colors.cardBg,
     borderRadius: 16,
     padding: 20,
     borderWidth: 1,
     borderColor: colors.border,
-    marginBottom: 24
+    marginBottom: 16
   },
   vipHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16
+    marginBottom: 14
   },
   vipLabel: {
     color: colors.textMuted,
@@ -279,8 +525,8 @@ const getStyles = (colors) => StyleSheet.create({
     marginTop: 2
   },
   vipPoints: {
-    color: colors.gold,
-    fontSize: 20,
+    color: colors.text,
+    fontSize: 15,
     fontWeight: 'bold'
   },
   progressBarBg: {
@@ -288,7 +534,7 @@ const getStyles = (colors) => StyleSheet.create({
     backgroundColor: colors.inputBg,
     borderRadius: 4,
     overflow: 'hidden',
-    marginBottom: 10
+    marginBottom: 8
   },
   progressBarFill: {
     height: '100%',
@@ -296,52 +542,58 @@ const getStyles = (colors) => StyleSheet.create({
   },
   progressText: {
     color: colors.textMuted,
-    fontSize: 11
+    fontSize: 11,
+    marginTop: 4
   },
   infoSection: {
-    paddingHorizontal: 4
+    backgroundColor: colors.cardBg,
+    borderRadius: 16,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: colors.border,
+    marginBottom: 16
   },
   sectionTitle: {
     color: colors.text,
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 'bold',
-    marginBottom: 16
+    marginBottom: 14
   },
   infoRow: {
     flexDirection: 'row',
-    marginBottom: 18,
-    alignItems: 'flex-start'
+    alignItems: 'flex-start',
+    marginBottom: 12
   },
   infoIcon: {
-    marginTop: 2,
-    marginRight: 12
+    marginRight: 12,
+    marginTop: 2
   },
   infoTextContainer: {
     flex: 1
   },
   infoHeadline: {
     color: colors.text,
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 2
+    fontSize: 13,
+    fontWeight: 'bold'
   },
   infoBody: {
     color: colors.textMuted,
     fontSize: 12,
+    marginTop: 2,
     lineHeight: 16
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.85)',
+    backgroundColor: 'rgba(0,0,0,0.7)',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24
   },
   qrModalContainer: {
     backgroundColor: colors.cardBg,
-    borderRadius: 24,
-    width: '100%',
+    borderRadius: 20,
     padding: 24,
+    width: '100%',
     alignItems: 'center',
     borderWidth: 1,
     borderColor: colors.border
@@ -354,96 +606,24 @@ const getStyles = (colors) => StyleSheet.create({
     marginBottom: 16
   },
   qrModalTitle: {
-    color: colors.gold,
     fontSize: 18,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    color: colors.text
   },
   qrModalDesc: {
-    color: colors.textMuted,
     fontSize: 13,
+    color: colors.textMuted,
     textAlign: 'center',
     lineHeight: 18,
-    marginBottom: 24
+    marginBottom: 20
   },
   qrBox: {
-    width: 200,
-    height: 200,
-    backgroundColor: '#ffffff', // High contrast background for QR scanner compatibility
-    borderRadius: 16,
-    padding: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-    marginBottom: 24
-  },
-  qrCornerTopLeft: {
-    position: 'absolute',
-    top: 10,
-    left: 10,
-    width: 30,
-    height: 30,
-    borderTopWidth: 4,
-    borderLeftWidth: 4,
-    borderColor: '#12100e'
-  },
-  qrCornerTopRight: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    width: 30,
-    height: 30,
-    borderTopWidth: 4,
-    borderRightWidth: 4,
-    borderColor: '#12100e'
-  },
-  qrCornerBottomLeft: {
-    position: 'absolute',
-    bottom: 10,
-    left: 10,
-    width: 30,
-    height: 30,
-    borderBottomWidth: 4,
-    borderLeftWidth: 4,
-    borderColor: '#12100e'
-  },
-  qrCornerBottomRight: {
-    position: 'absolute',
-    bottom: 10,
-    right: 10,
-    width: 30,
-    height: 30,
-    borderBottomWidth: 4,
-    borderRightWidth: 4,
-    borderColor: '#12100e'
-  },
-  qrRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 4
-  },
-  qrBlock: {
-    width: 16,
-    height: 16,
-    backgroundColor: '#12100e',
-    marginHorizontal: 4
-  },
-  qrBlockLarge: {
-    width: 32,
-    height: 32
-  },
-  scanSimBtn: {
     backgroundColor: colors.inputBg,
-    borderRadius: 12,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    width: '100%',
+    borderRadius: 16,
+    padding: 24,
     alignItems: 'center',
+    justifyContent: 'center',
     borderWidth: 1,
     borderColor: colors.gold
-  },
-  scanSimBtnText: {
-    color: colors.gold,
-    fontWeight: 'bold',
-    fontSize: 14
   }
 });

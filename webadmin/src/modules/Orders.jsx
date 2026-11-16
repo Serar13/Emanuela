@@ -26,7 +26,21 @@ export default function Orders() {
 
   const columns = [
     { key: "id", label: "ID", render: (r) => <code>{r.id.slice(0, 8)}</code> },
-    { key: "customerName", label: "Client", sortable: true },
+    {
+      key: "customerName",
+      label: "Client",
+      sortable: true,
+      render: (r) => (
+        <div>
+          <span>{r.customerName || "—"}</span>
+          {r.isGiftSurprise && (
+            <span style={{ marginLeft: 6, fontSize: "0.75rem", background: "#fff3e0", color: "#e65100", padding: "2px 6px", borderRadius: 4, fontWeight: "bold" }}>
+              🎁 Cadou
+            </span>
+          )}
+        </div>
+      )
+    },
     {
       key: "items",
       label: "Produse",
@@ -39,10 +53,17 @@ export default function Orders() {
     { key: "total", label: "Total", sortable: true, sortValue: (r) => Number(r.total) || 0, render: (r) => formatMoney(r.total) },
     {
       key: "source",
-      label: "Sursă",
-      render: (r) => <Badge tone={r.source === "mobile" ? "info" : "default"}>{r.source || "—"}</Badge>
+      label: "Sursă / Tip",
+      render: (r) => (
+        <div>
+          <Badge tone={r.source === "mobile" ? "info" : "default"}>{r.source || "—"}</Badge>
+          <span style={{ display: "block", fontSize: "0.75rem", color: "#666", marginTop: 2 }}>
+            {r.fulfillmentType === "delivery" ? "🚗 Livrare" : "🏢 Ridicare"}
+          </span>
+        </div>
+      )
     },
-    { key: "locationId", label: "Locație", render: (r) => locName(r.locationId) },
+    { key: "locationId", label: "Locație / Zonă", render: (r) => r.locationName || locName(r.locationId) },
     { key: "createdAt", label: "Creată", sortable: true, sortValue: (r) => r.createdAt?.toMillis?.() ?? 0, render: (r) => formatDate(r.createdAt) },
     {
       key: "status",
@@ -69,12 +90,46 @@ export default function Orders() {
       <DataTable columns={columns} rows={sorted} searchKeys={["customerName", "id"]} emptyMessage="Nicio comandă încă." />
       {details && (
         <Modal title={`Comandă ${details.id.slice(0, 8)}`} onClose={() => setDetails(null)}>
-          <p>
-            <strong>Client:</strong> {details.customerName || "—"} · <strong>Sursă:</strong> {details.source}
-          </p>
-          <p>
-            <strong>Locație:</strong> {locName(details.locationId)} · <strong>Status:</strong> {details.status}
-          </p>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "14px" }}>
+            <p><strong>Client:</strong> {details.customerName || "—"} ({details.customerPhone || "Fără telefon"})</p>
+            <p><strong>Sursă:</strong> {details.source} · <strong>Modalitate:</strong> {details.fulfillmentType === "delivery" ? "Livrare la domiciliu" : "Ridicare din locație"}</p>
+            <p><strong>Locație:</strong> {details.locationName || locName(details.locationId)}</p>
+            <p><strong>Status Plată:</strong> {details.paymentStatus === "paid_stripe" ? "💳 Plătit Online (Stripe)" : "💵 La primire (Numerar / POS)"}</p>
+          </div>
+
+          {/* Special Surprise Gift Box */}
+          {details.isGiftSurprise && details.giftDetails && (
+            <div style={{ background: "#fffde7", border: "1.5px dashed #fbc02d", borderRadius: 8, padding: 14, margin: "14px 0" }}>
+              <h4 style={{ margin: "0 0 6px 0", color: "#f57f17", display: "flex", alignItems: "center", gap: "6px" }}>
+                <span>🎁</span> COMANDĂ CADOU SURPRIZĂ CU FELICITARE
+              </h4>
+              <p style={{ margin: "4px 0" }}>
+                <strong>Destinatar:</strong> {details.giftDetails.recipientName || "—"} ({details.giftDetails.recipientPhone || "Fără telefon"})
+              </p>
+              <div style={{ marginTop: "8px" }}>
+                <label style={{ fontSize: "0.8rem", fontWeight: "bold", color: "#555" }}>
+                  💌 Text de transcris manual pe felicitarea caligrafică:
+                </label>
+                <div style={{ background: "#ffffff", padding: "10px", borderRadius: "6px", fontStyle: "italic", border: "1px solid #e0e0e0", marginTop: "4px", fontSize: "0.9rem", color: "#222" }}>
+                  "{details.giftDetails.cardMessage || 'Fără mesaj'}"
+                </div>
+              </div>
+              {details.giftDetails.isAnonymous && (
+                <p style={{ margin: "6px 0 0 0", fontSize: "0.8rem", color: "#d84315", fontWeight: "bold" }}>
+                  🔒 Notă: Clientul dorește ca expeditorul să rămână anonim până la deschiderea felicitării!
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* Delivery Address Details */}
+          {details.deliveryAddress && (
+            <div style={{ background: "#f8f9fa", padding: "10px", borderRadius: "6px", marginBottom: "14px", border: "1px solid #eee" }}>
+              <p style={{ margin: 0 }}><strong>Adresă Livrare:</strong> {details.deliveryAddress.address}, {details.deliveryAddress.city}</p>
+              {details.deliveryAddress.notes && <p style={{ margin: "4px 0 0 0", fontSize: "0.85rem", color: "#666" }}><strong>Instrucțiuni curier:</strong> {details.deliveryAddress.notes}</p>}
+            </div>
+          )}
+
           <table className="admin-table">
             <thead>
               <tr>
