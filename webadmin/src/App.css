@@ -243,6 +243,34 @@ body {
 .live-indicator { font-size: 12px; color: var(--muted); }
 .admin-content { padding: 24px 28px; }
 
+/* ---------- CMS settings ---------- */
+.settings-stack { display: grid; gap: 24px; }
+.settings-card { background: var(--panel); border: 1px solid var(--border); border-radius: 18px; padding: 24px; box-shadow: 0 10px 32px rgba(45, 28, 21, .04); }
+.settings-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; margin-bottom: 24px; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+.settings-card-head h2 { margin: 0 0 6px; font: 600 25px/1.1 Georgia, serif; }
+.settings-card-head p { margin: 0; color: var(--muted); font-size: 13px; }
+.settings-actions { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+.save-confirmation { color: var(--ok); font-size: 13px; font-weight: 700; }
+.settings-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.setting-field { display: flex; flex-direction: column; gap: 7px; color: #65564f; font-size: 12px; font-weight: 700; }
+.setting-field.wide, .setting-group { grid-column: 1 / -1; }
+.setting-field input, .setting-field textarea { width: 100%; padding: 11px 12px; border: 1px solid var(--border); border-radius: 9px; background: #fff; color: var(--text); font: inherit; font-weight: 500; resize: vertical; }
+.setting-field input:focus, .setting-field textarea:focus { outline: 0; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(233,45,121,.08); }
+.setting-field small { color: var(--muted); font-weight: 400; }
+.setting-group { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; padding: 20px; border: 1px solid var(--border); border-radius: 13px; background: #fbf8f4; }
+.setting-group h3 { grid-column: 1 / -1; margin: 0; font: 600 17px Georgia, serif; }
+.setting-group .wide { grid-column: 1 / -1; }
+.setting-group.compact { grid-column: auto; grid-template-columns: 1fr; }
+.setting-group.compact h3 { grid-column: auto; text-transform: capitalize; }
+
+@media (max-width: 760px) {
+  .settings-card { padding: 18px; }
+  .settings-card-head { display: block; }
+  .settings-actions { margin-top: 16px; justify-content: space-between; }
+  .settings-grid, .setting-group { grid-template-columns: 1fr; }
+  .setting-field.wide, .setting-group, .setting-group h3, .setting-group .wide { grid-column: auto; }
+}
+
 /* ---------- Module toolbar / table ---------- */
 .module-toolbar { margin-bottom: 16px; }
 .datatable-toolbar {

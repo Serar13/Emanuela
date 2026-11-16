@@ -1,9 +1,13 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
+import { getSiteContent } from '../services/content';
 import './Footer.css';
 
 export default function Footer() {
-  const { currentUser, setShowAuthModal, t } = useApp();
+  const { currentUser, setShowAuthModal, t, locations } = useApp();
+  const [content, setContent] = useState({});
+  useEffect(() => { getSiteContent('global').then((row) => row && setContent(row)); }, []);
 
   return (
     <footer className="main-footer-section">
@@ -25,14 +29,14 @@ export default function Footer() {
                 <span className="footer-brand-motto">{t('footerMotto')}</span>
               </div>
             </div>
-            <p className="footer-description">{t('footerBrandDesc')}</p>
+            <p className="footer-description">{content.brandDescription || t('footerBrandDesc')}</p>
 
             {/* Social icons */}
             <div className="social-links-container">
-              <a href="https://www.facebook.com/laboratoremanuela/" target="_blank" rel="noopener noreferrer" className="social-icon-btn" aria-label="Facebook">
+              <a href={content.facebookUrl || 'https://www.facebook.com/laboratoremanuela/'} target="_blank" rel="noopener noreferrer" className="social-icon-btn" aria-label="Facebook">
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
               </a>
-              <a href="https://www.instagram.com/laboratoremanuela/" target="_blank" rel="noopener noreferrer" className="social-icon-btn" aria-label="Instagram">
+              <a href={content.instagramUrl || 'https://www.instagram.com/laboratoremanuela/'} target="_blank" rel="noopener noreferrer" className="social-icon-btn" aria-label="Instagram">
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
               </a>
             </div>
@@ -46,6 +50,7 @@ export default function Footer() {
               <li><Link to="/meniu">{t('navMenu')}</Link></li>
               <li><Link to="/despre-noi">{t('navAbout')}</Link></li>
               <li><Link to="/candy-bar">{t('navCandyBar')}</Link></li>
+              <li><Link to="/jurnal">Jurnal</Link></li>
               <li><Link to="/rezervari">{t('navReservations')}</Link></li>
               <li><Link to="/contact">{t('navContact')}</Link></li>
               {currentUser ? (
@@ -60,24 +65,13 @@ export default function Footer() {
           <div className="footer-info-col">
             <h4>{t('footerInfoTitle')}</h4>
             <div className="footer-schedule-grid">
-              <div className="schedule-item">
-                <span className="schedule-city">📍 Tg. Mureș — Str. Ciucului 12</span>
-                <span className="schedule-hours">{t('footerMonSat')}: 08:00–20:00</span>
-                <span className="schedule-hours">{t('footerSun')}: 10:00–16:00</span>
-              </div>
-              <div className="schedule-item">
-                <span className="schedule-city">📍 Tg. Mureș — Bd. Pandurilor 114-116</span>
-                <span className="schedule-hours">{t('footerMonSat')}: 08:00–20:00</span>
-                <span className="schedule-hours">{t('footerSun')}: 10:00–16:00</span>
-              </div>
-              <div className="schedule-item">
-                <span className="schedule-city">📍 Câmpia Turzii — Str. 1 Decembrie 3-5</span>
-                <span className="schedule-hours">{t('footerMonSat')}: 08:00–20:00</span>
-                <span className="schedule-hours">{t('footerSun')}: 10:00–16:00</span>
-              </div>
+              {locations.map((location) => <div className="schedule-item" key={location.id}>
+                <span className="schedule-city">📍 {location.city ? `${location.city} — ` : ''}{location.address}</span>
+                <span className="schedule-hours">{location.schedule || `${t('footerMonSat')}: 08:00–20:00`}</span>
+              </div>)}
             </div>
             <p className="footer-phone-events" style={{ marginTop: '16px', fontSize: '14px' }}>
-              📞 {t('footerEventsPhone')}: <strong>0755 047 191</strong>
+              📞 {t('footerEventsPhone')}: <strong>{content.eventsPhone || '0755 047 191'}</strong>
             </p>
           </div>
 
@@ -87,7 +81,7 @@ export default function Footer() {
             <p className="footer-app-desc">{t('footerAppDesc')}</p>
             <div className="footer-app-buttons">
               <a 
-                href="https://apps.apple.com/ro/app/laborator-emanuela"
+                href={content.appStoreUrl || 'https://apps.apple.com/ro/app/laborator-emanuela'}
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="app-badge-btn"
@@ -102,7 +96,7 @@ export default function Footer() {
                 </div>
               </a>
               <a 
-                href="https://play.google.com/store/apps/details?id=ro.laboratoremanuela.app"
+                href={content.playStoreUrl || 'https://play.google.com/store/apps/details?id=ro.laboratoremanuela.app'}
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="app-badge-btn"

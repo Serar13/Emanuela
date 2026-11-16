@@ -15,18 +15,26 @@ export default function Tables() {
       collectionName={COLLECTIONS.TABLES}
       title="Mese"
       searchKeys={["name", "notes"]}
-      defaults={{ locationId: "", name: "", seats: 2, active: true, notes: "" }}
+      defaults={{ locationId: "", name: "", seats: 2, x: 50, y: 50, shape: "circle", reservable: true, active: true, notes: "" }}
       fields={[
         { name: "locationId", label: "Locație", type: "select", options: locOptions, required: true },
         { name: "name", label: "Nume masă", type: "text", required: true },
         { name: "seats", label: "Locuri", type: "number", step: "1", required: true },
+        { name: "x", label: "Poziție X (%)", type: "number", help: "0 = stânga, 100 = dreapta" },
+        { name: "y", label: "Poziție Y (%)", type: "number", help: "0 = sus, 100 = jos" },
+        { name: "shape", label: "Formă", type: "select", options: [{ value: "circle", label: "Rotundă" }, { value: "square", label: "Pătrată" }, { value: "rectangle", label: "Dreptunghiulară" }] },
         { name: "notes", label: "Note", type: "text" },
+        { name: "reservable", label: "Poate fi rezervată online", type: "checkbox" },
         { name: "active", label: "Activă", type: "checkbox" }
       ]}
       fromForm={(v) => ({
         locationId: v.locationId || "",
         name: v.name,
         seats: Number(v.seats) || 0,
+        x: Math.min(100, Math.max(0, Number(v.x) || 0)),
+        y: Math.min(100, Math.max(0, Number(v.y) || 0)),
+        shape: v.shape || "circle",
+        reservable: !!v.reservable,
         notes: v.notes || "",
         active: !!v.active
       })}
@@ -35,6 +43,7 @@ export default function Tables() {
         { key: "name", label: "Masă", sortable: true },
         { key: "locationId", label: "Locație", render: (r) => locName(r.locationId), sortable: true },
         { key: "seats", label: "Locuri", sortable: true },
+        { key: "position", label: "Poziție", render: (r) => `${r.x ?? 50}% / ${r.y ?? 50}%` },
         { key: "notes", label: "Note" },
         {
           key: "active",

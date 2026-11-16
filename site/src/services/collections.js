@@ -10,4 +10,7 @@ export const COLLECTIONS = {
   LOCATIONS: 'locations',
   OFFER_REQUESTS: 'offerRequests',
   REVIEWS: 'reviews',
+  ARTICLES: 'articles',
+  SITE_CONTENT: 'siteContent',
+  CANDY_BAR_ITEMS: 'candyBarItems',
 };

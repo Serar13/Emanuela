@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { createOfferRequest } from '../services/submissions';
 import { isImagePreloaded, preloadImages } from '../services/prefetch';
+import { getCandyBarItems, getSiteContent } from '../services/content';
 import './CandyBar.css';
 import './Skeleton.css';
 
@@ -13,14 +14,22 @@ export default function CandyBar() {
     return ro;
   }, [language]);
 
+  const [candyConfig, setCandyConfig] = useState({
+    recommendedGrams: 150, fruitBarGrams: 75, fruitBarPrice: 7.5,
+    basic100: 16, basic150: 24, basic200: 32,
+    premium100: 18, premium150: 27, premium200: 36,
+    deluxe100: 24, deluxe150: 36, deluxe200: 48,
+  });
+  const [cmsItems, setCmsItems] = useState([]);
+
   // Carousel state
   const [currentSlide, setCurrentSlide] = useState(0);
   const brochureSlides = useMemo(() => ([
-    '/images/candy-bar-01.png',
-    '/images/candy-bar-02.png',
-    '/images/wedding-cake-flowers.jpg',
-    '/images/children-cake-unicorn.webp',
-  ]), []);
+    candyConfig.slide1 || '/images/candy-bar-01.png',
+    candyConfig.slide2 || '/images/candy-bar-02.png',
+    candyConfig.slide3 || '/images/wedding-cake-flowers.jpg',
+    candyConfig.slide4 || '/images/children-cake-unicorn.webp',
+  ].filter(Boolean)), [candyConfig.slide1, candyConfig.slide2, candyConfig.slide3, candyConfig.slide4]);
 
   // Calculator state
   const [guestCount, setGuestCount] = useState(100);
@@ -28,6 +37,17 @@ export default function CandyBar() {
   const [gramsPerGuest, setGramsPerGuest] = useState(150);
   const [includeCake, setIncludeCake] = useState(true);
   const [includeFruitBar, setIncludeFruitBar] = useState(false);
+
+  useEffect(() => {
+    Promise.all([getSiteContent('candyBar'), getCandyBarItems()]).then(([config, items]) => {
+      if (config) {
+        setCandyConfig((current) => ({ ...current, ...config }));
+        const recommended = Number(config.recommendedGrams);
+        if ([100, 150, 200].includes(recommended)) setGramsPerGuest(recommended);
+      }
+      if (items.length) setCmsItems(items);
+    });
+  }, []);
 
   // Form state
   const [formName, setFormName] = useState('');
@@ -48,7 +68,7 @@ export default function CandyBar() {
   const [submitError, setSubmitError] = useState('');
 
   // A-la-carte menu items
-  const menuItems = useMemo(() => ([
+  const fallbackMenuItems = useMemo(() => ([
     {
       name: pick('Mini prăjituri', 'Mini pastries', 'Mini sütemények'),
       price: '12 RON',
@@ -92,6 +112,10 @@ export default function CandyBar() {
       image: '/images/wedding-cake-flowers.jpg'
     }
   ]), [pick]);
+
+  const menuItems = useMemo(() => cmsItems.length
+    ? cmsItems.map((item) => ({ ...item, price: `${Number(item.price || 0).toFixed(2)} RON`, desc: item.description || '', image: item.imageUrl || '' }))
+    : fallbackMenuItems, [cmsItems, fallbackMenuItems]);
 
   const [brochureReady, setBrochureReady] = useState(() => isImagePreloaded(brochureSlides[0]));
   const [loadedSlides, setLoadedSlides] = useState(
@@ -169,15 +193,15 @@ export default function CandyBar() {
   // Public Candy Bar pricing from laboratorEmanuela.ro. The final quote may
   // change after the event theme, transport and presentation are confirmed.
   const packageRates = {
-    basic: { 100: 16, 150: 24, 200: 32 },
-    premium: { 100: 18, 150: 27, 200: 36 },
-    deluxe: { 100: 24, 150: 36, 200: 48 },
+    basic: { 100: Number(candyConfig.basic100), 150: Number(candyConfig.basic150), 200: Number(candyConfig.basic200) },
+    premium: { 100: Number(candyConfig.premium100), 150: Number(candyConfig.premium150), 200: Number(candyConfig.premium200) },
+    deluxe: { 100: Number(candyConfig.deluxe100), 150: Number(candyConfig.deluxe150), 200: Number(candyConfig.deluxe200) },
   };
   const candyBarCost = guestCount * packageRates[packageType][gramsPerGuest];
-  const fruitBarCost = includeFruitBar ? guestCount * 7.5 : 0;
+  const fruitBarCost = includeFruitBar ? guestCount * Number(candyConfig.fruitBarPrice || 0) : 0;
   const totalCostEstimate = Math.round(candyBarCost + fruitBarCost);
   const totalDessertKg = ((guestCount * gramsPerGuest) / 1000).toFixed(1);
-  const fruitKg = includeFruitBar ? ((guestCount * 75) / 1000).toFixed(1) : 0;
+  const fruitKg = includeFruitBar ? ((guestCount * Number(candyConfig.fruitBarGrams || 75)) / 1000).toFixed(1) : 0;
 
   // Apply calculator recommendations to form
   const applyCalculatorToForm = () => {
@@ -191,7 +215,7 @@ export default function CandyBar() {
     const calculatedMessage = `Estimare Candy Bar Emanuela:
 - Pachet: ${packageType.charAt(0).toUpperCase() + packageType.slice(1)}
 - ${guestCount} invitați × ${gramsPerGuest} g (${totalDessertKg} kg deserturi)
-${includeFruitBar ? `- Fruit bar: 75 g/invitat (${fruitKg} kg)\n` : ''}${includeCake ? '- Doresc și ofertă pentru tort de prezentare\n' : ''}
+${includeFruitBar ? `- Fruit bar: ${candyConfig.fruitBarGrams || 75} g/invitat (${fruitKg} kg)\n` : ''}${includeCake ? '- Doresc și ofertă pentru tort de prezentare\n' : ''}
 Buget orientativ Candy Bar: ${totalCostEstimate} RON.
 Oferta finală se confirmă după stabilirea produselor, decorului și transportului.`;
 
@@ -254,7 +278,7 @@ Oferta finală se confirmă după stabilirea produselor, decorului și transport
           <h1 className="candybar-main-title">Candy Bar &amp; Torturi</h1>
           <div className="gold-divider"></div>
           <p className="candybar-intro">
-            {pick(
+            {language === 'ro' && candyConfig.intro ? candyConfig.intro : pick(
               'Petrecerea perfectă presupune un mix alcătuit din foarte multe elemente, unul dintre acestea fiind candy bar-ul. De aceea, vrem să transformăm fiecare petrecere într-o poveste plină de savoare și culoare. Vă oferim consultanță în alegerea produselor preferate, pentru a crea decorul dorit, îmbinat cu tematica petrecerii.',
               'The perfect party is a mix of many elements, and the candy bar is key. We want to transform every event into a story of flavor and color, providing full consulting to match your theme.',
               'A tökéletes esemény sok elemből áll, ezek közül az egyik legfontosabb a candy bar. Minden rendezvényt ízekkel és színekkel teli történetté szeretnénk alakítani, és segítünk a megfelelő termékek kiválasztásában.'
@@ -358,7 +382,7 @@ Oferta finală se confirmă după stabilirea produselor, decorului și transport
                       className={gramsPerGuest === grams ? 'active' : ''}
                       onClick={() => setGramsPerGuest(grams)}
                     >
-                      {grams} g {grams === 150 && <small>{pick('recomandat', 'recommended', 'ajánlott')}</small>}
+                      {grams} g {grams === Number(candyConfig.recommendedGrams || 150) && <small>{pick('recomandat', 'recommended', 'ajánlott')}</small>}
                     </button>
                   ))}
                 </div>
@@ -380,7 +404,7 @@ Oferta finală se confirmă după stabilirea produselor, decorului și transport
                     checked={includeFruitBar}
                     onChange={(e) => setIncludeFruitBar(e.target.checked)}
                   />
-                  <span>🍓 {pick('Adaugă Fruit Bar (75 g / invitat)', 'Add Fruit Bar (75 g / guest)', 'Fruit Bar hozzáadása (75 g / vendég)')}</span>
+                  <span>🍓 {pick(`Adaugă Fruit Bar (${candyConfig.fruitBarGrams || 75} g / invitat)`, `Add Fruit Bar (${candyConfig.fruitBarGrams || 75} g / guest)`, `Fruit Bar hozzáadása (${candyConfig.fruitBarGrams || 75} g / vendég)`)}</span>
                 </label>
               </div>
 

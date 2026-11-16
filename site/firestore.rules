@@ -61,6 +61,21 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    match /siteContent/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /articles/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /candyBarItems/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     // ---- Reviews: public read of approved, anyone may submit (unapproved) ----
     match /reviews/{id} {
       allow read: if true;

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { getActiveProducts, getApprovedReviews } from '../services/catalog';
+import { getPublishedArticles, getSiteContent } from '../services/content';
 import './Home.css';
 
 const FALLBACK_REVIEWS = [
@@ -22,7 +23,7 @@ const FALLBACK_REVIEWS = [
   },
 ];
 
-const COLLECTIONS = [
+const DEFAULT_COLLECTIONS = [
   {
     number: '01',
     title: 'Torturi cu poveste',
@@ -46,7 +47,7 @@ const COLLECTIONS = [
   },
 ];
 
-const JOURNAL = [
+const DEFAULT_JOURNAL = [
   {
     category: 'Ghid Emanuela',
     title: 'Cum comanzi un tort online?',
@@ -74,47 +75,63 @@ export default function Home() {
   const { locations } = useApp();
   const [products, setProducts] = useState([]);
   const [reviews, setReviews] = useState(FALLBACK_REVIEWS);
+  const [content, setContent] = useState({});
+  const [articles, setArticles] = useState(DEFAULT_JOURNAL);
 
   useEffect(() => {
     let active = true;
-    Promise.all([getActiveProducts(), getApprovedReviews()])
-      .then(([productRows, reviewRows]) => {
+    Promise.all([getActiveProducts(), getApprovedReviews(), getSiteContent('home'), getPublishedArticles()])
+      .then(([productRows, reviewRows, homeContent, articleRows]) => {
         if (!active) return;
         const featured = productRows.filter((product) => product.featured);
         setProducts((featured.length ? featured : productRows).slice(0, 3));
         if (reviewRows.length) setReviews(reviewRows.slice(0, 3));
+        if (homeContent) setContent(homeContent);
+        if (articleRows.length) setArticles(articleRows.slice(0, 3));
       })
       .catch((error) => console.error('Home content failed:', error));
     return () => { active = false; };
   }, []);
 
+  const collections = DEFAULT_COLLECTIONS.map((item, index) => {
+    const key = index + 1;
+    return {
+      ...item,
+      title: content[`collection${key}Title`] || item.title,
+      text: content[`collection${key}Text`] || item.text,
+      image: content[`collection${key}Image`] || item.image,
+    };
+  });
+  const heroTitle = content.heroTitle || 'Momentele mari încep cu o linguriță.';
+  const heroWords = heroTitle.split(' ');
+  const heroAccent = heroWords.pop();
+
   return (
     <div className="em-home">
       <section className="em-hero">
         <div className="em-hero-copy">
-          <p className="em-eyebrow">Laborator de prăjituri · Târgu Mureș</p>
-          <h1>Momentele mari încep cu o <em>linguriță</em>.</h1>
+          <p className="em-eyebrow">{content.eyebrow || 'Laborator de prăjituri · Târgu Mureș'}</p>
+          <h1>{heroWords.join(' ')} <em>{heroAccent}</em></h1>
           <p className="em-hero-lead">
-            Deserturi artizanale, torturi și candy bar-uri create pentru zilele
-            pe care vrei să le ții minte.
+            {content.heroLead || 'Deserturi artizanale, torturi și candy bar-uri create pentru zilele pe care vrei să le ții minte.'}
           </p>
           <div className="em-hero-actions">
             <Link className="em-button em-button-primary" to="/meniu">Descoperă bunătățile</Link>
             <Link className="em-text-link" to="/candy-bar">Planifică un eveniment <span>↗</span></Link>
           </div>
           <div className="em-hero-proof">
-            <span><strong>19+</strong> ani de pasiune</span>
-            <span><strong>4</strong> experiențe Emanuela</span>
-            <span><strong>100%</strong> pregătit cu grijă</span>
+            <span><strong>{content.yearsValue || '19+'}</strong> {content.yearsLabel || 'ani de pasiune'}</span>
+            <span><strong>{content.locationsValue || '4'}</strong> {content.locationsLabel || 'experiențe Emanuela'}</span>
+            <span><strong>{content.careValue || '100%'}</strong> {content.careLabel || 'pregătit cu grijă'}</span>
           </div>
         </div>
 
         <div className="em-hero-visual" aria-label="Selecție Laborator Emanuela">
           <div className="em-hero-image-main">
-            <img src="/images/hero-events-wide.jpeg" alt="Candy bar Laborator Emanuela" />
+            <img src={content.heroImage || '/images/hero-events-wide.jpeg'} alt="Candy bar Laborator Emanuela" />
           </div>
           <div className="em-hero-image-detail">
-            <img src="/images/mousse-baby-pink.jpeg" alt="Mousse Baby Pink" />
+            <img src={content.heroDetailImage || '/images/mousse-baby-pink.jpeg'} alt="Mousse Baby Pink" />
           </div>
           <span className="em-hero-note">pregătit în laborator<br />pentru tine</span>
         </div>
@@ -132,7 +149,7 @@ export default function Home() {
         </header>
 
         <div className="em-collection-grid">
-          {COLLECTIONS.map((collection) => (
+          {collections.map((collection) => (
             <Link className="em-collection-card" to={collection.to} key={collection.title}>
               <img src={collection.image} alt={collection.title} />
               <span className="em-card-number">{collection.number}</span>
@@ -173,14 +190,14 @@ export default function Home() {
 
       <section className="em-story">
         <div className="em-story-image">
-          <img src="/images/editorial/atelier-seasonal.jpg" alt="Selecție pregătită în laborator" />
+          <img src={content.storyImage || '/images/editorial/atelier-seasonal.jpg'} alt="Selecție pregătită în laborator" />
           <span className="em-script-note">aproape 20 de ani<br />de bunătate</span>
         </div>
         <div className="em-story-copy">
           <p className="em-eyebrow">Din laborator</p>
-          <h2>Nu facem doar deserturi. Facem parte din poveste.</h2>
-          <p>Botezul, nunta, aniversarea sau desertul de duminică sunt amintiri. Noi venim cu texturile, culorile și gustul care le rămân alături.</p>
-          <blockquote>„Lingurițe de bunătate, pregătite cu mult drag.”</blockquote>
+          <h2>{content.storyTitle || 'Nu facem doar deserturi. Facem parte din poveste.'}</h2>
+          <p>{content.storyText || 'Botezul, nunta, aniversarea sau desertul de duminică sunt amintiri. Noi venim cu texturile, culorile și gustul care le rămân alături.'}</p>
+          <blockquote>„{content.storyQuote || 'Lingurițe de bunătate, pregătite cu mult drag.'}”</blockquote>
           <Link className="em-button em-button-light" to="/despre-noi">Povestea Emanuela</Link>
         </div>
       </section>
@@ -188,8 +205,8 @@ export default function Home() {
       <section className="em-section em-event-feature">
         <div className="em-event-copy">
           <p className="em-eyebrow">Evenimente cu bun gust</p>
-          <h2>Un Candy Bar care atrage toate privirile. Și poftele.</h2>
-          <p>Alege numărul de invitați, gramajul și stilul evenimentului. Calculatorul îți oferă o estimare, iar echipa Emanuela construiește oferta finală.</p>
+          <h2>{content.eventTitle || 'Un Candy Bar care atrage toate privirile. Și poftele.'}</h2>
+          <p>{content.eventText || 'Alege numărul de invitați, gramajul și stilul evenimentului. Calculatorul îți oferă o estimare, iar echipa Emanuela construiește oferta finală.'}</p>
           <ul>
             <li>pachete Basic, Premium și Deluxe</li>
             <li>recomandare de gramaj pentru fiecare invitat</li>
@@ -198,8 +215,8 @@ export default function Home() {
           <Link className="em-button em-button-primary" to="/candy-bar">Deschide calculatorul</Link>
         </div>
         <div className="em-event-collage">
-          <img className="em-event-large" src="/images/candy-bar-01.png" alt="Candy bar Emanuela" />
-          <img className="em-event-small" src="/images/wedding-cake-flowers.jpg" alt="Tort de nuntă Emanuela" />
+          <img className="em-event-large" src={content.eventImage || '/images/candy-bar-01.png'} alt="Candy bar Emanuela" />
+          <img className="em-event-small" src={content.eventDetailImage || '/images/wedding-cake-flowers.jpg'} alt="Tort de nuntă Emanuela" />
           <div className="em-event-badge"><strong>150 g</strong><span>recomandarea noastră / invitat</span></div>
         </div>
       </section>
@@ -223,13 +240,14 @@ export default function Home() {
           <p>Idei, recomandări și răspunsuri utile înainte de următoarea comandă sau următorul eveniment.</p>
         </header>
         <div className="em-journal-grid">
-          {JOURNAL.map((article) => (
-            <a href={article.href} target="_blank" rel="noreferrer" className="em-journal-card" key={article.title}>
-              <img src={article.image} alt="" />
-              <span>{article.category}</span><h3>{article.title}</h3><p>{article.text}</p><b>Citește articolul →</b>
-            </a>
+          {articles.map((article) => (
+            <Link to={article.id ? `/jurnal/${article.id}` : article.href} className="em-journal-card" key={article.id || article.title}>
+              <img src={article.imageUrl || article.image} alt="" />
+              <span>{article.category}</span><h3>{article.title}</h3><p>{article.excerpt || article.text}</p><b>Citește articolul →</b>
+            </Link>
           ))}
         </div>
+        <Link className="em-text-link dark" to="/jurnal">Vezi toate articolele <span>→</span></Link>
       </section>
 
       <section className="em-locations">

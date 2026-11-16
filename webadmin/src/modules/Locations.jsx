@@ -9,7 +9,7 @@ function TableMarker({ table }) {
   const seats = Number(table.seats || 0);
   return (
     <div
-      className={`floor-table ${table.active ? "" : "inactive"}`}
+      className={`floor-table floor-table-${table.shape || "circle"} ${table.active ? "" : "inactive"}`}
       style={{ left: `${x}%`, top: `${y}%` }}
       title={`${table.name} · ${seats} locuri${table.notes ? ` · ${table.notes}` : ""}`}
     >
@@ -34,7 +34,7 @@ function FloorPlan({ location, tables }) {
         <Badge tone={location.active ? "ok" : "default"}>{location.active ? "Activă" : "Inactivă"}</Badge>
       </div>
 
-      <div className="floor-plan">
+      <div className="floor-plan" style={location.floorPlanImageUrl ? { backgroundImage: `linear-gradient(rgba(255,255,255,.2), rgba(255,255,255,.2)), url(${location.floorPlanImageUrl})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}>
         <div className="floor-zone floor-zone-counter">Vitrină & bar</div>
         <div className="floor-zone floor-zone-entry">Intrare</div>
         <div className="floor-zone floor-zone-terrace">Terasă</div>
@@ -78,6 +78,9 @@ export default function Locations() {
           phone: "",
           email: "",
           schedule: "",
+          description: "",
+          imageUrl: "",
+          floorPlanImageUrl: "",
           lat: "",
           lng: "",
           active: true
@@ -89,6 +92,9 @@ export default function Locations() {
           { name: "phone", label: "Telefon", type: "text" },
           { name: "email", label: "Email", type: "text" },
           { name: "schedule", label: "Program", type: "text" },
+          { name: "description", label: "Descriere", type: "textarea" },
+          { name: "imageUrl", label: "Fotografie locație", type: "image", folder: "locations" },
+          { name: "floorPlanImageUrl", label: "Fundal plan 2D", type: "image", folder: "floor-plans", help: "Opțional: o schiță văzută de sus peste care sunt poziționate mesele." },
           { name: "lat", label: "Latitudine", type: "number" },
           { name: "lng", label: "Longitudine", type: "number" },
           { name: "active", label: "Activă", type: "checkbox" }
@@ -105,6 +111,9 @@ export default function Locations() {
           phone: v.phone || "",
           email: v.email || "",
           schedule: v.schedule || "",
+          description: v.description || "",
+          imageUrl: v.imageUrl || "",
+          floorPlanImageUrl: v.floorPlanImageUrl || "",
           coordinates: {
             lat: v.lat === "" ? null : Number(v.lat),
             lng: v.lng === "" ? null : Number(v.lng)

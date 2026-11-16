@@ -8,6 +8,7 @@ import {
   setDoc,
   updateDoc,
   deleteDoc,
+  getDoc,
   getDocs,
   onSnapshot,
   query,
@@ -64,4 +65,17 @@ export async function updateDocById(name, id, data) {
 
 export async function deleteDocById(name, id) {
   await deleteDoc(doc(db, name, id));
+}
+
+export async function fetchDocument(name, id) {
+  const snapshot = await getDoc(doc(db, name, id));
+  return snapshot.exists() ? { id: snapshot.id, ...snapshot.data() } : null;
+}
+
+export async function saveDocument(name, id, data) {
+  await setDoc(
+    doc(db, name, id),
+    { ...data, updatedAt: serverTimestamp() },
+    { merge: true }
+  );
 }

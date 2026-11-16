@@ -15,6 +15,9 @@ import Locations from "./modules/Locations";
 import OfferRequests from "./modules/OfferRequests";
 import Reviews from "./modules/Reviews";
 import Users from "./modules/Users";
+import SiteContent from "./modules/SiteContent";
+import Blog from "./modules/Blog";
+import CandyBarSettings from "./modules/CandyBarSettings";
 
 import "./App.css";
 
@@ -29,7 +32,10 @@ const MODULES = {
   locations: Locations,
   offerRequests: OfferRequests,
   reviews: Reviews,
-  users: Users
+  users: Users,
+  siteContent: SiteContent,
+  blog: Blog,
+  candyBarSettings: CandyBarSettings
 };
 
 function AccessDenied() {

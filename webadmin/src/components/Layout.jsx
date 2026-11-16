@@ -2,6 +2,9 @@ import { useAuth } from "../auth/AuthContext";
 
 export const NAV_ITEMS = [
   { key: "dashboard", label: "Dashboard", icon: "📊" },
+  { key: "siteContent", label: "Conținut site", icon: "✦" },
+  { key: "blog", label: "Blog", icon: "✍️" },
+  { key: "candyBarSettings", label: "Candy Bar", icon: "🍬" },
   { key: "orders", label: "Comenzi", icon: "🛍️" },
   { key: "reservations", label: "Rezervări", icon: "📅" },
   { key: "products", label: "Produse", icon: "🍰" },

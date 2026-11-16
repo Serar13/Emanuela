@@ -22,6 +22,8 @@ const ReviewsPage = lazy(() => import('./pages/ReviewsPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const ReservationsPage = lazy(() => import('./pages/ReservationsPage'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
+const JournalPage = lazy(() => import('./pages/JournalPage'));
+const ArticlePage = lazy(() => import('./pages/ArticlePage'));
 
 // Lazy route chunks, prefetched on idle (after Home is interactive).
 const ROUTE_IMPORTERS = [
@@ -32,6 +34,8 @@ const ROUTE_IMPORTERS = [
   () => import('./pages/ReviewsPage'),
   () => import('./pages/ContactPage'),
   () => import('./pages/ProfilePage'),
+  () => import('./pages/JournalPage'),
+  () => import('./pages/ArticlePage'),
 ];
 
 const CANDY_BAR_BROCHURE_SLIDES = [
@@ -117,6 +121,8 @@ function MainApp() {
                 <Route path="/contact" element={<ContactPage />} />
                 <Route path="/rezervari" element={<ReservationsPage />} />
                 <Route path="/profil" element={<ProfilePage />} />
+                <Route path="/jurnal" element={<JournalPage />} />
+                <Route path="/jurnal/:slug" element={<ArticlePage />} />
               </Routes>
             </PageTransition>
           </Suspense>
