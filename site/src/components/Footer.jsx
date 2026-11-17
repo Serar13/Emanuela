@@ -54,7 +54,10 @@ export default function Footer() {
               <li><Link to="/rezervari">{t('navReservations')}</Link></li>
               <li><Link to="/contact">{t('navContact')}</Link></li>
               {currentUser ? (
-                <li><Link to="/profil" className="footer-profile-link">{t('footerProfile')}</Link></li>
+                <>
+                  <li><Link to="/profil" className="footer-profile-link">{t('footerProfile')}</Link></li>
+                  <li><Link to="/comenzi" className="footer-orders-link">Comenzile mele</Link></li>
+                </>
               ) : (
                 <li><button onClick={() => setShowAuthModal(true)} className="footer-login-link-btn">{t('footerLogin')}</button></li>
               )}

@@ -18,18 +18,50 @@ export async function createOrder(data) {
   const docRef = await addDoc(collection(db, COLLECTIONS.ORDERS), {
     userId: data.userId || null,
     customerName: data.customerName || '',
+    customerPhone: data.customerPhone || '',
     source: 'site',
     locationId: data.locationId || null,
+    locationName: data.locationName || '',
     items: data.items || [],
     total: typeof data.total === 'number' ? data.total : 0,
     deliveryType: data.deliveryType || 'delivery',
+    fulfillmentType: data.deliveryType || 'delivery',
+    paymentMethod: data.paymentMethod || 'cash_pos',
+    paymentStatus: data.paymentStatus || (data.paymentMethod === 'card_stripe' ? 'paid_stripe' : 'pending_on_delivery'),
     status: 'pending',
     ...(data.address !== undefined ? { address: data.address } : {}),
+    ...(data.pickupLocation !== undefined ? { pickupLocation: data.pickupLocation } : {}),
     ...(data.notes !== undefined ? { notes: data.notes } : {}),
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   });
   return docRef.id;
+}
+
+export async function getUserOrders(userId) {
+  if (!userId) return [];
+  try {
+    const q = query(
+      collection(db, COLLECTIONS.ORDERS),
+      where('userId', '==', userId),
+      orderBy('createdAt', 'desc')
+    );
+    const snap = await getDocs(q);
+    return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  } catch {
+    try {
+      const qFallback = query(
+        collection(db, COLLECTIONS.ORDERS),
+        where('userId', '==', userId)
+      );
+      const snap = await getDocs(qFallback);
+      const orders = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      return orders.sort((a, b) => (b.createdAt?.toMillis?.() ?? 0) - (a.createdAt?.toMillis?.() ?? 0));
+    } catch (e) {
+      console.error('Failed to get user orders:', e);
+      return [];
+    }
+  }
 }
 
 // ---- Reservations ----------------------------------------------------------

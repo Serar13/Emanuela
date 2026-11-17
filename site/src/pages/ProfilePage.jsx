@@ -229,6 +229,37 @@ export default function ProfilePage() {
                 </div>
               )}
 
+              {/* Orders History Card */}
+              <h3 className="profile-section-heading">Comenzile Mele</h3>
+              <div className="profile-orders-action-card" style={{ background: 'var(--color-bg-card, #fff)', border: '1px solid var(--color-border)', borderRadius: '12px', padding: '16px', marginBottom: '20px' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                  <span style={{ fontSize: '24px' }}>📋</span>
+                  <div>
+                    <h4 style={{ margin: 0, fontSize: '15px' }}>Istoric & Urmărire Comenzi</h4>
+                    <p style={{ margin: '4px 0 0', fontSize: '13px', color: 'var(--color-text-muted)' }}>
+                      Vezi comenzile plasate și urmărește statusul de preparare și livrare în timp real.
+                    </p>
+                  </div>
+                </div>
+                <button 
+                  type="button"
+                  onClick={() => navigate('/comenzi')} 
+                  style={{
+                    marginTop: '14px',
+                    width: '100%',
+                    padding: '10px 16px',
+                    borderRadius: '8px',
+                    background: 'var(--color-gold)',
+                    color: '#fff',
+                    border: 'none',
+                    fontWeight: '600',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Vezi Comenzile Mele →
+                </button>
+              </div>
+
               {/* Account Actions */}
               <div className="account-actions-box">
                 <button onClick={handleLogout} className="account-logout-btn" disabled={loading}>

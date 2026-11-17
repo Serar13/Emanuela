@@ -23,6 +23,7 @@ const ReviewsPage = lazy(() => import('./pages/ReviewsPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const ReservationsPage = lazy(() => import('./pages/ReservationsPage'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
+const OrdersPage = lazy(() => import('./pages/OrdersPage'));
 const JournalPage = lazy(() => import('./pages/JournalPage'));
 const ArticlePage = lazy(() => import('./pages/ArticlePage'));
 
@@ -35,6 +36,7 @@ const ROUTE_IMPORTERS = [
   () => import('./pages/ReviewsPage'),
   () => import('./pages/ContactPage'),
   () => import('./pages/ProfilePage'),
+  () => import('./pages/OrdersPage'),
   () => import('./pages/JournalPage'),
   () => import('./pages/ArticlePage'),
 ];
@@ -122,6 +124,8 @@ function MainApp() {
                 <Route path="/contact" element={<ContactPage />} />
                 <Route path="/rezervari" element={<ReservationsPage />} />
                 <Route path="/profil" element={<ProfilePage />} />
+                <Route path="/comenzi" element={<OrdersPage />} />
+                <Route path="/istoric-comenzi" element={<OrdersPage />} />
                 <Route path="/jurnal" element={<JournalPage />} />
                 <Route path="/jurnal/:slug" element={<ArticlePage />} />
               </Routes>
