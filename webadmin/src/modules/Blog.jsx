@@ -1,6 +1,7 @@
 import CrudModule from "../components/CrudModule";
 import { COLLECTIONS } from "../services/collections";
 import { Badge } from "../components/ui";
+import { resolveImageUrl } from "../utils/imageUrl";
 
 export default function Blog() {
   return (
@@ -34,7 +35,7 @@ export default function Blog() {
           render: (r) => r.imageUrl ? (
             <img 
               className="thumb" 
-              src={r.imageUrl} 
+              src={resolveImageUrl(r.imageUrl)} 
               alt="" 
               onError={(e) => {
                 if (r.imageUrl?.startsWith('/images/')) {

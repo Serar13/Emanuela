@@ -31,7 +31,8 @@ import {
   getActiveLocations,
   getUserReservations,
   createOrder,
-  createReservation
+  createReservation,
+  checkReservationConflict
 } from '../services/firestore';
 
 // Map a Firestore promotion doc to the shape the Offers UI expects.
@@ -905,6 +906,31 @@ export const AppProvider = ({ children }) => {
     const uid = auth.currentUser.uid;
     const items = Array.isArray(newRes.preOrder) ? newRes.preOrder : [];
 
+    // Enforce table capacity
+    if (newRes.tableSeats && Number(newRes.guests) > Number(newRes.tableSeats)) {
+      Alert.alert(
+        'Capacitate depășită',
+        `Masa selectată are o capacitate de maximum ${newRes.tableSeats} locuri. Vă rugăm să alegeți o masă mai mare pentru ${newRes.guests} persoane.`
+      );
+      return false;
+    }
+
+    // Enforce booking conflict prevention
+    if (newRes.tableId && newRes.rawDate && newRes.time) {
+      const isConflict = await checkReservationConflict({
+        tableId: newRes.tableId,
+        date: newRes.rawDate,
+        time: newRes.time
+      });
+      if (isConflict) {
+        Alert.alert(
+          'Masă indisponibilă',
+          `Masa selectată este deja rezervată pentru această dată și oră (${newRes.time}). Vă rugăm să alegeți altă masă sau altă oră.`
+        );
+        return false;
+      }
+    }
+
     // Persisted doc follows the canonical reservations schema.
     const docData = {
       userId: uid,
@@ -917,7 +943,7 @@ export const AppProvider = ({ children }) => {
       time: newRes.time || '',
       dateLabel: newRes.date || '',
       durationMinutes: newRes.durationMinutes || 90,
-      guests: newRes.guests || 0,
+      guests: Number(newRes.guests) || 0,
       items,
       status: 'pending'
     };

@@ -1,8 +1,8 @@
 import CrudModule from "../components/CrudModule";
 import { COLLECTIONS, AVAILABILITY } from "../services/collections";
 import { useCollection } from "../hooks/useCollection";
-import { Loading } from "../components/ui";
-import { Badge, formatMoney } from "../components/ui";
+import { Loading, Badge, formatMoney } from "../components/ui";
+import { resolveImageUrl } from "../utils/imageUrl";
 
 export default function Products() {
   const { rows: categories, loading } = useCollection(COLLECTIONS.CATEGORIES, { orderByField: "sortOrder" });
@@ -68,7 +68,7 @@ export default function Products() {
             r.imageUrl ? (
               <img
                 className="thumb"
-                src={r.imageUrl}
+                src={resolveImageUrl(r.imageUrl)}
                 alt=""
                 onError={(e) => {
                   if (r.imageUrl?.startsWith('/images/')) {

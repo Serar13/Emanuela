@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { uploadImage } from "../services/storage";
+import { resolveImageUrl } from "../utils/imageUrl";
 
 // Lets an admin either paste an image URL or upload a file to Firebase Storage.
 // Always reports the final URL string up via onChange.
@@ -38,7 +39,7 @@ export default function ImageInput({ folder, value, onChange }) {
       {value && (
         <img
           className="image-preview"
-          src={value}
+          src={resolveImageUrl(value)}
           alt="preview"
           onError={(e) => {
             if (value?.startsWith('/images/')) {

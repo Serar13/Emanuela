@@ -1,73 +1,35 @@
-import { collection, addDoc, getDocs, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 import { COLLECTIONS } from './collections';
 
-export const sendPushNotification = async ({ title, body, category = 'general', targetScreen = 'Offers', sentBy = 'mobile_admin' }) => {
-  if (!title || !body) throw new Error('Titlul și mesajul sunt obligatorii.');
-
-  // 1. Fetch registered tokens
-  const tokens = new Set();
+/**
+ * Registers the current device's push token securely in Firestore.
+ * Each user/device only writes its own token.
+ */
+export const registerDevicePushToken = async (token, userId = null) => {
+  if (!token || typeof token !== 'string') return;
   try {
-    const snapTokens = await getDocs(collection(db, COLLECTIONS.PUSH_TOKENS));
-    snapTokens.docs.forEach((d) => {
-      const token = d.data()?.token || d.id;
-      if (token && typeof token === 'string' && token.startsWith('ExponentPushToken')) {
-        tokens.add(token);
-      }
-    });
-
-    const snapUsers = await getDocs(collection(db, COLLECTIONS.USERS));
-    snapUsers.docs.forEach((d) => {
-      const token = d.data()?.pushToken;
-      if (token && typeof token === 'string' && token.startsWith('ExponentPushToken')) {
-        tokens.add(token);
-      }
-    });
+    const cleanTokenId = token.replace(/[^a-zA-Z0-9_-]/g, '_');
+    await setDoc(doc(db, COLLECTIONS.PUSH_TOKENS, cleanTokenId), {
+      token,
+      userId: userId || null,
+      platform: 'mobile',
+      updatedAt: serverTimestamp()
+    }, { merge: true });
   } catch (err) {
-    console.warn('Could not query push tokens in mobile:', err);
+    console.warn('Failed to register device push token:', err);
   }
+};
 
-  const tokenList = Array.from(tokens);
-  let expoResult = null;
-
-  // 2. Dispatch via Expo Push API if tokens exist
-  if (tokenList.length > 0) {
-    try {
-      const messages = tokenList.map((token) => ({
-        to: token,
-        sound: 'default',
-        title,
-        body,
-        data: { screen: targetScreen, category }
-      }));
-
-      const res = await fetch('https://exp.host/--/api/v2/push/send', {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Accept-encoding': 'gzip, deflate',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(messages)
-      });
-      expoResult = await res.json();
-    } catch (err) {
-      console.error('Expo push dispatch error from mobile:', err);
-    }
+/**
+ * Unregisters device push token when user signs out or disables notifications.
+ */
+export const unregisterDevicePushToken = async (token) => {
+  if (!token || typeof token !== 'string') return;
+  try {
+    const cleanTokenId = token.replace(/[^a-zA-Z0-9_-]/g, '_');
+    await deleteDoc(doc(db, COLLECTIONS.PUSH_TOKENS, cleanTokenId));
+  } catch (err) {
+    console.warn('Failed to unregister device push token:', err);
   }
-
-  // 3. Save to Firestore
-  const docRef = await addDoc(collection(db, COLLECTIONS.NOTIFICATIONS), {
-    title,
-    body,
-    category,
-    targetScreen,
-    sentBy,
-    recipientsCount: tokenList.length,
-    expoResult: expoResult ? JSON.stringify(expoResult) : null,
-    status: 'sent',
-    createdAt: serverTimestamp()
-  });
-
-  return { id: docRef.id, recipientsCount: tokenList.length };
 };

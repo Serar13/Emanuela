@@ -10,26 +10,9 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useApp } from '../context/AppContext';
+import { getTablesByLocation } from '../services/firestore';
 
-const FALLBACK_LOCATIONS = ['Târgu Mureș', 'Câmpia Turzii'];
-
-// Architectural 2D tables map per location
-const LOCATION_TABLES = {
-  'Târgu Mureș': [
-    { id: 'tm-1', name: 'Masa 1', zone: 'Terasă', seats: 2, x: '18%', y: '25%', shape: 'round' },
-    { id: 'tm-2', name: 'Masa 2', zone: 'Terasă', seats: 2, x: '42%', y: '25%', shape: 'round' },
-    { id: 'tm-3', name: 'Masa 3', zone: 'Salon Central', seats: 4, x: '25%', y: '60%', shape: 'square' },
-    { id: 'tm-4', name: 'Masa 4', zone: 'Salon Central', seats: 4, x: '55%', y: '60%', shape: 'square' },
-    { id: 'tm-5', name: 'Masa 5', zone: 'Lounge VIP', seats: 6, x: '78%', y: '45%', shape: 'rect' },
-    { id: 'tm-6', name: 'Masa 6', zone: 'Geam Stradal', seats: 2, x: '78%', y: '78%', shape: 'round' },
-  ],
-  'Câmpia Turzii': [
-    { id: 'ct-1', name: 'Masa 1', zone: 'Bistro', seats: 2, x: '25%', y: '30%', shape: 'round' },
-    { id: 'ct-2', name: 'Masa 2', zone: 'Salon Degustare', seats: 4, x: '65%', y: '30%', shape: 'square' },
-    { id: 'ct-3', name: 'Masa 3', zone: 'Salon Degustare', seats: 4, x: '35%', y: '65%', shape: 'square' },
-    { id: 'ct-4', name: 'Masa 4', zone: 'Evenimente Speciale', seats: 6, x: '75%', y: '65%', shape: 'rect' },
-  ]
-};
+const FALLBACK_LOCATIONS = ['Emanuela Experience', 'Emanuela - Câmpia Turzii'];
 
 const dayLabelToDate = (label) => {
   const d = new Date();
@@ -53,11 +36,52 @@ export default function ReservationsScreen() {
     return names.length > 0 ? names : FALLBACK_LOCATIONS;
   }, [locations]);
 
-  const [location, setLocation] = useState(FALLBACK_LOCATIONS[0]);
+  const [location, setLocation] = useState(locationNames[0] || 'Emanuela Experience');
   const [guests, setGuests] = useState(2);
   const [day, setDay] = useState('Astăzi');
   const [time, setTime] = useState('18:00');
   const [selectedTable, setSelectedTable] = useState(null);
+  const [dbTables, setDbTables] = useState([]);
+  const [loadingTables, setLoadingTables] = useState(false);
+
+  // Sync initial location when locations load
+  useEffect(() => {
+    if (locations && locations.length > 0 && !locations.some(l => l.name === location)) {
+      setLocation(locations[0].name);
+    }
+  }, [locations, location]);
+
+  const selectedLocationObj = useMemo(
+    () => (locations || []).find(l => l.name === location) || (locations && locations[0]),
+    [locations, location]
+  );
+
+  // Load real Firestore tables for the selected location
+  useEffect(() => {
+    if (!selectedLocationObj?.id) return;
+    setLoadingTables(true);
+    getTablesByLocation(selectedLocationObj.id)
+      .then((tables) => {
+        const formatted = tables.map((t) => ({
+          id: t.id,
+          name: t.name || 'Masă',
+          zone: t.zone || t.notes || 'Salon',
+          seats: Number(t.seats) || 2,
+          x: typeof t.x === 'number' ? `${t.x}%` : (t.x || '50%'),
+          y: typeof t.y === 'number' ? `${t.y}%` : (t.y || '50%'),
+          shape: t.shape === 'square' ? 'square' : t.shape === 'rectangle' ? 'rect' : 'round',
+          reservable: t.reservable !== false,
+          active: t.active !== false
+        }));
+        setDbTables(formatted);
+      })
+      .catch((err) => {
+        console.error('Failed to load tables for location:', err);
+      })
+      .finally(() => {
+        setLoadingTables(false);
+      });
+  }, [selectedLocationObj?.id]);
 
   // Animation pulse for selected table on 2D map
   const pulseAnim = useRef(new Animated.Value(1)).current;
@@ -73,20 +97,15 @@ export default function ReservationsScreen() {
     return () => loop.stop();
   }, [pulseAnim]);
 
-  // Current floor plan tables based on chosen location
+  // Current floor plan tables from Firestore
   const currentTables = useMemo(() => {
-    return LOCATION_TABLES[location] || LOCATION_TABLES['Târgu Mureș'];
-  }, [location]);
+    return dbTables.filter(t => t.active && t.reservable);
+  }, [dbTables]);
 
   // Reset selected table if location changes
   useEffect(() => {
     setSelectedTable(null);
   }, [location]);
-
-  const selectedLocationObj = useMemo(
-    () => (locations || []).find(l => l.name === location),
-    [locations, location]
-  );
 
   const [preOrderQuantities, setPreOrderQuantities] = useState({});
 
@@ -140,11 +159,20 @@ export default function ReservationsScreen() {
       };
     });
 
+    if (selectedTable && selectedTable.seats < guests) {
+      Alert.alert(
+        'Capacitate depășită',
+        `Masa ${selectedTable.name} are o capacitate de ${selectedTable.seats} locuri. Pentru ${guests} persoane, vă rugăm să alegeți o masă mai încăpătoare sau să ajustați numărul de persoane.`
+      );
+      return;
+    }
+
     const newRes = {
       location,
       locationId: selectedLocationObj?.id || '',
       tableId: selectedTable?.id || '',
-      table: selectedTable ? `${selectedTable.name} (${selectedTable.zone})` : 'Masa alocată de personal',
+      tableSeats: selectedTable?.seats,
+      table: selectedTable ? `${selectedTable.name} (${selectedTable.zone}, ${selectedTable.seats} locuri)` : 'Masa alocată de personal',
       date: `${day}, la ora ${time}`,
       rawDate: targetDate,
       time,
@@ -294,17 +322,32 @@ export default function ReservationsScreen() {
           {/* Render Interactive Tables */}
           {currentTables.map(tbl => {
             const isSelected = selectedTable?.id === tbl.id;
+            const isTooSmall = tbl.seats < guests;
+
             return (
               <TouchableOpacity
                 key={tbl.id}
                 style={[
                   styles.tableNode,
-                  { left: tbl.x, top: tbl.y },
+                  { left: tbl.x, top: tbl.y, opacity: isTooSmall ? 0.45 : 1 },
                   tbl.shape === 'round' && styles.tableRound,
                   tbl.shape === 'rect' && styles.tableRect,
                   isSelected && styles.tableNodeSelected
                 ]}
-                onPress={() => setSelectedTable(isSelected ? null : tbl)}
+                onPress={() => {
+                  if (isSelected) {
+                    setSelectedTable(null);
+                  } else {
+                    if (isTooSmall) {
+                      Alert.alert(
+                        'Capacitate insuficientă',
+                        `Masa ${tbl.name} are capacitate de ${tbl.seats} locuri. Ați selectat ${guests} persoane. Vă rugăm să alegeți o masă mai mare.`
+                      );
+                      return;
+                    }
+                    setSelectedTable(tbl);
+                  }
+                }}
                 activeOpacity={0.8}
               >
                 {isSelected ? (

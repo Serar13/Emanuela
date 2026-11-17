@@ -221,55 +221,25 @@ export default function Home() {
           </div>
 
           <div className="em-app-downloads">
-            <a 
-              className="em-download-pill em-pill-apple"
-              href="https://apps.apple.com/ro/app/laborator-emanuela" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              aria-label="Descarcă din App Store"
-            >
+            <div className="em-download-pill em-pill-upcoming" title="Aplicația iOS va fi disponibilă în curând pe App Store">
               <div className="em-pill-icon">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.33.07 2.26.73 3.04.78 1.17-.24 2.29-.93 3.54-.84 1.5.12 2.63.71 3.38 1.8-3.09 1.85-2.36 5.92.48 7.06-.57 1.5-1.31 2.99-2.44 4.17ZM12.03 7.25C11.88 5.02 13.69 3.18 15.77 3c.29 2.58-2.34 4.5-3.74 4.25Z"/></svg>
               </div>
               <div className="em-pill-content">
-                <small>Descarcă din</small>
+                <small>În curând pe</small>
                 <strong>App Store</strong>
               </div>
-            </a>
+            </div>
 
-            <a 
-              className="em-download-pill em-pill-google"
-              href="https://play.google.com/store/apps/details?id=ro.laboratoremanuela.app" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              aria-label="Disponibilă pe Google Play"
-            >
+            <div className="em-download-pill em-pill-upcoming" title="Aplicația Android va fi disponibilă în curând pe Google Play">
               <div className="em-pill-icon em-icon-play">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.18 23.75c.33.18.72.23 1.14.07l12.39-7.15-2.75-2.75L3.18 23.75Zm-1-21.86C2.07 2.2 2 2.57 2 3v18c0 .43.07.8.18 1.11l10.8-10.11L2.18 1.89Zm18.89 8.25-2.91-1.68-3.21 3.54 3.21 3.54 2.93-1.69c1.21-.7 1.21-1.82-.02-2.71ZM4.32.18C3.9.02 3.51.07 3.18.25l10.78 9.83 2.75-2.75L4.32.18Z"/></svg>
               </div>
               <div className="em-pill-content">
-                <small>Disponibilă pe</small>
+                <small>În curând pe</small>
                 <strong>Google Play</strong>
               </div>
-            </a>
-
-            <a 
-              className="em-download-pill em-pill-apk"
-              href="/downloads/emanuela-app-latest.apk"
-              download="emanuela-app-latest.apk"
-              aria-label="Descarcă direct fișierul APK pentru Android"
-              title="Instalare directă APK pentru orice dispozitiv Android"
-            >
-              <div className="em-pill-icon em-icon-apk">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M12 2a1 1 0 0 1 1 1v10.586l3.293-3.293a1 1 0 0 1 1.414 1.414l-5 5a1 1 0 0 1-1.414 0l-5-5a1 1 0 1 1 1.414-1.414L11 13.586V3a1 1 0 0 1 1-1ZM4 18a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2H5a1 1 0 0 1-1-1Z"/>
-                </svg>
-              </div>
-              <div className="em-pill-content">
-                <small>Instalare directă</small>
-                <strong>Descarcă APK</strong>
-              </div>
-            </a>
+            </div>
           </div>
         </div>
 

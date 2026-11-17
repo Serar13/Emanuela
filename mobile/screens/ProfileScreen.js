@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useApp } from '../context/AppContext';
-import AdminPushModal from '../components/AdminPushModal';
 
 export default function ProfileScreen() {
   const { 
@@ -39,7 +38,6 @@ export default function ProfileScreen() {
   const [editName, setEditName] = useState(user?.name || '');
   const [editEmail, setEditEmail] = useState(user?.email || '');
   const [editPhone, setEditPhone] = useState(user?.phone || '');
-  const [adminModalVisible, setAdminModalVisible] = useState(false);
 
   const handleOpenEdit = () => {
     setEditName(user?.name || '');
@@ -196,25 +194,6 @@ export default function ProfileScreen() {
             <Ionicons name="phone-portrait-outline" size={18} color={colors.gold} />
           </View>
 
-          {/* Admin Push Notifications Row */}
-          <TouchableOpacity
-            style={[styles.settingsRow, { borderColor: colors.gold, backgroundColor: colors.goldMuted }]}
-            onPress={() => setAdminModalVisible(true)}
-          >
-            <View style={styles.settingsLeft}>
-              <Ionicons name="notifications-circle" size={24} color={colors.gold} />
-              <View style={{ marginLeft: 12 }}>
-                <Text style={[styles.settingsText, { color: colors.text, marginLeft: 0, fontWeight: 'bold' }]}>
-                  Panou Admin · Notificări Push
-                </Text>
-                <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 2 }}>
-                  Trimite alerte push direct de pe telefon
-                </Text>
-              </View>
-            </View>
-            <Ionicons name="send" size={16} color={colors.gold} />
-          </TouchableOpacity>
-
           {/* Account Row */}
           <TouchableOpacity
             style={[styles.settingsRow, styles.logoutRow, { borderColor: colors.border }]}
@@ -303,11 +282,6 @@ export default function ProfileScreen() {
         </View>
       </Modal>
 
-      {/* ADMIN PUSH NOTIFICATIONS MODAL */}
-      <AdminPushModal
-        visible={adminModalVisible}
-        onClose={() => setAdminModalVisible(false)}
-      />
     </KeyboardAvoidingView>
   );
 }

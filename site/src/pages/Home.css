@@ -390,6 +390,10 @@
   text-decoration: none;
   transition: transform .22s ease, background-color .22s ease, border-color .22s ease, box-shadow .22s ease;
 }
+.em-pill-upcoming {
+  cursor: default;
+  opacity: 0.88;
+}
 .em-download-pill:hover { 
   transform: translateY(-3px); 
   border-color: var(--em-pink);

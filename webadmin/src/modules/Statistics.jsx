@@ -1,34 +1,32 @@
 import { useState, useMemo } from "react";
 import { useCollection } from "../hooks/useCollection";
 import { COLLECTIONS } from "../services/collections";
-import { Loading, Badge, formatMoney, formatDate } from "../components/ui";
+import { Loading, formatMoney } from "../components/ui";
 
 export default function Statistics() {
   const { rows: locations, loading: locsLoading } = useCollection(COLLECTIONS.LOCATIONS);
   const { rows: orders, loading: ordersLoading } = useCollection(COLLECTIONS.ORDERS);
   const { rows: reservations, loading: resLoading } = useCollection(COLLECTIONS.RESERVATIONS);
-  const { rows: products, loading: prodLoading } = useCollection(COLLECTIONS.PRODUCTS);
   const { rows: events, loading: eventsLoading } = useCollection(COLLECTIONS.OFFER_REQUESTS);
   const { rows: reviews, loading: reviewsLoading } = useCollection(COLLECTIONS.REVIEWS);
-  const { rows: users, loading: usersLoading } = useCollection(COLLECTIONS.USERS);
 
   const [selectedLocation, setSelectedLocation] = useState("all");
   const [period, setPeriod] = useState("all");
+  const [referenceTime] = useState(() => Date.now());
 
-  const loading = locsLoading || ordersLoading || resLoading || prodLoading || eventsLoading || reviewsLoading || usersLoading;
+  const loading = locsLoading || ordersLoading || resLoading || eventsLoading || reviewsLoading;
 
   // Filter items by location and period
   const stats = useMemo(() => {
     if (!orders || !reservations) return null;
 
-    const now = Date.now();
     const filterByDate = (dateVal) => {
       if (period === "all" || !dateVal) return true;
       const d = new Date(dateVal).getTime();
       if (isNaN(d)) return true;
-      if (period === "today") return now - d <= 24 * 60 * 60 * 1000;
-      if (period === "week") return now - d <= 7 * 24 * 60 * 60 * 1000;
-      if (period === "month") return now - d <= 30 * 24 * 60 * 60 * 1000;
+      if (period === "today") return referenceTime - d <= 24 * 60 * 60 * 1000;
+      if (period === "week") return referenceTime - d <= 7 * 24 * 60 * 60 * 1000;
+      if (period === "month") return referenceTime - d <= 30 * 24 * 60 * 60 * 1000;
       return true;
     };
 
@@ -95,6 +93,11 @@ export default function Statistics() {
       ? (reviews.reduce((acc, r) => acc + (Number(r.rating) || 5), 0) / reviews.length).toFixed(1)
       : "5.0";
 
+    const uniqueClientsCount = new Set([
+      ...filteredOrders.map((o) => o.userId || o.customerName),
+      ...filteredReservations.map((r) => r.userId || r.customerName)
+    ].filter(Boolean)).size;
+
     return {
       totalRevenue,
       totalOrders: filteredOrders.length,
@@ -107,9 +110,9 @@ export default function Statistics() {
       topProducts,
       avgRating,
       totalEvents: events?.length || 0,
-      totalUsers: users?.length || 0
+      totalUsers: uniqueClientsCount
     };
-  }, [orders, reservations, locations, products, events, reviews, users, selectedLocation, period]);
+  }, [orders, reservations, locations, events, reviews, selectedLocation, period, referenceTime]);
 
   if (loading || !stats) return <Loading />;
 

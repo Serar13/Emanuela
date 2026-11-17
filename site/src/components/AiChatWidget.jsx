@@ -2,13 +2,14 @@ import { useState, useRef, useEffect } from 'react';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useApp } from '../context/AppContext';
+import { getActiveLocations, getActiveProducts, getActiveCategories } from '../services/catalog';
 import './AiChatWidget.css';
 
 const QUICK_PROMPTS = [
   { label: '🎂 Cât tort îmi trebuie?', prompt: 'Cât tort îmi recomanzi pentru 25 de persoane și ce preț are?' },
   { label: '🍬 Candy Bar nuntă/botez', prompt: 'Cum funcționează un Candy Bar pentru 60 de invitați?' },
   { label: '🍓 Arome & Compoziții', prompt: 'Ce compoziții și arome de tort aveți disponibile?' },
-  { label: '📍 Locații & Program', prompt: 'Unde se află laboratorul și punctele de desfacere?' },
+  { label: '📍 Locații & Program', prompt: 'Unde se află cofetăriile și ce program au?' },
   { label: '📝 Ofertă personalizată', prompt: 'Vreau să cer o ofertă de preț pentru un eveniment.' }
 ];
 
@@ -21,6 +22,11 @@ export default function AiChatWidget() {
   const [showOfferForm, setShowOfferForm] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [offerSuccess, setOfferSuccess] = useState(false);
+  const [locations, setLocations] = useState([]);
+  const [catalogProducts, setCatalogProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+
+  const messageCounterRef = useRef(1);
 
   const [offerForm, setOfferForm] = useState({
     name: '',
@@ -34,14 +40,33 @@ export default function AiChatWidget() {
 
   const [messages, setMessages] = useState([
     {
-      id: 'msg-welcome-1',
+      id: 'msg-welcome-init',
       sender: 'ai',
-      text: 'Bună! Sunt Asistentul Dulce de la Laboratorul Emanuela 🍰✨\n\nTe pot ajuta cu sfaturi despre gramajul torturilor, idei pentru Candy Bar, selecția aromelor sau o ofertă de preț personalizată. Cu ce te pot încânta?',
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      text: 'Bună! Sunt Consilierul Dulce de la Laboratorul Emanuela 🍰✨\n\nTe pot ajuta cu calculul gramajului pentru evenimentul tău, recomandări de compoziții artizanale, detalii despre Candy Bar și locațiile noastre din Târgu Mureș și Câmpia Turzii. Cu ce te pot încânta?',
+      timestamp: 'Acum'
     }
   ]);
 
   const messagesEndRef = useRef(null);
+
+  // Load real catalog data and locations dynamically from Firestore
+  useEffect(() => {
+    let mounted = true;
+    Promise.all([
+      getActiveLocations(),
+      getActiveProducts(),
+      getActiveCategories()
+    ]).then(([locs, prods, cats]) => {
+      if (!mounted) return;
+      if (locs?.length) setLocations(locs);
+      if (prods?.length) setCatalogProducts(prods);
+      if (cats?.length) setCategories(cats);
+    }).catch((err) => {
+      console.warn('AiChatWidget catalog prefetch error:', err);
+    });
+
+    return () => { mounted = false; };
+  }, []);
 
   // Auto-scroll to bottom of conversation
   useEffect(() => {
@@ -69,9 +94,9 @@ export default function AiChatWidget() {
     }
   };
 
-  const generateAiReply = (rawInput) => {
+  const generateReply = (rawInput) => {
     const text = rawInput.toLowerCase();
-    let reply = '';
+    let replyText;
     let suggestOffer = false;
 
     // Detect guest count
@@ -82,38 +107,48 @@ export default function AiChatWidget() {
       const kg = Math.max(1.5, (guests * 0.12).toFixed(1));
       const minPrice = Math.round(kg * 110);
       const maxPrice = Math.round(kg * 140);
-      reply = `Pentru aproximativ ${guests} persoane, recomandăm un tort de circa ${kg} kg (calculat la un gramaj generos de ~120g/porție).\n\n💰 Prețul orientativ la Laboratorul Emanuela este între ${minPrice} și ${maxPrice} RON (aprox. 110 - 140 RON/kg, în funcție de compoziție și complexitatea decorului artizanal).\n\nCe aromă vă tentează cel mai mult? Trio Mousse de ciocolată belgiană, Fistic cu zmeură proaspătă, Pavlova sau Red Velvet?`;
+      replyText = `Pentru aproximativ ${guests} persoane, recomandăm un tort de circa ${kg} kg (calculat la un gramaj generos de ~120g/porție).\n\n💰 Prețul orientativ la Laboratorul Emanuela este între ${minPrice} și ${maxPrice} RON (aprox. 110 - 140 RON/kg, în funcție de compoziție și decorul ales).\n\nCe aromă vă tentează cel mai mult? Trio Mousse de ciocolată belgiană, Fistic cu zmeură proaspătă, Pavlova sau Red Velvet?`;
       suggestOffer = true;
     } else if (text.includes('pret') || text.includes('preț') || text.includes('cost') || text.includes('cât costă') || text.includes('cat costa')) {
-      reply = `Torturile noastre artizanale pornesc de la 110 RON/kg și ajung la 140 RON/kg pentru rețete speciale (fistic pur, fructe proaspete, decor cu flori naturale sau figurine modelate manual).\n\nPentru câte persoane estimezi evenimentul? Îți pot calcula gramajul și prețul exact pe loc!`;
+      replyText = `Torturile noastre artizanale pornesc de la 110 RON/kg și ajung la 140 RON/kg pentru rețete speciale (fistic pur, fructe proaspete, decor cu flori naturale sau figurine modelate manual).\n\nPentru câte persoane estimezi evenimentul? Îți pot calcula gramajul și prețul exact pe loc!`;
     } else if (text.includes('candy') || text.includes('bar') || text.includes('desert bar')) {
-      reply = `Candy Bar-ul Emanuela este spectacolul oricărui eveniment! 🍬✨\n\nRecomandăm o medie de 100-150g per invitat (~3-4 mini-deserturi/persoană). Pachetul include o selecție fină:\n• Mini Pavlova cu fructe de pădure\n• Macarons parizieni asortați\n• Shot-uri de mousse fin (Baby Blue / Baby Pink / Ciocolată)\n• Mini tarte cu vanilie bourbon și fructe proaspete\n• Cake pops & mini amandine\n\nAsigurăm și suporturi elegante, etichete personalizate și montaj la sală!`;
+      replyText = `Candy Bar-ul Emanuela este spectacolul oricărui eveniment! 🍬✨\n\nRecomandăm o medie de 100-150g per invitat (~3-4 mini-deserturi/persoană). Pachetul include o selecție fină:\n• Mini Pavlova cu fructe de pădure\n• Macarons parizieni asortați\n• Shot-uri de mousse fin (Baby Blue / Baby Pink / Ciocolată)\n• Mini tarte cu vanilie bourbon și fructe proaspete\n• Cake pops & mini amandine\n\nAsigurăm și suporturi elegante, etichete personalizate și montaj la sală!`;
       suggestOffer = true;
     } else if (text.includes('arom') || text.includes('gust') || text.includes('compoziti') || text.includes('compoziție') || text.includes('ciocolat') || text.includes('fistic') || text.includes('zmeur')) {
-      reply = `Iată câteva dintre cele mai iubite compoziții artizanale Emanuela:\n\n1. 🍫 Trio Mousse — ciocolată belgiană neagră, lapte și albă, pe blat pufos de cacao.\n2. 🍓 Fistic & Zmeură — cremă fină de fistic 100% pur cu inserție răcoritoare de zmeură.\n3. 👑 Pavlova de casă — bezea crocantă la exterior și moale la interior, frișcă naturală și fructe de pădure.\n4. ❤️ Red Velvet — blat catifelat ușor vanilat cu cremă delicată de mascarpone și lămâie.\n5. 🥕 Carrot Cake — blat aromat cu scorțișoară, morcov proaspăt și nuci crocante caramelizate.\n\nAi vreo preferință de gust?`;
-    } else if (text.includes('locat') || text.includes('locaț') || text.includes('unde') || text.includes('adresa') || text.includes('program') || text.includes('orar') || text.includes('garbovat') || text.includes('gârbovăț')) {
-      reply = `Te așteptăm cu drag cu gusturi proaspete în fiecare zi:\n\n📍 Laboratorul Central: Comuna Gârbovăț (Galați) — inima producției noastre artizanale!\n📍 Cofetăria Galați: Str. Brăilei (L-S 08:00 - 20:00, D 09:00 - 18:00)\n📍 Punctul Mazepa: Cartier Mazepa 1\n\nComenzile de torturi speciale pot fi ridicate din oricare locație sau livrate cu transport frigorific dedicat.`;
+      replyText = `Iată câteva dintre cele mai iubite compoziții artizanale Emanuela:\n\n1. 🍫 Trio Mousse — ciocolată belgiană neagră, lapte și albă, pe blat pufos de cacao.\n2. 🍓 Fistic & Zmeură — cremă fină de fistic 100% pur cu inserție răcoritoare de zmeură.\n3. 👑 Pavlova de casă — bezea crocantă la exterior și moale la interior, frișcă naturală și fructe de pădure.\n4. ❤️ Red Velvet — blat catifelat ușor vanilat cu cremă delicată de mascarpone și lămâie.\n5. 🥕 Carrot Cake — blat aromat cu scorțișoară, morcov proaspăt și nuci crocante caramelizate.\n\nAi vreo preferință de gust?`;
+    } else if (text.includes('locat') || text.includes('locaț') || text.includes('unde') || text.includes('adresa') || text.includes('program') || text.includes('orar') || text.includes('mures') || text.includes('mureș') || text.includes('turzii')) {
+      if (locations.length > 0) {
+        const locLines = locations.map(l => `📍 ${l.name}: ${l.address || ''}${l.city ? ` (${l.city})` : ''}`).join('\n');
+        replyText = `Te așteptăm cu drag în locațiile noastre din Târgu Mureș și Câmpia Turzii:\n\n${locLines}\n\nProgram general: Luni - Sâmbătă 08:00 - 20:00, Duminică 09:00 - 18:00.\nComenzile pot fi ridicate din oricare locație sau livrate cu transport frigorific!`;
+      } else {
+        replyText = `Te așteptăm cu drag în locațiile noastre din Târgu Mureș (Str. Bartók Béla nr. 1-3, Bd. Pandurilor nr. 114-116, Str. Ciucului nr. 12) și Câmpia Turzii (Str. 1 Decembrie 1918 nr. 3-5)!\n\nProgram: L-S 08:00 - 20:00, D 09:00 - 18:00.`;
+      }
     } else if (text.includes('alerg') || text.includes('gluten') || text.includes('zahar') || text.includes('zahăr') || text.includes('vegan') || text.includes('post')) {
-      reply = `Siguranța și sănătatea sunt esențiale pentru noi! 🌿\n\n• Avem torturi și prăjituri fără zahăr adăugat, îndulcite natural cu eritritol și extract de stevia.\n• Oferim opțiuni delicioase de post (fără ou și fără lactate) și mousse-uri realizate fără făină de grâu.\n\n⚠️ Deoarece în laborator procesăm și gluten, ouă și lactate, te rugăm să ne anunți din timp dacă este vorba despre o alergie severă sau boală celiacă!`;
+      replyText = `Siguranța și sănătatea sunt esențiale pentru noi! 🌿\n\n• Avem torturi și prăjituri fără zahăr adăugat, îndulcite natural cu eritritol și extract de stevia.\n• Oferim opțiuni delicioase de post (fără ou și fără lactate) și mousse-uri realizate fără făină de grâu.\n\n⚠️ Deoarece în laborator procesăm și gluten, ouă și lactate, te rugăm să ne anunți din timp dacă este vorba despre o alergie severă sau boală celiacă!`;
     } else if (text.includes('ofert') || text.includes('comanda') || text.includes('comandă') || text.includes('cerere') || text.includes('nunta') || text.includes('botez')) {
-      reply = `Minunat! Putem pregăti o ofertă dedicată pentru evenimentul tău. Completează formularul rapid de mai jos, iar maestrul nostru cofetar te va contacta în cel mai scurt timp cu toate detaliile!`;
+      replyText = `Minunat! Putem pregăti o ofertă dedicată pentru evenimentul tău. Completează formularul rapid de mai jos, iar maestrul nostru cofetar te va contacta în cel mai scurt timp cu toate detaliile!`;
       suggestOffer = true;
     } else {
-      reply = `La Laboratorul Emanuela punem pasiune în fiecare detaliu din 2005. Toate produsele noastre sunt create din ingrediente 100% naturale: frișcă din lapte, ciocolată veritabilă și ouă proaspete.\n\nDorești să afli recomandări de gramaj pentru evenimentul tău sau să soliciți o ofertă de preț?`;
+      const prodsCount = catalogProducts.length || 'peste 200 de';
+      const catsCount = categories.length || 6;
+      replyText = `La Laboratorul Emanuela punem pasiune în fiecare desert din 2005. Avem ${prodsCount} produse artizanale împărțite în ${catsCount} categorii (Torturi, Prăjituri de casă, Monoporții, Candy Bar, Patiserie și Dietetic).\n\nDorești să afli recomandări de gramaj pentru evenimentul tău sau să soliciți o ofertă de preț?`;
     }
 
-    return { reply, suggestOffer };
+    return { reply: replyText, suggestOffer };
   };
 
   const handleSendMessage = (textToSend) => {
     const query = (textToSend || inputText).trim();
     if (!query) return;
 
+    messageCounterRef.current += 1;
+    const currentId = `user-msg-${messageCounterRef.current}`;
+
     const userMsg = {
-      id: `msg-${Date.now()}-user`,
+      id: currentId,
       sender: 'user',
       text: query,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      timestamp: 'Trimis'
     };
 
     setMessages((prev) => [...prev, userMsg]);
@@ -121,12 +156,14 @@ export default function AiChatWidget() {
     setIsTyping(true);
 
     setTimeout(() => {
-      const { reply, suggestOffer } = generateAiReply(query);
+      messageCounterRef.current += 1;
+      const aiId = `ai-msg-${messageCounterRef.current}`;
+      const { reply, suggestOffer } = generateReply(query);
       const aiMsg = {
-        id: `msg-${Date.now()}-ai`,
+        id: aiId,
         sender: 'ai',
         text: reply,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        timestamp: 'Răspuns',
         suggestOffer
       };
       setMessages((prev) => [...prev, aiMsg]);
@@ -135,7 +172,7 @@ export default function AiChatWidget() {
       if (suggestOffer) {
         setShowOfferForm(true);
       }
-    }, 700);
+    }, 600);
   };
 
   const handleSubmitOffer = async (e) => {
@@ -147,9 +184,8 @@ export default function AiChatWidget() {
 
     setIsSubmitting(true);
     try {
-      // Save offer request to Firestore offerRequests collection
       const transcript = messages
-        .map((m) => `${m.sender === 'user' ? 'Client' : 'Asistent AI'} [${m.timestamp}]: ${m.text}`)
+        .map((m) => `${m.sender === 'user' ? 'Client' : 'Consilier'} [${m.timestamp}]: ${m.text}`)
         .join('\n\n');
 
       await addDoc(collection(db, 'offerRequests'), {
@@ -160,8 +196,8 @@ export default function AiChatWidget() {
         guestCount: Number(offerForm.guestCount) || null,
         eventDate: offerForm.eventDate || null,
         productName: `${offerForm.eventType}${offerForm.guestCount ? ` (${offerForm.guestCount} pers)` : ''}`,
-        notes: offerForm.notes || 'Cerere inițiată prin Asistentul AI de pe website',
-        message: offerForm.notes || 'Cerere inițiată prin Asistentul AI de pe website',
+        notes: offerForm.notes || 'Cerere inițiată prin Consilierul Interactiv de pe website',
+        message: offerForm.notes || 'Cerere inițiată prin Consilierul Interactiv de pe website',
         source: 'website_ai_chat',
         status: 'new',
         aiChatTranscript: transcript,
@@ -176,11 +212,12 @@ export default function AiChatWidget() {
       setOfferSuccess(true);
       setShowOfferForm(false);
 
+      messageCounterRef.current += 1;
       const confirmMsg = {
-        id: `msg-${Date.now()}-confirmed`,
+        id: `confirm-msg-${messageCounterRef.current}`,
         sender: 'ai',
         text: `🎉 Mulțumim frumos, ${offerForm.name.trim()}! Am înregistrat cererea ta pentru ${offerForm.eventType}.\n\nUn maestru cofetar de la laboratorul Emanuela va analiza detaliile și te va contacta la numărul ${offerForm.phone.trim()} cu oferta personalizată și mostre de compoziții!`,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        timestamp: 'Confirmat'
       };
       setMessages((prev) => [...prev, confirmMsg]);
     } catch (err) {
@@ -199,15 +236,15 @@ export default function AiChatWidget() {
           type="button"
           className="ai-chat-launcher"
           onClick={toggleOpen}
-          aria-label="Deschide Asistentul Dulce AI"
+          aria-label="Deschide Consilierul Dulce Emanuela"
         >
           <div className="ai-launcher-avatar">
             <span className="ai-launcher-icon">👩‍🍳</span>
             <span className="ai-launcher-online-dot" />
           </div>
           <div className="ai-launcher-text">
-            <strong>Asistent Dulce AI</strong>
-            <small>Consultanță torturi & evenimente</small>
+            <strong>Consilier Dulce</strong>
+            <small>Configurator torturi & candy bar</small>
           </div>
           {hasUnread && <span className="ai-launcher-badge">1</span>}
         </button>
@@ -215,7 +252,7 @@ export default function AiChatWidget() {
 
       {/* Floating Chat Modal Panel */}
       {isOpen && (
-        <div className="ai-chat-window" role="dialog" aria-modal="true" aria-label="Asistent Dulce Emanuela">
+        <div className="ai-chat-window" role="dialog" aria-modal="true" aria-label="Consilier Dulce Emanuela">
           {/* Header */}
           <header className="ai-chat-header">
             <div className="ai-chat-header-info">
@@ -224,8 +261,8 @@ export default function AiChatWidget() {
                 <span className="ai-chat-avatar-status" />
               </div>
               <div>
-                <h3 className="ai-chat-title">Laborator Emanuela · AI</h3>
-                <span className="ai-chat-subtitle">Asistent virtual · Răspunde instant</span>
+                <h3 className="ai-chat-title">Laborator Emanuela · Consilier</h3>
+                <span className="ai-chat-subtitle">Ghid interactiv torturi & evenimente</span>
               </div>
             </div>
 
@@ -299,7 +336,7 @@ export default function AiChatWidget() {
                   </button>
                 </div>
                 <p className="ai-offer-desc">
-                  Trimite detaliile evenimentului tău direct către cofetăria noastră pentru un calcul exact și degustare!
+                  Trimite detaliile evenimentului tău direct către laboratorul nostru pentru un calcul exact și degustare!
                 </p>
 
                 <form onSubmit={handleSubmitOffer} className="ai-offer-form">
