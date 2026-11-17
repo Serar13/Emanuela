@@ -12,11 +12,17 @@ import {
   Platform
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useApp } from '../context/AppContext';
+import StaffPortalScreen from './StaffPortalScreen';
 
 export default function ProfileScreen() {
   const { 
     user, 
+    userRole,
+    isStaff,
+    isAdmin,
+    isKitchen,
     updateProfile, 
     deleteAccount, 
     balance, 
@@ -31,7 +37,9 @@ export default function ProfileScreen() {
     t 
   } = useApp();
   
+  const insets = useSafeAreaInsets();
   const styles = getStyles(colors);
+  const [staffModalVisible, setStaffModalVisible] = useState(false);
 
   // Edit Profile modal state
   const [editModalVisible, setEditModalVisible] = useState(false);
@@ -176,6 +184,32 @@ export default function ProfileScreen() {
           </>
         )}
 
+        {/* OPERATIONAL / STAFF PORTAL SECTION */}
+        {isStaff && (
+          <View style={[styles.staffPortalCard, { backgroundColor: colors.cardBg, borderColor: colors.border }]}>
+            <View style={styles.staffPortalTopRow}>
+              <View style={styles.staffPortalIconCircle}>
+                <Ionicons name="restaurant" size={22} color="#c2410c" />
+              </View>
+              <View style={{ flex: 1, marginLeft: 12 }}>
+                <Text style={[styles.staffPortalTitle, { color: colors.text }]}>
+                  {userRole === 'kitchen' ? 'Panou Bucătărie (KDS)' : 'Panou Operațional'}
+                </Text>
+                <Text style={[styles.staffPortalSub, { color: colors.textMuted }]}>
+                  Rol activ: <Text style={{ fontWeight: 'bold', color: colors.gold }}>{userRole.toUpperCase()}</Text>
+                </Text>
+              </View>
+            </View>
+
+            <TouchableOpacity 
+              style={styles.staffPortalLaunchBtn}
+              onPress={() => setStaffModalVisible(true)}
+            >
+              <Text style={styles.staffPortalLaunchBtnText}>Deschide Panoul de Lucru →</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
         {/* SETTINGS SECTION */}
         <View style={styles.settingsSection}>
           <Text style={styles.sectionTitleSettings}>{t('appSettings')}</Text>
@@ -279,6 +313,17 @@ export default function ProfileScreen() {
               </TouchableOpacity>
             </View>
           </View>
+        </View>
+      </Modal>
+
+      {/* STAFF PORTAL MODAL */}
+      <Modal
+        visible={staffModalVisible}
+        animationType="slide"
+        onRequestClose={() => setStaffModalVisible(false)}
+      >
+        <View style={{ flex: 1, backgroundColor: colors.bg, paddingTop: insets.top }}>
+          <StaffPortalScreen onClose={() => setStaffModalVisible(false)} />
         </View>
       </Modal>
 
@@ -740,5 +785,47 @@ const getStyles = (colors) => StyleSheet.create({
     color: colors.textMuted,
     fontSize: 14,
     fontWeight: 'bold'
-  }
+  },
+  staffPortalCard: {
+    borderRadius: 16,
+    borderWidth: 1,
+    padding: 16,
+    marginBottom: 20,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+  },
+  staffPortalTopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  staffPortalIconCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#ffedd5',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  staffPortalTitle: {
+    fontSize: 15,
+    fontWeight: 'bold',
+  },
+  staffPortalSub: {
+    fontSize: 12,
+    marginTop: 2,
+  },
+  staffPortalLaunchBtn: {
+    marginTop: 14,
+    backgroundColor: colors.gold,
+    paddingVertical: 12,
+    borderRadius: 25,
+    alignItems: 'center',
+  },
+  staffPortalLaunchBtnText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 13,
+  },
 });

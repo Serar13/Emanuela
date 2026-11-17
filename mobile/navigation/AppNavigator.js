@@ -21,14 +21,16 @@ import ReservationsScreen from '../screens/ReservationsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import OffersScreen from '../screens/OffersScreen';
 import AboutScreen from '../screens/AboutScreen';
+import StaffPortalScreen from '../screens/StaffPortalScreen';
 
 const Tab = createBottomTabNavigator();
 
 export default function AppNavigator() {
-  const { theme, colors, splashDone, isLoggedIn, isGuest, language, setLanguage, t } = useApp();
+  const { theme, colors, splashDone, isLoggedIn, isGuest, language, setLanguage, t, isStaff, userRole } = useApp();
   const [langModalVisible, setLangModalVisible] = useState(false);
   const [profileVisible, setProfileVisible] = useState(false);
   const [aboutUsVisible, setAboutUsVisible] = useState(false);
+  const [staffPortalVisible, setStaffPortalVisible] = useState(false);
   const insets = useSafeAreaInsets();
   const bottomInset = Math.max(insets.bottom, 12);
 
@@ -119,6 +121,18 @@ export default function AppNavigator() {
             ),
             headerRight: () => (
               <View style={styles.headerRightContainer}>
+                {isStaff && (
+                  <TouchableOpacity 
+                    style={[styles.staffPortalBtn, { backgroundColor: '#ffedd5', borderColor: '#fdba74' }]}
+                    onPress={() => setStaffPortalVisible(true)}
+                  >
+                    <Ionicons name="restaurant" size={15} color="#c2410c" />
+                    <Text style={{ fontSize: 11, fontWeight: 'bold', color: '#c2410c', marginLeft: 3 }}>
+                      {userRole === 'kitchen' ? 'KDS' : 'Staff'}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+
                 <TouchableOpacity 
                   style={[styles.langBtn, { backgroundColor: colors.inputBg, borderColor: colors.border }]}
                   onPress={() => setLangModalVisible(true)}
@@ -191,6 +205,17 @@ export default function AppNavigator() {
           </View>
           
           <AboutScreen />
+        </View>
+      </Modal>
+
+      {/* STAFF / KITCHEN / ADMIN PORTAL MODAL */}
+      <Modal
+        visible={staffPortalVisible}
+        animationType="slide"
+        onRequestClose={() => setStaffPortalVisible(false)}
+      >
+        <View style={[styles.modalScreenContainer, { backgroundColor: colors.bg, paddingTop: insets.top }]}>
+          <StaffPortalScreen onClose={() => setStaffPortalVisible(false)} />
         </View>
       </Modal>
 
@@ -340,5 +365,14 @@ const styles = StyleSheet.create({
   modalTitleText: {
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  staffPortalBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+    borderRadius: 8,
+    borderWidth: 1,
+    marginRight: 6,
   },
 });

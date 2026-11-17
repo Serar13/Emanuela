@@ -15,12 +15,14 @@ import {
   doc,
   setDoc,
   getDoc,
+  updateDoc,
   deleteDoc,
   onSnapshot,
   collection,
   query,
   orderBy,
-  limit
+  limit,
+  serverTimestamp
 } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { COLLECTIONS } from '../services/collections';
@@ -467,6 +469,7 @@ export const AppProvider = ({ children }) => {
           if (!nameVal) nameVal = 'Utilizator';
 
           let phoneVal = '';
+          let roleVal = 'customer';
           let balanceVal = 0;
           let vipPointsVal = 0;
           let stampsVal = 0;
@@ -476,6 +479,7 @@ export const AppProvider = ({ children }) => {
             const userData = docSnap.data();
             nameVal = userData.name || nameVal;
             phoneVal = userData.phone || phoneVal;
+            roleVal = userData.role || 'customer';
             balanceVal = userData.balance !== undefined ? userData.balance : balanceVal;
             vipPointsVal = userData.vipPoints !== undefined ? userData.vipPoints : vipPointsVal;
             stampsVal = userData.stamps !== undefined ? userData.stamps : stampsVal;
@@ -487,6 +491,7 @@ export const AppProvider = ({ children }) => {
                 name: nameVal,
                 email: firebaseUser.email || '',
                 phone: phoneVal,
+                role: 'customer',
                 balance: balanceVal,
                 vipPoints: vipPointsVal,
                 stamps: stampsVal,
@@ -502,7 +507,8 @@ export const AppProvider = ({ children }) => {
             uid: firebaseUser.uid,
             email: firebaseUser.email || '',
             name: nameVal,
-            phone: phoneVal
+            phone: phoneVal,
+            role: roleVal
           });
           setIsLoggedIn(true);
           setIsGuest(false);
@@ -1005,6 +1011,39 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  const userRole = user?.role || 'customer';
+  const isAdmin = userRole === 'admin';
+  const isKitchen = userRole === 'kitchen' || userRole === 'bucatar' || userRole === 'admin';
+  const isStaff = ['admin', 'kitchen', 'bucatar', 'staff', 'ospatar', 'manager', 'delivery'].includes(userRole);
+
+  const updateOrderStatus = async (orderId, newStatus) => {
+    try {
+      const orderRef = doc(db, 'orders', orderId);
+      await updateDoc(orderRef, {
+        status: newStatus,
+        updatedAt: serverTimestamp()
+      });
+      return true;
+    } catch (err) {
+      console.error('Error updating order status:', err);
+      throw err;
+    }
+  };
+
+  const setUserRole = async (targetUserId, newRole) => {
+    try {
+      const userRef = doc(db, 'users', targetUserId);
+      await updateDoc(userRef, {
+        role: newRole,
+        updatedAt: serverTimestamp()
+      });
+      return true;
+    } catch (err) {
+      console.error('Error setting user role:', err);
+      throw err;
+    }
+  };
+
   const colors = THEME_COLORS[theme];
 
   return (
@@ -1018,6 +1057,12 @@ export const AppProvider = ({ children }) => {
       splashDone,
       setSplashDone,
       user,
+      userRole,
+      isAdmin,
+      isKitchen,
+      isStaff,
+      updateOrderStatus,
+      setUserRole,
       isLoggedIn,
       isGuest,
       setIsGuest,

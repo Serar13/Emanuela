@@ -92,8 +92,8 @@ export default function Orders() {
         <Modal title={`Comandă ${details.id.slice(0, 8)}`} onClose={() => setDetails(null)}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "14px" }}>
             <p><strong>Client:</strong> {details.customerName || "—"} ({details.customerPhone || "Fără telefon"})</p>
-            <p><strong>Sursă:</strong> {details.source} · <strong>Modalitate:</strong> {details.fulfillmentType === "delivery" ? "Livrare la domiciliu" : "Ridicare din locație"}</p>
-            <p><strong>Locație:</strong> {details.locationName || locName(details.locationId)}</p>
+            <p><strong>Sursă:</strong> {details.source} · <strong>Modalitate:</strong> {(details.fulfillmentType === "delivery" || details.deliveryType === "delivery") ? "Livrare la domiciliu" : "Ridicare din locație"}</p>
+            <p><strong>Locație:</strong> {details.pickupLocation?.name || details.locationName || locName(details.locationId)}</p>
             <p><strong>Status Plată:</strong> {details.paymentStatus === "paid_stripe" ? "💳 Plătit Online (Stripe)" : "💵 La primire (Numerar / POS)"}</p>
           </div>
 
@@ -122,11 +122,23 @@ export default function Orders() {
             </div>
           )}
 
-          {/* Delivery Address Details */}
-          {details.deliveryAddress && (
+          {/* Delivery Address or Pickup Details */}
+          {(details.address || details.deliveryAddress) && (
             <div style={{ background: "#f8f9fa", padding: "10px", borderRadius: "6px", marginBottom: "14px", border: "1px solid #eee" }}>
-              <p style={{ margin: 0 }}><strong>Adresă Livrare:</strong> {details.deliveryAddress.address}, {details.deliveryAddress.city}</p>
-              {details.deliveryAddress.notes && <p style={{ margin: "4px 0 0 0", fontSize: "0.85rem", color: "#666" }}><strong>Instrucțiuni curier:</strong> {details.deliveryAddress.notes}</p>}
+              <p style={{ margin: 0 }}><strong>Adresă Livrare:</strong> {details.address || `${details.deliveryAddress?.address}, ${details.deliveryAddress?.city}`}</p>
+              {details.deliveryAddress?.notes && <p style={{ margin: "4px 0 0 0", fontSize: "0.85rem", color: "#666" }}><strong>Instrucțiuni curier:</strong> {details.deliveryAddress.notes}</p>}
+            </div>
+          )}
+          {details.pickupLocation && (
+            <div style={{ background: "#f8f9fa", padding: "10px", borderRadius: "6px", marginBottom: "14px", border: "1px solid #eee" }}>
+              <p style={{ margin: 0 }}><strong>Punct Ridicare:</strong> {details.pickupLocation.name} — {details.pickupLocation.address} ({details.pickupLocation.city})</p>
+              {details.pickupLocation.schedule && <p style={{ margin: "4px 0 0 0", fontSize: "0.85rem", color: "#666" }}><strong>Program:</strong> {details.pickupLocation.schedule}</p>}
+              {details.pickupLocation.phone && <p style={{ margin: "4px 0 0 0", fontSize: "0.85rem", color: "#666" }}><strong>Telefon:</strong> {details.pickupLocation.phone}</p>}
+            </div>
+          )}
+          {details.notes && (
+            <div style={{ background: "#fffde7", padding: "10px", borderRadius: "6px", marginBottom: "14px", border: "1px dashed #fbc02d" }}>
+              <p style={{ margin: 0, fontSize: "0.85rem" }}><strong>Mențiuni Client:</strong> {details.notes}</p>
             </div>
           )}
 

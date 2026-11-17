@@ -22,10 +22,18 @@ export default function Users() {
   if (loading) return <Loading />;
   if (error) return <ErrorState message={error} />;
 
-  const toggleAdmin = (u) => {
-    const next = u.role === "admin" ? "customer" : "admin";
-    if (!window.confirm(`Schimbi rolul lui ${u.name || u.email} în „${next}”?`)) return;
-    updateDocById(COLLECTIONS.USERS, u.id, { role: next });
+  const USER_ROLES = [
+    { value: "admin", label: "👑 Admin" },
+    { value: "kitchen", label: "👩‍🍳 Bucătar / Laborator" },
+    { value: "staff", label: "🍽️ Staff Sală / Ospătar" },
+    { value: "delivery", label: "🛵 Curier" },
+    { value: "customer", label: "👤 Client" }
+  ];
+
+  const handleRoleChange = (u, nextRole) => {
+    if (u.role === nextRole) return;
+    if (!window.confirm(`Schimbi rolul lui ${u.name || u.email} în „${nextRole}”?`)) return;
+    updateDocById(COLLECTIONS.USERS, u.id, { role: nextRole });
   };
 
   const columns = [
@@ -50,17 +58,31 @@ export default function Users() {
     { key: "tier", label: "Rang", render: (u) => <Badge tone="info">{tier(u)}</Badge> },
     {
       key: "role",
-      label: "Rol",
-      render: (u) => <Badge tone={u.role === "admin" ? "ok" : "default"}>{u.role || "customer"}</Badge>
-    },
-    {
-      key: "_role",
-      label: "Acțiuni",
-      render: (u) => (
-        <button className="btn btn-xs" onClick={() => toggleAdmin(u)}>
-          {u.role === "admin" ? "Revocă admin" : "Fă admin"}
-        </button>
-      )
+      label: "Rol Utilizator",
+      render: (u) => {
+        const currentRole = u.role || "customer";
+        return (
+          <select 
+            value={currentRole} 
+            onChange={(e) => handleRoleChange(u, e.target.value)}
+            style={{
+              padding: "4px 8px", 
+              borderRadius: "6px", 
+              border: "1px solid #d1d5db",
+              backgroundColor: currentRole === "admin" ? "#fef3c7" : currentRole === "kitchen" ? "#ffedd5" : currentRole === "staff" ? "#e0f2fe" : "#ffffff",
+              fontWeight: "600",
+              fontSize: "0.85rem",
+              cursor: "pointer"
+            }}
+          >
+            {USER_ROLES.map(role => (
+              <option key={role.value} value={role.value}>
+                {role.label}
+              </option>
+            ))}
+          </select>
+        );
+      }
     }
   ];
 

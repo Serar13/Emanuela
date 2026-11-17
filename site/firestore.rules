@@ -7,10 +7,18 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    function getUserRole() {
+      return exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        ? get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('role', 'customer')
+        : 'customer';
+    }
+
     function isAdmin() {
-      return isSignedIn()
-        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
-        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      return isSignedIn() && getUserRole() == 'admin';
+    }
+
+    function isStaff() {
+      return isSignedIn() && (getUserRole() in ['admin', 'kitchen', 'bucatar', 'staff', 'ospatar', 'manager', 'delivery']);
     }
 
     function hasSafeLoyaltyDefaults() {
@@ -83,18 +91,20 @@ service cloud.firestore {
       allow update, delete: if isAdmin();
     }
 
-    // ---- Orders: a user creates their own; admins manage all ----
+    // ---- Orders: a user creates their own; staff/kitchen/admin manage all ----
     match /orders/{id} {
-      allow read: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow read: if isStaff() || (isSignedIn() && resource.data.userId == request.auth.uid);
       allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
-      allow update, delete: if isAdmin();
+      allow update: if isStaff();
+      allow delete: if isAdmin();
     }
 
-    // ---- Reservations: a user creates their own; admins manage all ----
+    // ---- Reservations: a user creates their own; staff/admin manage all ----
     match /reservations/{id} {
-      allow read: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow read: if isStaff() || (isSignedIn() && resource.data.userId == request.auth.uid);
       allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
-      allow update, delete: if isAdmin();
+      allow update: if isStaff();
+      allow delete: if isAdmin();
     }
 
     // ---- Offer / event requests: anyone may submit; admins manage ----
